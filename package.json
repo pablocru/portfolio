@@ -12,18 +12,20 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "type:check": "astro check",
     "astro": "astro",
     "format:check": "prettier --check .",
     "format:fix": "prettier --write .",
     "lint:check": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "quality:check": "run-s format:check lint:check",
+    "quality:check": "run-s format:check lint:check type:check",
     "quality:fix": "run-s format:fix lint:fix"
   },
   "dependencies": {
     "astro": "^6.0.8"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.8",
     "@eslint/js": "^10.0.1",
     "@typescript-eslint/parser": "^8.57.2",
     "eslint": "^10.1.0",
@@ -33,6 +35,7 @@
     "npm-run-all2": "^8.0.4",
     "prettier": "3.8.1",
     "prettier-plugin-astro": "0.14.1",
+    "typescript": "^6.0.2",
     "typescript-eslint": "^8.57.2"
   }
 }
