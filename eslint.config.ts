@@ -1,6 +1,6 @@
 import js from "@eslint/js";
-import eslintConfigPrettier from "eslint-config-prettier/flat";
 import eslintPluginAstro from "eslint-plugin-astro";
+import eslintPluginPrettier from "eslint-plugin-prettier/recommended";
 import { defineConfig } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -14,7 +14,7 @@ export default defineConfig([
   },
   tseslint.configs.recommended,
   eslintPluginAstro.configs.recommended,
-  eslintConfigPrettier,
+  eslintPluginPrettier,
   {
     ignores: [".astro", "**/*.d.ts", "dist", "node_modules"],
   },
