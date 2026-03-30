@@ -1,0 +1,20 @@
+name: "Setup deps with pnpm"
+description: "Install Node.js, pnpm and project dependencies"
+author: "Pablo Cru Delhom (pablocru)"
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: "Install pnpm"
+      uses: "pnpm/action-setup@v5"
+
+    - name: "Setup Node.js and pnpm with cache"
+      uses: "actions/setup-node@v6"
+      with:
+        node-version-file: ".nvmrc"
+        cache: "pnpm"
+
+    - name: "Install dependencies"
+      shell: bash
+      run: "pnpm install --frozen-lockfile"
