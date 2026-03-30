@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: quality-check-${{ github.ref }}
+  group: "quality-check-${{ github.ref }}"
   cancel-in-progress: true
 
 jobs:
