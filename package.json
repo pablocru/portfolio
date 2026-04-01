@@ -16,6 +16,8 @@
     "preview": "astro preview",
     "type:check": "astro check",
     "astro": "astro",
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write .",
     "lint:check": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "quality:check": "run-s lint:check type:check",
@@ -44,6 +46,9 @@
   "lint-staged": {
     "*.{js,ts,cjs,cts,mjs,mts,jsx,tsx,astro}": [
       "eslint --fix"
+    ],
+    "*.{md,json,yml,yaml}": [
+      "prettier --write"
     ]
   }
 }
