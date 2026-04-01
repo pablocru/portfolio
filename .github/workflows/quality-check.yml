@@ -14,8 +14,8 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - name: "Setup deps"
-        uses: "./.github/actions/setup-deps"
+      - name: "Setup Node Project"
+        uses: "./.github/actions/setup-node-project"
 
       - name: "Run quality check"
         run: "pnpm quality:check"

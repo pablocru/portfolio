@@ -1,5 +1,5 @@
-name: "Setup deps with pnpm"
-description: "Install Node.js, pnpm and project dependencies"
+name: "Setup Node Project"
+description: "Checkout code and install Node.js, pnpm and project dependencies"
 author: "Pablo Cru Delhom (pablocru)"
 
 inputs:
