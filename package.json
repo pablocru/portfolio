@@ -42,7 +42,7 @@
     "typescript-eslint": "^8.57.2"
   },
   "lint-staged": {
-    "*.{js,ts,jsx,tsx,astro}": [
+    "*.{js,ts,cjs,cts,mjs,mts,jsx,tsx,astro}": [
       "eslint --fix"
     ]
   }
