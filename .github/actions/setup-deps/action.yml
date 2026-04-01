@@ -2,10 +2,20 @@ name: "Setup deps with pnpm"
 description: "Install Node.js, pnpm and project dependencies"
 author: "Pablo Cru Delhom (pablocru)"
 
+inputs:
+  checkout-repo:
+    description: "Whether to checkout the repository"
+    required: false
+    default: "true"
+
 runs:
   using: "composite"
 
   steps:
+    - if: "${{ inputs.checkout-repo == 'true' }}"
+      name: "Checkout repository"
+      uses: "actions/checkout@v6"
+
     - name: "Install pnpm"
       uses: "pnpm/action-setup@v5"
 
