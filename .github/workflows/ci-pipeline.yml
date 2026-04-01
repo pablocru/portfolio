@@ -12,6 +12,9 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@v6"
+
       - name: "Setup Node Project"
         uses: "./.github/actions/setup-node-project"
 
