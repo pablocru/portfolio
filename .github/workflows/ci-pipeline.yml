@@ -1,7 +1,7 @@
 name: "CI Pipeline"
 
 on:
-  push:
+  workflow_dispatch:
 
 concurrency:
   group: "ci-pipeline-${{ github.ref }}"
