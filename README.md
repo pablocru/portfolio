@@ -32,3 +32,60 @@ what I build and how I learn.
 - GitHub Actions:
   - Quality check: format, lint and typecheck
   - CI pipeline: quality check, build and publish build artifact
+
+## How to start
+
+### Prerequisites
+
+#### Node.js version
+
+Ensure you are using a version compatible with this project which you can find in
+`package.json`:
+
+```json
+"engines": {
+  "node": ">=24 <25"
+}
+```
+
+I recommend using [FNM](https://github.com/Schniz/fnm) as Node.js version manager. When it
+is installed you can switch to the exact version I use that can be found in `.nvmrc` by a
+simple command:
+
+```bash
+fnm use
+```
+
+> You can configure FNM to switch version automatically. Take a look at the [official
+> documentation](https://github.com/Schniz/fnm/blob/master/docs/configuration.md#--use-on-cd).
+
+#### Package manager
+
+In this project I use [PNPM](https://pnpm.io/) because it is fast and saves disk space. In
+order to use it, use [corepack](https://github.com/nodejs/corepack) instead of installing
+PNPM globally in your computer. Then enable it and the first time you use a PNPM command
+corepack will install the exact version I set in `package.json`:
+
+```bash
+corepack enable
+```
+
+### Installation
+
+1. Clone this repository
+
+   ```bash
+   git clone https://github.com/pablocru/portfolio.git
+   ```
+
+1. Install dependencies
+
+   ```bash
+   pnpm install
+   ```
+
+1. Run development server
+
+   ```bash
+   pnpm dev
+   ```
