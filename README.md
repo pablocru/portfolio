@@ -16,3 +16,19 @@ will find:
 
 Not all projects are finished, and not all of them are deployed. This portfolio shows both
 what I build and how I learn.
+
+## Tech stack
+
+- Node.js environment:
+  - Node.js 24+
+  - pnpm 10+
+- Web framework
+  - [Astro](https://astro.build/) 6+ with Server Side Generation (SSG)
+  - TypeScript 5+
+- Code quality:
+  - Prettier and ESlint, both using their Astro plugin
+  - Husky and lint-staged:
+    - pre-commit: format, lint and typecheck
+- GitHub Actions:
+  - Quality check: format, lint and typecheck
+  - CI pipeline: quality check, build and publish build artifact
