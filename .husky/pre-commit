@@ -1,0 +1,9 @@
+export NO_COLOR=1
+
+if command -v fnm >/dev/null 2>&1; then
+  eval "$(fnm env --use-on-cd)"
+fi
+
+corepack enable >/dev/null 2>&1
+
+pnpm lint-staged --quiet

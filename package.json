@@ -1,0 +1,54 @@
+{
+  "name": "@pablocru/portfolio",
+  "description": "A window to my projects",
+  "type": "module",
+  "version": "0.0.1",
+  "license": "GPL-3.0-only",
+  "private": true,
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319",
+  "scripts": {
+    "prepare": "husky",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "type:check": "astro check",
+    "astro": "astro",
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "lint:check": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "quality:check": "run-s lint:check type:check",
+    "quality:fix": "run-s lint:fix"
+  },
+  "dependencies": {
+    "astro": "^6.0.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.8",
+    "@eslint/js": "^10.0.1",
+    "@typescript-eslint/parser": "^8.57.2",
+    "eslint": "^10.1.0",
+    "eslint-plugin-astro": "^1.6.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "globals": "^17.4.0",
+    "husky": "^9.1.7",
+    "jiti": "^2.6.1",
+    "lint-staged": "^16.4.0",
+    "npm-run-all2": "^8.0.4",
+    "prettier": "3.8.1",
+    "prettier-plugin-astro": "0.14.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.2"
+  },
+  "lint-staged": {
+    "*.{js,ts,cjs,cts,mjs,mts,jsx,tsx,astro}": [
+      "eslint --fix"
+    ],
+    "*.{md,json,yml,yaml,css}": [
+      "prettier --write"
+    ]
+  }
+}
