@@ -89,3 +89,18 @@ corepack enable
    ```bash
    pnpm dev
    ```
+
+## Contribute
+
+If you notice any mistakes or have suggestions, I’m all ears! I appreciate any feedback so
+don't hesitate to [open an Issue on GitHub](https://github.com/pablocru/portfolio/issues)
+or submit a `Pull Request`.
+
+### Contribution guidelines
+
+1. `Fork` the repository and make your changes in a `new branch`.
+1. Document your additions.
+1. Use [Conventional Commits](https://www.conventionalcommits.org).
+1. Submit a `Pull Request` with a clear description of your changes.
+
+Thank you for helping improve this project!
