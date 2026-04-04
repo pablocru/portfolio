@@ -56,7 +56,7 @@ simple command:
 fnm use
 ```
 
-> You can configure FNM to switch version automatically. Take a look at the [official
+> You can configure FNM to switch versions automatically. Take a look at the [official
 > documentation](https://github.com/Schniz/fnm/blob/master/docs/configuration.md#--use-on-cd).
 
 #### Package manager
