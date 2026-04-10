@@ -81,8 +81,11 @@ corepack enable
 1. Install dependencies
 
    ```bash
-   pnpm install
+   pnpm safe-install
    ```
+
+   > I use a custom install script to ensure dependencies are installed with a frozen
+   > lockfile and to properly initialize Husky hooks under strict npm security settings.
 
 1. Run development server
 
