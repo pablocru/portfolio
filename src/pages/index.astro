@@ -1,9 +1,29 @@
 ---
+import Hero from "../components/Hero.astro";
+import ProfileStats from "../components/ProfileStats.astro";
 import Layout from "../layouts/Layout.astro";
+import { GitHubService } from "../services/github.service";
 
-const pageTitle = "Hello, World!";
+const githubService = new GitHubService("octokit");
+const githubUserProfile = await githubService.getUserProfile();
+
+const pageTitle = `Portfolio of ${githubUserProfile.displayName}!`;
 ---
 
 <Layout pageTitle={pageTitle}>
-  <h1>{pageTitle}</h1>
+  <Hero
+    location={githubUserProfile.location}
+    personalSite={githubUserProfile.personalSite}
+    profileBio={githubUserProfile.bio}
+    profileName={githubUserProfile.displayName}
+    profilePageUrl={githubUserProfile.pageUrl}
+    profilePictureUrl={githubUserProfile.pictureUrl}
+  />
+
+  <ProfileStats
+    createdAt={githubUserProfile.createdAt}
+    gistsCount={githubUserProfile.gistsCount}
+    repoCount={githubUserProfile.repoCount}
+    updatedAt={githubUserProfile.updatedAt}
+  />
 </Layout>
