@@ -24,6 +24,8 @@ jobs:
 
       - name: "Build project"
         run: "pnpm build"
+        env:
+          GITHUB_USERNAME: ${{ github.repository_owner }}
 
       - name: "Upload build artifact"
         uses: "actions/upload-artifact@v7"
