@@ -1,4 +1,4 @@
-export type GitHubUserRaw = {
+export interface GitHubUserRaw {
   login: string;
   name: string | null;
   location: string | null;
@@ -10,7 +10,7 @@ export type GitHubUserRaw = {
   public_gists: number;
   created_at: string;
   updated_at: string;
-};
+}
 
 export interface GitHubUserProfile {
   username: string;

@@ -10,15 +10,15 @@ interface Props {
   profilePictureUrl: URL;
 }
 
-type LinkInput = {
+interface LinkInput {
   title: string;
   url: URL | null;
-};
+}
 
-type LinkEntry = {
+interface LinkEntry {
   title: string;
   url: URL;
-};
+}
 
 const {
   location,
