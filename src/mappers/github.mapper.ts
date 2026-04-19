@@ -15,6 +15,8 @@ export function mapGitHubUser(raw: GitHubUserRaw): GitHubUserProfile {
     pageUrl: new URL(raw.html_url),
     repoCount: raw.public_repos,
     gistsCount: raw.public_gists,
+    followersCount: raw.followers,
+    followingCount: raw.following,
     createdAt: new Date(raw.created_at),
     updatedAt: new Date(raw.updated_at),
   };

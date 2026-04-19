@@ -8,6 +8,8 @@ export interface GitHubUserRaw {
   html_url: string;
   public_repos: number;
   public_gists: number;
+  followers: number;
+  following: number;
   created_at: string;
   updated_at: string;
 }
@@ -23,6 +25,8 @@ export interface GitHubUserProfile {
   pageUrl: URL;
   repoCount: number;
   gistsCount: number;
+  followersCount: number;
+  followingCount: number;
   createdAt: Date;
   updatedAt: Date;
 }

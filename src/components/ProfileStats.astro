@@ -2,6 +2,8 @@
 interface Props {
   repoCount: number;
   gistsCount: number;
+  followersCount: number;
+  followingCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -16,7 +18,14 @@ interface DateStat {
   date: Date;
 }
 
-const { repoCount, gistsCount, createdAt, updatedAt } = Astro.props;
+const {
+  createdAt,
+  followersCount,
+  followingCount,
+  gistsCount,
+  repoCount,
+  updatedAt,
+} = Astro.props;
 
 function filterEntriesWithNonZeroCount(items: NumberStat[]): NumberStat[] {
   return items.filter((item): item is NumberStat => item.count > 0);
@@ -25,6 +34,8 @@ function filterEntriesWithNonZeroCount(items: NumberStat[]): NumberStat[] {
 const numberStatList = filterEntriesWithNonZeroCount([
   { caption: "repositories", count: repoCount },
   { caption: "gists", count: gistsCount },
+  { caption: "followers", count: followersCount },
+  { caption: "following", count: followingCount },
 ]);
 
 const dateStatList: DateStat[] = [
