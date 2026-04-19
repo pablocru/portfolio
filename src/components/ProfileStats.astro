@@ -1,0 +1,57 @@
+---
+interface Props {
+  repoCount: number;
+  gistsCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface NumberStat {
+  caption: string;
+  count: number;
+}
+
+interface DateStat {
+  caption: string;
+  date: Date;
+}
+
+const { repoCount, gistsCount, createdAt, updatedAt } = Astro.props;
+
+function filterEntriesWithNonZeroCount(items: NumberStat[]): NumberStat[] {
+  return items.filter((item): item is NumberStat => item.count > 0);
+}
+
+const numberStatList = filterEntriesWithNonZeroCount([
+  { caption: "repositories", count: repoCount },
+  { caption: "gists", count: gistsCount },
+]);
+
+const dateStatList: DateStat[] = [
+  { caption: "On GitHub since", date: createdAt },
+  { caption: "Last activity", date: updatedAt },
+];
+---
+
+<section>
+  <h2>Profile stats</h2>
+
+  <ul>
+    {
+      numberStatList.length > 0 &&
+        numberStatList.map(({ caption, count }) => (
+          <li>
+            <strong>{count}</strong> {caption}
+          </li>
+        ))
+    }
+    {
+      dateStatList.length > 0 &&
+        dateStatList.map(({ caption, date }) => (
+          <li>
+            {caption} {date.toLocaleDateString()}
+          </li>
+        ))
+    }
+  </ul>
+</section>
