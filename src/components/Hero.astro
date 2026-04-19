@@ -1,0 +1,72 @@
+---
+import Image from "astro/components/Image.astro";
+
+interface Props {
+  location: string | null;
+  personalSite: URL | null;
+  profileBio: string | null;
+  profileName: string;
+  profilePageUrl: URL;
+  profilePictureUrl: URL;
+}
+
+type LinkInput = {
+  title: string;
+  url: URL | null;
+};
+
+type LinkEntry = {
+  title: string;
+  url: URL;
+};
+
+const {
+  location,
+  personalSite,
+  profileBio,
+  profileName,
+  profilePageUrl,
+  profilePictureUrl,
+} = Astro.props;
+
+const profilePictureAlt = `Profile picture that ${profileName} uses in GitHub`;
+
+function filterEntriesWithUrl(items: LinkInput[]): LinkEntry[] {
+  return items.filter((item): item is LinkEntry => item.url !== null);
+}
+
+const linkEntryList = filterEntriesWithUrl([
+  { title: "Personal Site", url: personalSite },
+  { title: "GitHub Page", url: profilePageUrl },
+]);
+---
+
+<section>
+  <Image
+    src={profilePictureUrl.toString()}
+    alt={profilePictureAlt}
+    width={200}
+    height={200}
+    loading="eager"
+  />
+
+  <h1>{profileName}</h1>
+
+  {profileBio && <p>{profileBio}</p>}
+
+  {location && <p>{location}</p>}
+
+  {
+    linkEntryList.length > 0 && (
+      <ul>
+        {linkEntryList.map(({ title, url }) => (
+          <li>
+            <a href={url} target="_blank">
+              {title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</section>
