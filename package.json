@@ -16,16 +16,12 @@
     "preview": "astro preview",
     "type:check": "astro check",
     "astro": "astro",
-    "format:check": "run-s format:check:biome format:check:prettier",
-    "format:fix": "run-s format:fix:biome format:fix:prettier",
-    "format:check:biome": "biome format .",
-    "format:fix:biome": "biome format --write .",
-    "format:check:prettier": "prettier --check \"**/*.{md,yml,yaml}\"",
-    "format:fix:prettier": "prettier --write \"**/*.{md,yml,yaml}\"",
-    "lint:check": "biome lint .",
-    "lint:fix": "biome lint --write .",
-    "quality:check": "run-s format:check lint:check type:check",
-    "quality:fix": "run-s format:fix lint:fix type:check"
+    "quality:check:biome": "biome ci .",
+    "quality:fix:biome": "biome check --write .",
+    "quality:check:prettier": "prettier --check \"**/*.{md,yml,yaml}\"",
+    "quality:fix:prettier": "prettier --write \"**/*.{md,yml,yaml}\"",
+    "quality:check": "run-s quality:check:biome quality:check:prettier type:check",
+    "quality:fix": "run-s quality:fix:biome quality:fix:prettier type:check"
   },
   "dependencies": {
     "astro": "6.4.8"
