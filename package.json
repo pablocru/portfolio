@@ -24,24 +24,24 @@
     "quality:fix": "run-s lint:fix"
   },
   "dependencies": {
-    "astro": "^6.0.8"
+    "astro": "6.0.8"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.8",
-    "@eslint/js": "^10.0.1",
-    "@typescript-eslint/parser": "^8.57.2",
-    "eslint": "^10.1.0",
-    "eslint-plugin-astro": "^1.6.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "globals": "^17.4.0",
-    "husky": "^9.1.7",
-    "jiti": "^2.6.1",
-    "lint-staged": "^16.4.0",
-    "npm-run-all2": "^8.0.4",
+    "@astrojs/check": "0.9.8",
+    "@eslint/js": "10.0.1",
+    "@typescript-eslint/parser": "8.57.2",
+    "eslint": "10.1.0",
+    "eslint-plugin-astro": "1.6.0",
+    "eslint-plugin-prettier": "5.0.0",
+    "globals": "17.4.0",
+    "husky": "9.1.7",
+    "jiti": "2.6.1",
+    "lint-staged": "16.4.0",
+    "npm-run-all2": "8.0.4",
     "prettier": "3.8.1",
     "prettier-plugin-astro": "0.14.1",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.2"
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.57.2"
   },
   "lint-staged": {
     "*.{js,ts,cjs,cts,mjs,mts,jsx,tsx,astro}": [
