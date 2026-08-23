@@ -24,7 +24,7 @@
     "quality:fix": "run-s lint:fix"
   },
   "dependencies": {
-    "astro": "6.0.8"
+    "astro": "6.4.8"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.8",
