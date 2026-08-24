@@ -21,16 +21,17 @@ what I build and how I learn.
 
 - Node.js environment:
   - Node.js 24+
-  - pnpm 10+
+  - pnpm 11+
 - Web framework
   - [Astro](https://astro.build/) 6+ with Server Side Generation (SSG)
   - TypeScript 5+
 - Code quality:
-  - Prettier and ESlint, both using their Astro plugin
+  - Biome for code quality checks
+  - Prettier for Markdown and YAML formatting
   - Husky and lint-staged:
     - pre-commit: format, lint and typecheck
 - GitHub Actions:
-  - Quality check: format, lint and typecheck
+  - Quality check: Biome, Prettier (Markdown and YAML) and typecheck
   - CI pipeline: quality check, build and publish build artifact
 
 ## How to start
