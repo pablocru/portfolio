@@ -8,7 +8,14 @@
   "engines": {
     "node": ">=24 <25"
   },
-  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319",
+  "packageManager": "pnpm@11.22.0+sha512.1ff870c4c6133dfd88fb2afc46dd13d47f09c9794b438c6fdb47ca98caf3bc16381ee0be93a091b8e3824cf01f889f46d7d9e20910fb0be1ab0fb5baa80dd621",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "v24.19.0",
+      "onFail": "error"
+    }
+  },
   "scripts": {
     "safe-install": "pnpm install --frozen-lockfile && husky",
     "dev": "astro dev",
@@ -16,38 +23,30 @@
     "preview": "astro preview",
     "type:check": "astro check",
     "astro": "astro",
-    "format:check": "prettier --check .",
-    "format:fix": "prettier --write .",
-    "lint:check": "eslint . --max-warnings 0",
-    "lint:fix": "eslint . --fix",
-    "quality:check": "run-s lint:check type:check",
-    "quality:fix": "run-s lint:fix"
+    "quality:check:biome": "biome ci .",
+    "quality:fix:biome": "biome check --write .",
+    "quality:check:prettier": "prettier --check \"**/*.{md,yml,yaml}\"",
+    "quality:fix:prettier": "prettier --write \"**/*.{md,yml,yaml}\"",
+    "quality:check": "run-s quality:check:biome quality:check:prettier type:check",
+    "quality:fix": "run-s quality:fix:biome quality:fix:prettier type:check"
   },
   "dependencies": {
-    "astro": "^6.0.8"
+    "astro": "6.4.8"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.8",
-    "@eslint/js": "^10.0.1",
-    "@typescript-eslint/parser": "^8.57.2",
-    "eslint": "^10.1.0",
-    "eslint-plugin-astro": "^1.6.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "globals": "^17.4.0",
-    "husky": "^9.1.7",
-    "jiti": "^2.6.1",
-    "lint-staged": "^16.4.0",
-    "npm-run-all2": "^8.0.4",
+    "@astrojs/check": "0.9.8",
+    "@biomejs/biome": "2.5.10",
+    "husky": "9.1.7",
+    "lint-staged": "16.4.0",
+    "npm-run-all2": "8.0.4",
     "prettier": "3.8.1",
-    "prettier-plugin-astro": "0.14.1",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.2"
+    "typescript": "5.9.3"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,cts,mjs,mts,jsx,tsx,astro}": [
-      "eslint --fix"
+    "*.{js,ts,cjs,cts,mjs,mts,jsx,tsx,astro,json,jsonc,css}": [
+      "biome check --write --no-errors-on-unmatched"
     ],
-    "*.{md,json,yml,yaml,css}": [
+    "*.{md,yml,yaml}": [
       "prettier --write"
     ]
   }

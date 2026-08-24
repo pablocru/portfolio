@@ -21,5 +21,11 @@ jobs:
       - name: "Setup Node Project"
         uses: "./.github/actions/setup-node-project"
 
-      - name: "Run quality check"
-        run: "pnpm quality:check"
+      - name: "Check code quality with Biome"
+        run: "pnpm quality:check:biome"
+
+      - name: "Check Markdown and YAML with Prettier"
+        run: "pnpm quality:check:prettier"
+
+      - name: "Run Astro type check"
+        run: "pnpm type:check"
