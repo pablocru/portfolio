@@ -10,10 +10,4 @@ runs:
       uses: "pnpm/setup@v2.0.2"
       with:
         cache: true
-        install: false
-
-    - name: "Install dependencies"
-      shell: bash
-      run: "pnpm install --frozen-lockfile"
-      env:
-        HUSKY: 0
+        install: true
