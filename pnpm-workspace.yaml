@@ -2,6 +2,7 @@ engineStrict: true
 saveExact: true
 allowBuilds:
   esbuild: true
+  lefthook: true
   sharp: true
 minimumReleaseAgeExclude:
   - astro@7.0.10 || 7.2.6
