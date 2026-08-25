@@ -31,10 +31,10 @@
     "quality:fix": "run-s quality:fix:biome quality:fix:prettier type:check"
   },
   "dependencies": {
-    "astro": "6.4.8"
+    "astro": "7.2.6"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.8",
+    "@astrojs/check": "0.9.10",
     "@biomejs/biome": "2.5.10",
     "husky": "9.1.7",
     "lint-staged": "16.4.0",
