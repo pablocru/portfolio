@@ -28,8 +28,8 @@ what I build and how I learn.
 - Code quality:
   - Biome for code quality checks
   - Prettier for Markdown and YAML formatting
-  - Husky and lint-staged:
-    - pre-commit: format, lint and typecheck
+  - Lefthook:
+    - pre-commit: format and lint
 - GitHub Actions:
   - Quality check: Biome, Prettier (Markdown and YAML) and typecheck
   - CI pipeline: quality check, build and publish build artifact
@@ -86,7 +86,7 @@ corepack enable
    ```
 
    > I use a custom install script to ensure dependencies are installed with a frozen
-   > lockfile and to properly initialize Husky hooks under strict npm security settings.
+   > lockfile. Lefthook's own `postinstall` script registers the git hooks.
 
 1. Run development server
 

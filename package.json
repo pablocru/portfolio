@@ -17,7 +17,7 @@
     }
   },
   "scripts": {
-    "safe-install": "pnpm install --frozen-lockfile && husky",
+    "safe-install": "pnpm install --frozen-lockfile",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
@@ -36,18 +36,9 @@
   "devDependencies": {
     "@astrojs/check": "0.9.10",
     "@biomejs/biome": "2.5.10",
-    "husky": "9.1.7",
-    "lint-staged": "16.4.0",
+    "lefthook": "2.1.10",
     "npm-run-all2": "8.0.4",
     "prettier": "3.8.1",
     "typescript": "5.9.3"
-  },
-  "lint-staged": {
-    "*.{js,ts,cjs,cts,mjs,mts,jsx,tsx,astro,json,jsonc,css}": [
-      "biome check --write --no-errors-on-unmatched"
-    ],
-    "*.{md,yml,yaml}": [
-      "prettier --write"
-    ]
   }
 }
