@@ -7,7 +7,7 @@ runs:
 
   steps:
     - name: "Setup Node.js and pnpm with cache"
-      uses: "pnpm/setup@v2.0.2"
+      uses: "pnpm/setup@v3"
       with:
+        require-lockfile: true
         cache: true
-        install: true

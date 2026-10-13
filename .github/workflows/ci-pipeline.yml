@@ -8,11 +8,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  quality-check:
-    uses: "./.github/workflows/quality-check.yml"
+  quality-gate:
+    uses: "./.github/workflows/quality-gate.yml"
 
   ci:
-    needs: "quality-check"
+    needs: "quality-gate"
     runs-on: "ubuntu-latest"
 
     steps:
