@@ -1,18 +1,15 @@
 {
   "name": "@pablocru/portfolio",
   "description": "A window to my projects",
+  "private": true,
   "type": "module",
   "version": "0.0.1",
   "license": "GPL-3.0-only",
-  "private": true,
-  "engines": {
-    "node": ">=24 <25"
-  },
-  "packageManager": "pnpm@11.22.0+sha512.1ff870c4c6133dfd88fb2afc46dd13d47f09c9794b438c6fdb47ca98caf3bc16381ee0be93a091b8e3824cf01f889f46d7d9e20910fb0be1ab0fb5baa80dd621",
+  "packageManager": "pnpm@12.9.1",
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "v24.19.0",
+      "version": "24.21.0",
       "onFail": "error"
     }
   },
@@ -24,21 +21,23 @@
     "type:check": "astro check",
     "astro": "astro",
     "quality:check:biome": "biome ci .",
+    "quality:check:prettier": "prettier --check \"**/*.{yml,yaml}\"",
+    "quality:check:rumdl": "rumdl check .",
     "quality:fix:biome": "biome check --write .",
-    "quality:check:prettier": "prettier --check \"**/*.{md,yml,yaml}\"",
-    "quality:fix:prettier": "prettier --write \"**/*.{md,yml,yaml}\"",
-    "quality:check": "run-s quality:check:biome quality:check:prettier type:check",
-    "quality:fix": "run-s quality:fix:biome quality:fix:prettier type:check"
+    "quality:fix:prettier": "prettier --write \"**/*.{yml,yaml}\"",
+    "quality:fix:rumdl": "rumdl fmt .",
+    "quality:check": "pnpm run \"/^quality:check:/\" && pnpm type:check",
+    "quality:fix": "pnpm run \"/^quality:fix:/\" && pnpm type:check"
   },
   "dependencies": {
     "astro": "7.2.6"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
-    "@biomejs/biome": "2.5.10",
-    "lefthook": "2.1.10",
-    "npm-run-all2": "8.0.4",
-    "prettier": "3.8.1",
+    "@biomejs/biome": "2.5.15",
+    "lefthook": "2.1.17",
+    "prettier": "3.9.9",
+    "rumdl": "0.2.78",
     "typescript": "5.9.3"
   }
 }
