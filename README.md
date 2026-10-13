@@ -1,75 +1,63 @@
 # Building and learning in public
 
-[![Quality
-Check](https://github.com/pablocru/portfolio/actions/workflows/quality-check.yml/badge.svg)](https://github.com/pablocru/portfolio/actions/workflows/quality-check.yml)
-[![CI
-Pipeline](https://github.com/pablocru/portfolio/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/pablocru/portfolio/actions/workflows/ci-pipeline.yml)
+[![Quality Gate](https://github.com/pablocru/portfolio/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/pablocru/portfolio/actions/workflows/quality-gate.yml)
+[![CI Pipeline](https://github.com/pablocru/portfolio/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/pablocru/portfolio/actions/workflows/ci-pipeline.yml)
 
-This repository contains my personal portfolio website which is a window to my projects.
-The goal of this project is to create a clear entry point to my work on GitHub. Here you
-will find:
+This repository contains my personal portfolio website which is a window to my
+projects. The goal of this project is to create a clear entry point to my work
+on GitHub. Here you will find:
 
 - Selected projects
 - Experiments
 - Ideas I am exploring
 - Links to live demos (when available)
 
-Not all projects are finished, and not all of them are deployed. This portfolio shows both
-what I build and how I learn.
+Not all projects are finished, and not all of them are deployed. This portfolio
+shows both what I build and how I learn.
 
 ## Tech stack
 
 - Node.js environment:
-  - Node.js 24+
-  - pnpm 11+
+  - Node.js 24+ (pinned via `devEngines.runtime`)
+  - pnpm 12+ (pinned via `packageManager`)
 - Web framework
   - [Astro](https://astro.build/) 6+ with Server Side Generation (SSG)
   - TypeScript 5+
 - Code quality:
-  - Biome for code quality checks
-  - Prettier for Markdown and YAML formatting
+  - Biome for code quality checks and formatting
+  - Prettier for YAML formatting
+  - rumdl for Markdown linting and formatting
   - Lefthook:
     - pre-commit: format and lint
 - GitHub Actions:
-  - Quality check: Biome, Prettier (Markdown and YAML) and typecheck
-  - CI pipeline: quality check, build and publish build artifact
+  - Quality gate: Biome, Prettier (YAML), rumdl and typecheck
+  - CI pipeline: quality gate, build and publish build artifact
 
 ## How to start
 
 ### Prerequisites
 
-#### Node.js version
+#### Toolchain
 
-Ensure you are using a version compatible with this project which you can find in
-`package.json`:
+The toolchain is pinned in `package.json`: Node.js via `devEngines.runtime` and
+pnpm via `packageManager`. This keeps local and CI on the same versions.
 
-```json
-"engines": {
-  "node": ">=24 <25"
-}
-```
-
-I recommend using [FNM](https://github.com/Schniz/fnm) as Node.js version manager. When it
-is installed you can switch to the exact version I use that can be found in `.nvmrc` by a
-simple command:
+The recommended way is [mise](https://mise.jdx.dev/), which reads those versions
+from `package.json` and installs them for you:
 
 ```bash
-fnm use
+# installs the pinned Node.js and pnpm
+mise install
+# installs dependencies
+pnpm install
+# starts the local dev server
+pnpm dev
+# builds the static site into dist/
+pnpm build
 ```
 
-> You can configure FNM to switch versions automatically. Take a look at the [official
-> documentation](https://github.com/Schniz/fnm/blob/master/docs/configuration.md#--use-on-cd).
-
-#### Package manager
-
-In this project I use [PNPM](https://pnpm.io/) because it is fast and saves disk space. In
-order to use it, use [corepack](https://github.com/nodejs/corepack) instead of installing
-PNPM globally in your computer. Then enable it and the first time you use a PNPM command
-corepack will install the exact version I set in `package.json`:
-
-```bash
-corepack enable
-```
+Without `mise`, install the `Node.js` and `pnpm` versions declared in
+`package.json` manually, then run the same `pnpm` commands.
 
 ### Installation
 
@@ -85,8 +73,9 @@ corepack enable
    pnpm safe-install
    ```
 
-   > I use a custom install script to ensure dependencies are installed with a frozen
-   > lockfile. Lefthook's own `postinstall` script registers the git hooks.
+   > I use a custom install script to ensure dependencies are installed with a
+   > frozen lockfile. Lefthook's own `postinstall` script registers the git
+   > hooks.
 
 1. Run development server
 
@@ -96,9 +85,10 @@ corepack enable
 
 ## Contribute
 
-If you notice any mistakes or have suggestions, I’m all ears! I appreciate any feedback so
-don't hesitate to [open an Issue on GitHub](https://github.com/pablocru/portfolio/issues)
-or submit a `Pull Request`.
+If you notice any mistakes or have suggestions, I’m all ears! I appreciate any
+feedback so don't hesitate to
+[open an Issue on GitHub](https://github.com/pablocru/portfolio/issues) or
+submit a `Pull Request`.
 
 ### Contribution guidelines
 
