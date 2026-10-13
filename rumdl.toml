@@ -1,0 +1,15 @@
+[global]
+editorconfig = true
+exclude = ["LICENSE"]
+
+[MD013]
+code_blocks = false
+reflow = true
+reflow-mode = "normalize"
+
+[MD029]
+style = "one"
+
+[MD060]
+enabled = true
+style = "aligned"
