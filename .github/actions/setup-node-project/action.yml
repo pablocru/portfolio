@@ -1,12 +1,12 @@
 name: "Setup Node Project"
-description: "Install pnpm, Node.js and project dependencies"
+description: "Install Node.js, pnpm and project dependencies"
 author: "Pablo Cru Delhom (pablocru)"
 
 runs:
   using: "composite"
 
   steps:
-    - name: "Install pnpm, Node.js and dependencies"
+    - name: "Setup Node.js and pnpm with cache"
       uses: "pnpm/setup@v3"
       with:
         require-lockfile: true
