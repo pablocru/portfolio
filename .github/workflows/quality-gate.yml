@@ -20,11 +20,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Install pnpm, Node.js and dependencies
-        uses: pnpm/setup@v3
-        with:
-          require-lockfile: true
-          cache: true
+      - name: "Setup Node Project"
+        uses: "./.github/actions/setup-node-project"
 
       - name: Lint and format with Biome
         run: pnpm biome ci .
