@@ -8,19 +8,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  quality-check:
-    uses: "./.github/workflows/quality-check.yml"
+  quality-gate:
+    uses: "./.github/workflows/quality-gate.yml"
 
   ci:
-    needs: "quality-check"
+    needs: "quality-gate"
     runs-on: "ubuntu-latest"
 
     steps:
       - name: "Checkout repository"
         uses: "actions/checkout@v6"
 
-      - name: "Setup Node Project"
-        uses: "./.github/actions/setup-node-project"
+      - name: "Install pnpm, Node.js and dependencies"
+        uses: "pnpm/setup@v3"
+        with:
+          require-lockfile: true
+          cache: true
 
       - name: "Build project"
         run: "pnpm build"
