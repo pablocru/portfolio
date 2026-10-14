@@ -21,7 +21,8 @@ shows both what I build and how I learn.
   - Node.js 24+ (pinned via `devEngines.runtime`)
   - pnpm 12+ (pinned via `packageManager`)
 - Web framework
-  - [Astro](https://astro.build/) 6+ with Server Side Generation (SSG)
+  - [Astro](https://astro.build/) with Server Side Generation (SSG; version
+    pinned in `package.json`)
   - TypeScript 5+
 - Code quality:
   - Biome for code quality checks and formatting
