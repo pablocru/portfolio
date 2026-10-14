@@ -56,6 +56,9 @@ shows both what I build and how I learn.
    > frozen lockfile. Lefthook's own `postinstall` script registers the git
    > hooks.
 
+No GitHub token is required locally. If you hit GitHub API rate limits, run
+`GITHUB_TOKEN=$(gh auth token) pnpm dev`.
+
 1. Develop and build
 
    ```bash
