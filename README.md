@@ -24,35 +24,27 @@ shows both what I build and how I learn.
 
 ## How to start
 
-### Prerequisites
-
-The toolchain is pinned in `package.json`: Node.js via `devEngines.runtime` and
-pnpm via `packageManager`. This keeps local and CI on the same versions.
-
-The recommended way is [mise](https://mise.jdx.dev/), which reads those versions
-from `package.json` and installs them for you:
-
-```bash
-# installs the pinned Node.js and pnpm
-mise install
-# installs dependencies
-pnpm install
-# starts the local dev server
-pnpm dev
-# builds the static site into dist/
-pnpm build
-```
-
-Without `mise`, install the `Node.js` and `pnpm` versions declared in
-`package.json` manually, then run the same `pnpm` commands.
-
-### Installation
-
-1. Clone this repository
+1. Clone the repository
 
    ```bash
    git clone https://github.com/pablocru/portfolio.git
    ```
+
+1. Prepare the toolchain
+
+   The toolchain is pinned in `package.json`: Node.js via `devEngines.runtime`
+   and pnpm via `packageManager`. This keeps local and CI on the same versions.
+
+   The recommended way is [mise](https://mise.jdx.dev/), which reads those
+   versions from `package.json` and installs them for you:
+
+   ```bash
+   # installs the pinned Node.js and pnpm
+   mise install
+   ```
+
+   Without `mise`, install the `Node.js` and `pnpm` versions declared in
+   `package.json` manually.
 
 1. Install dependencies
 
@@ -64,10 +56,13 @@ Without `mise`, install the `Node.js` and `pnpm` versions declared in
    > frozen lockfile. Lefthook's own `postinstall` script registers the git
    > hooks.
 
-1. Run development server
+1. Develop and build
 
    ```bash
+   # starts the local dev server
    pnpm dev
+   # builds the static site into dist/
+   pnpm build
    ```
 
 ## Contribute
