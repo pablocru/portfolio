@@ -18,12 +18,12 @@ shows both what I build and how I learn.
 ## Tech stack
 
 - Node.js environment:
-  - Node.js 24+ (pinned via `devEngines.runtime`)
-  - pnpm 12+ (pinned via `packageManager`)
+  - Node.js (pinned via `devEngines.runtime` in `package.json`)
+  - pnpm (pinned via `packageManager` in `package.json`)
 - Web framework
   - [Astro](https://astro.build/) with Server Side Generation (SSG; version
     pinned in `package.json`)
-  - TypeScript 5+
+  - TypeScript (version pinned in `package.json`)
 - Code quality:
   - Biome for code quality checks and formatting
   - Prettier for YAML formatting
