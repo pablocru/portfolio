@@ -38,6 +38,9 @@ plan for its current scope.
   `.mapper.ts`, `.service.ts`, `.util.ts`.
 - Closed vocabularies are plain TypeScript `enum`s, never `const enum`, defined
   in a shared constants module (e.g. `src/constants.ts`).
+- Avoid duplicating facts that already have a source of truth; reference instead
+  of repeating versions, scripts, or formatting rules already defined in
+  `package.json`, tool configs, or workflows.
 
 ## Git
 
