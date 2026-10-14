@@ -1,0 +1,19 @@
+---
+import { getUserProfile } from "../services/github.service";
+
+const profile = await getUserProfile();
+---
+
+<section class="hero">
+  <img
+    src={profile.avatarUrl}
+    width="96"
+    height="96"
+    alt={`${profile.name}'s GitHub avatar`}
+  >
+  <div>
+    <h1>{profile.name}</h1>
+    {profile.bio !== "" ? <p>{profile.bio}</p> : null}
+    {profile.location !== null && <p>{profile.location}</p>}
+  </div>
+</section>

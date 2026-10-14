@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import Hero from "../components/Hero.astro";
 import RepoCard from "../components/RepoCard.astro";
 import { Category, Tier } from "../constants";
 import Layout from "../layouts/Layout.astro";
@@ -38,6 +39,7 @@ const projectGroups = Object.values(Category)
 ---
 
 <Layout title="Home">
+  <Hero />
   <main>
     {featured.length > 0 && (
       <section aria-labelledby="featured-heading">
