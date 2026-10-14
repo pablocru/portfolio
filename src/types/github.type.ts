@@ -11,6 +11,13 @@ export type GhRepo = {
   topics?: string[];
 };
 
+export type GhUserProfile = {
+  name: string;
+  bio: string;
+  avatarUrl: string;
+  location: string | null;
+};
+
 export type RepoEntry = {
   name: string;
   description: string;
