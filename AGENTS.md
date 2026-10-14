@@ -26,6 +26,8 @@ plan for its current scope.
 ## Code conventions
 
 - TypeScript strict (`astro/tsconfigs/strict`).
+- Formatting and line endings follow `.editorconfig` (2 spaces, LF, UTF-8,
+  trailing whitespace trimmed, final newline) and `.gitattributes`.
 - Biome formats code (ts, astro, json, css); Prettier formats yml/yaml; rumdl
   formats and lints md.
 - KISS: no abstractions, options, or features that were not asked for. No CSS
