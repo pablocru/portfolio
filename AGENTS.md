@@ -72,6 +72,10 @@ plan for its current scope.
 - Respect `minimumReleaseAge` in `pnpm-workspace.yaml` (supply-chain
   protection). If a version is blocked, choose an older one. Do not change
   allowances without asking.
+- Do not change `engineStrict`, `minimumReleaseAgeExclude`, or `overrides` in
+  `pnpm-workspace.yaml` without asking. When adding or upgrading dependencies,
+  review those entries and remove any that are no longer needed after
+  validation. Node and pnpm versions are declared in `package.json`.
 - Never print, log, or commit secrets. Use `.env` files and commit
   `.env.example` files with placeholders.
 - In GitHub Actions, use minimal `permissions` and pin actions as the existing
