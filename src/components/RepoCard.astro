@@ -21,20 +21,20 @@ const { name, description, language, tags, status, links } = Astro.props;
   {description !== "" && <p>{description}</p>}
   {language !== null && <p class="language">{language}</p>}
   {tags.length > 0 && (
-  <ul class="tags">
-    {tags.map((tag) => (
-      <li>{tag}</li>
-    ))}
-  </ul>
-)}
+    <ul class="tags">
+      {tags.map((tag) => (
+        <li>{tag}</li>
+      ))}
+    </ul>
+  )}
   {status === "archived" && <p>Archived</p>}
   <nav aria-label={`Links for ${name}`}>
     <ul>
       {links.map((link) => (
-  <li>
-    <a href={withBase(link.href)}>{link.label}</a>
-  </li>
-))}
+        <li>
+          <a href={withBase(link.href)}>{link.label}</a>
+        </li>
+      ))}
     </ul>
   </nav>
 </article>
