@@ -41,6 +41,8 @@ plan for its current scope.
 - Avoid duplicating facts that already have a source of truth; reference instead
   of repeating versions, scripts, or formatting rules already defined in
   `package.json`, tool configs, or workflows.
+- **When adding or changing a rule, audit the repository for related stale or
+  duplicated references and update them in the same change.**
 
 ## Git
 
