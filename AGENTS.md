@@ -58,6 +58,9 @@ plan for its current scope.
 - If a check fails, fix it in a new commit or amend only the commit you just
   made.
 - `main` uses squash merges, so the PR title is the final message.
+- Open PRs using `.github/pull_request_template.md` (`What`, `Why`,
+  `Validation`, `Notes`), written in English and describing the final diff
+  against `main`.
 - **Never push, open PRs, or merge unless explicitly asked.**
 
 ## Dependencies and security
