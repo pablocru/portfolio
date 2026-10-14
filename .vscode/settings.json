@@ -1,6 +1,10 @@
 {
-  "prettier.documentSelectors": ["**/*.astro"],
-  "[astro]": {
+  "editor.defaultFormatter": "biomejs.biome",
+  "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "[yml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cSpell.words": ["rumdl"]
 }

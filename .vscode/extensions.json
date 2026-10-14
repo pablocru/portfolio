@@ -4,11 +4,8 @@
     "biomejs.biome",
     "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
-    "formulahendry.auto-rename-tag",
-    "htmlhint.vscode-htmlhint",
     "rvben.rumdl",
     "streetsidesoftware.code-spell-checker-spanish",
     "streetsidesoftware.code-spell-checker"
-  ],
-  "unwantedRecommendations": []
+  ]
 }
