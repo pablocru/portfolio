@@ -26,8 +26,6 @@ shows both what I build and how I learn.
 
 ### Prerequisites
 
-#### Toolchain
-
 The toolchain is pinned in `package.json`: Node.js via `devEngines.runtime` and
 pnpm via `packageManager`. This keeps local and CI on the same versions.
 
