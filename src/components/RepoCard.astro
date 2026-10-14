@@ -1,0 +1,40 @@
+---
+import { withBase } from "../utils/url.util";
+
+interface Props {
+  name: string;
+  description: string;
+  language: string | null;
+  tags: string[];
+  status: "active" | "archived";
+  links: {
+    label: string;
+    href: string;
+  }[];
+}
+
+const { name, description, language, tags, status, links } = Astro.props;
+---
+
+<article class="card">
+  <h2>{name}</h2>
+  {description !== "" && <p>{description}</p>}
+  {language !== null && <p class="language">{language}</p>}
+  {tags.length > 0 && (
+  <ul class="tags">
+    {tags.map((tag) => (
+      <li>{tag}</li>
+    ))}
+  </ul>
+)}
+  {status === "archived" && <p>Archived</p>}
+  <nav aria-label={`Links for ${name}`}>
+    <ul>
+      {links.map((link) => (
+  <li>
+    <a href={withBase(link.href)}>{link.label}</a>
+  </li>
+))}
+    </ul>
+  </nav>
+</article>

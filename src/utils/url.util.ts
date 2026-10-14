@@ -1,3 +1,5 @@
+import { base } from "astro:config/client";
+
 export function toUrlOrNull(raw: string): URL | null {
   const value = raw.trim();
 
@@ -12,4 +14,14 @@ export function toUrlOrNull(raw: string): URL | null {
   } catch {
     return null;
   }
+}
+
+export function withBase(href: string): string {
+  if (!href.startsWith("/")) {
+    return href;
+  }
+
+  const normalizedBase = base.endsWith("/") ? base : `${base}/`;
+
+  return `${normalizedBase}${href.slice(1)}`;
 }
