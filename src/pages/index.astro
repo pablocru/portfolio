@@ -1,7 +1,90 @@
 ---
+import { getCollection } from "astro:content";
+import RepoCard from "../components/RepoCard.astro";
+import { Category, Tier } from "../constants";
 import Layout from "../layouts/Layout.astro";
+
+const repos = await getCollection("repos");
+
+function compareRepos(
+  left: (typeof repos)[number],
+  right: (typeof repos)[number],
+): number {
+  if (left.data.status !== right.data.status) {
+    return left.data.status === "active" ? -1 : 1;
+  }
+
+  return right.data.pushedAt.getTime() - left.data.pushedAt.getTime();
+}
+
+const featured = repos
+  .filter((repo) => repo.data.tier === Tier.Featured)
+  .sort(compareRepos);
+
+const projectRepos = repos
+  .filter((repo) => repo.data.tier === Tier.Project)
+  .sort(compareRepos);
+
+const labRepos = repos
+  .filter((repo) => repo.data.tier === Tier.Lab)
+  .sort(compareRepos);
+
+const projectGroups = Object.values(Category)
+  .map((category) => ({
+    category,
+    repos: projectRepos.filter((repo) => repo.data.category === category),
+  }))
+  .filter((group) => group.repos.length > 0);
 ---
 
 <Layout title="Home">
-  <main></main>
+  <main>
+    {featured.length > 0 && (
+      <section aria-labelledby="featured-heading">
+        <h2 id="featured-heading">Featured</h2>
+        {featured.map((repo) => (
+          <RepoCard
+            name={repo.data.name}
+            description={repo.data.description}
+            language={repo.data.language}
+            tags={repo.data.tags}
+            status={repo.data.status}
+            links={repo.data.links}
+          />
+        ))}
+      </section>
+    )}
+
+    {projectGroups.map((group) => (
+      <section aria-labelledby={`${group.category}-heading`}>
+        <h2 id={`${group.category}-heading`}>{group.category}</h2>
+        {group.repos.map((repo) => (
+          <RepoCard
+            name={repo.data.name}
+            description={repo.data.description}
+            language={repo.data.language}
+            tags={repo.data.tags}
+            status={repo.data.status}
+            links={repo.data.links}
+          />
+        ))}
+      </section>
+    ))}
+
+    {labRepos.length > 0 && (
+      <details>
+        <summary>Lab ({labRepos.length})</summary>
+        {labRepos.map((repo) => (
+          <RepoCard
+            name={repo.data.name}
+            description={repo.data.description}
+            language={repo.data.language}
+            tags={repo.data.tags}
+            status={repo.data.status}
+            links={repo.data.links}
+          />
+        ))}
+      </details>
+    )}
+  </main>
 </Layout>
