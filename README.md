@@ -17,22 +17,10 @@ shows both what I build and how I learn.
 
 ## Tech stack
 
-- Node.js environment:
-  - Node.js (pinned via `devEngines.runtime` in `package.json`)
-  - pnpm (pinned via `packageManager` in `package.json`)
-- Web framework
-  - [Astro](https://astro.build/) with Server Side Generation (SSG; version
-    pinned in `package.json`)
-  - TypeScript (version pinned in `package.json`)
-- Code quality:
-  - Biome for code quality checks and formatting
-  - Prettier for YAML formatting
-  - rumdl for Markdown linting and formatting
-  - Lefthook:
-    - pre-commit: format and lint
-- GitHub Actions:
-  - Quality gate: Biome, Prettier (YAML), rumdl and typecheck
-  - CI pipeline: quality gate, build and publish build artifact
+- Runtime and tooling versions are declared in `package.json`.
+- Web framework: [Astro](https://astro.build/) with SSG and TypeScript.
+- Quality tooling: Biome, Prettier (YAML), rumdl, and Lefthook.
+- Automation: GitHub Actions workflows in `.github/workflows`.
 
 ## How to start
 
