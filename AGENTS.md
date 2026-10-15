@@ -86,6 +86,9 @@ plan for its current scope.
 - `main` uses squash merges, so the PR title is the final message.
 - Open PRs following `.github/pull_request_template.md`; consult it for required
   sections and wording.
+- PR titles and bodies are rendered by GitHub: write them as normal prose and
+  never manually wrap or column-align them. Apply rumdl's width limit only to
+  Markdown files committed in the repository.
 - **Never push, open PRs, or merge unless explicitly asked.**
 
 ## GitHub
