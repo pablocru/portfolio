@@ -1,27 +1,16 @@
+import { GITHUB_TOKEN } from "astro:env/server";
+import { RequestError } from "@octokit/request-error";
 import { Octokit } from "@octokit/rest";
 import { USERNAME } from "../constants";
 import { mapRepo } from "../mappers/repo.mapper";
 import type { GhRepo, GhUserProfile, RepoEntry } from "../types/github.type";
 
-function rateLimited(error: unknown): boolean {
-  if (typeof error !== "object" || error === null) {
-    return false;
-  }
-
-  const status = "status" in error ? Number(error.status) : Number.NaN;
-  const response = "response" in error ? error.response : null;
-  const remaining =
-    typeof response === "object" && response !== null && "headers" in response
-      ? (response.headers as Record<string, string | undefined>)[
-          "x-ratelimit-remaining"
-        ]
-      : undefined;
-
-  return status === 403 && remaining === "0";
-}
-
 function wrapGithubError(error: unknown, action: string): Error {
-  if (rateLimited(error)) {
+  if (
+    error instanceof RequestError &&
+    error.status === 403 &&
+    error.response?.headers?.["x-ratelimit-remaining"] === "0"
+  ) {
     return new Error(
       "GitHub API rate limit reached. Try again later, or set GITHUB_TOKEN " +
         "before running the command: GITHUB_TOKEN=$(gh auth token) pnpm dev",
@@ -38,11 +27,9 @@ function wrapGithubError(error: unknown, action: string): Error {
 }
 
 function createOctokit(): Octokit {
-  const token = (
-    globalThis as { process?: { env?: Record<string, string | undefined> } }
-  ).process?.env?.GITHUB_TOKEN;
-
-  return token === undefined ? new Octokit() : new Octokit({ auth: token });
+  return GITHUB_TOKEN === undefined
+    ? new Octokit()
+    : new Octokit({ auth: GITHUB_TOKEN });
 }
 
 export async function getPortfolioRepos(): Promise<RepoEntry[]> {
