@@ -30,6 +30,8 @@ plan for its current scope.
   `.gitattributes`; consult them when needed.
 - Biome formats code (ts, astro, json, css); Prettier formats yml/yaml; rumdl
   formats and lints md.
+- The developer works on Linux and Windows: scripts must not rely on bash-only
+  syntax.
 - KISS: no abstractions, options, or features that were not asked for. No CSS
   frameworks unless asked. Never invent content (names, dates, links, images);
   ask the developer instead.
@@ -44,12 +46,29 @@ plan for its current scope.
 - **When adding or changing a rule, audit the repository for related stale or
   duplicated references and update them in the same change.**
 
+### Astro
+
+- Prefer native Astro mechanisms over custom solutions.
+- Environment variables: declare them in `env.schema` and import them from
+  `astro:env/*`; never read project variables from `process.env` or
+  `import.meta.env`.
+- `astro:env` and `import.meta.env` do not work inside `astro.config.mjs` (Astro
+  evaluates it before loading other files); declare the schema there and, if a
+  value is needed in the config, read it with Vite's `loadEnv`.
+- `site` and `base` live in `astro.config.mjs`; derive links from
+  `import.meta.env.BASE_URL` or `Astro.site`; never hardcode paths.
+- Data goes through content collections (loaders and schemas); images go through
+  Astro's asset pipeline.
+
 ## Git
 
 - **Branch `main` is readonly. Commits are forbidden there. Warn the
   developer.**
 - **Force push is forbidden to any branch, including feature branches, and
   history already pushed to origin must not be rewritten.**
+- Do not run commands that discard local work (`git reset --hard`, `git clean`,
+  `git restore` without `--staged`, `git checkout -- <path>`, `git branch -D`)
+  without asking.
 - New additions to the project require a new branch from an up-to-date `main`.
   Names: `feat/…`, `fix/…`, `ci/…`, `docs/…`, `chore/…`.
 - **Conventional Commits in English**: `type(scope): imperative summary`,
@@ -68,6 +87,20 @@ plan for its current scope.
 - Open PRs following `.github/pull_request_template.md`; consult it for required
   sections and wording.
 - **Never push, open PRs, or merge unless explicitly asked.**
+
+## GitHub
+
+- Prefer `gh` to inspect the remote (repos, PRs, runs, topics). If it is not
+  installed or authenticated, warn the developer that it improves agentic work;
+  do not work around it with raw API calls or tokens.
+- Read-only commands (`view`, `list`, `status`, `api` with GET) are allowed.
+- Commands that change remote state (create, edit, merge, close, comment,
+  `workflow run`, `api` with POST/PUT/PATCH) require approval: show the exact
+  command, use a native `--dry-run` if it exists, and wait for explicit
+  confirmation.
+- **Never delete anything on GitHub (repos, branches, tags, releases, secrets,
+  tokens) and never run `gh auth` or any token command. If a deletion seems
+  necessary, tell the developer and stop.**
 
 ## Dependencies and security
 
