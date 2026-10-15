@@ -87,8 +87,9 @@ plan for its current scope.
 - Open PRs following `.github/pull_request_template.md`; consult it for required
   sections and wording.
 - PR titles and bodies are rendered by GitHub: write them as normal prose and
-  never manually wrap or column-align them. Apply rumdl's width limit only to
-  Markdown files committed in the repository.
+  never manually wrap or column-align them. `rumdl`'s `MD013` line-width limit
+  (configured in `rumdl.toml`) applies only to Markdown files committed in the
+  repository.
 - **Never push, open PRs, or merge unless explicitly asked.**
 
 ## GitHub
