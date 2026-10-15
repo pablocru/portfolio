@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import Hero from "../components/Hero.astro";
 import RepoCard from "../components/RepoCard.astro";
-import { Category, Tier } from "../constants";
+import { CATEGORY_LABEL, Category, Tier } from "../constants";
 import Layout from "../layouts/Layout.astro";
 
 const repos = await getCollection("repos");
@@ -59,7 +59,9 @@ const projectGroups = Object.values(Category)
 
     {projectGroups.map((group) => (
       <section aria-labelledby={`${group.category}-heading`}>
-        <h2 id={`${group.category}-heading`}>{group.category}</h2>
+        <h2 id={`${group.category}-heading`}>
+          {CATEGORY_LABEL[group.category]}
+        </h2>
         {group.repos.map((repo) => (
           <RepoCard
             name={repo.data.name}
