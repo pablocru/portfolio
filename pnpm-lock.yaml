@@ -169,6 +169,9 @@ importers:
 
   .:
     dependencies:
+      '@octokit/request-error':
+        specifier: 7.1.2
+        version: 7.1.2
       '@octokit/rest':
         specifier: 22.0.1
         version: 22.0.1
