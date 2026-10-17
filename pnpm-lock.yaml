@@ -178,6 +178,9 @@ importers:
       astro:
         specifier: 7.3.8
         version: 7.3.8(esbuild@0.28.2)(yaml@2.9.0)
+      sharp:
+        specifier: 0.35.4
+        version: 0.35.4
     devDependencies:
       '@astrojs/check':
         specifier: 0.9.10
@@ -2510,8 +2513,7 @@ snapshots:
   '@esbuild/win32-x64@0.28.2':
     optional: true
 
-  '@img/colour@1.1.0':
-    optional: true
+  '@img/colour@1.1.0': {}
 
   '@img/sharp-darwin-arm64@0.35.4':
     optionalDependencies:
@@ -3595,7 +3597,6 @@ snapshots:
       '@img/sharp-win32-arm64': 0.35.4
       '@img/sharp-win32-ia32': 0.35.4
       '@img/sharp-win32-x64': 0.35.4
-    optional: true
 
   shiki@4.4.3:
     dependencies:
