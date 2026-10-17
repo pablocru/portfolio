@@ -31,6 +31,8 @@
     "quality:fix": "pnpm run \"/^quality:fix:/\" && pnpm type:check"
   },
   "dependencies": {
+    "@octokit/request-error": "7.1.2",
+    "@octokit/rest": "22.0.1",
     "astro": "7.3.8"
   },
   "devDependencies": {
