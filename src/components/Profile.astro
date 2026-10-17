@@ -1,0 +1,21 @@
+---
+import { Image } from "astro:assets";
+import type { Profile } from "../types/profile.type";
+
+interface Props {
+  profile: Profile;
+}
+
+const { profile } = Astro.props;
+---
+
+<Image
+  src={profile.avatarUrl}
+  alt={`Avatar of ${profile.name}`}
+  width={200}
+  height={200}
+/>
+
+<h1>{profile.name}</h1>
+
+{profile.bio !== null && <p>{profile.bio}</p>}
