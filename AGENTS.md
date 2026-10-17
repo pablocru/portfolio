@@ -8,8 +8,22 @@ same commit.
 
 This project is a static Astro site: the home page of everything published on
 GitHub Pages by `pablocru`. Code, content and commits are in **English**.
-Portfolio-specific functionality is tracked outside this file; see the active
-plan for its current scope.
+
+## Milestone specs
+
+- Specs live in `docs/plan/` and are versioned with the repository. Do not add
+  version suffixes to file names: Git history is the versioning. Do not keep
+  implementation plans in the repository; a spec defines _what_ to build, and
+  the implementer chooses _how_ following this file.
+- A spec contains context, user stories (`US-XXX.Y`), constraints with
+  acceptance criteria (`C-XXX.Y`), and verification.
+- Acceptance criteria state the observable outcome only; the procedure used to
+  check it belongs to verification.
+- Report the result per requirement ID as `PASS`, `FAIL`, or `NOT VERIFIED` with
+  evidence, together with the completion report described in "Working method".
+  Never report `PASS` for a criterion that was not checked, and never fake
+  inputs or mutate real data to make a check pass.
+- Do not weaken or omit a requirement to simplify the implementation.
 
 ## Commands
 
@@ -33,8 +47,9 @@ plan for its current scope.
 - The developer works on Linux and Windows: scripts must not rely on bash-only
   syntax.
 - KISS: no abstractions, options, or features that were not asked for. No CSS
-  frameworks unless asked. Never invent content (names, dates, links, images);
-  ask the developer instead.
+  resets, frameworks, or custom styles: use browser default styles unless a
+  milestone asks for styling. Never invent content (names, dates, links,
+  images); ask the developer instead.
 - When creating domain code, use the project layers (`src/types`, `src/mappers`,
   `src/services`, `src/utils`, `src/loaders`) with suffixes `.type.ts`,
   `.mapper.ts`, `.service.ts`, `.util.ts`.
@@ -49,6 +64,9 @@ plan for its current scope.
 ### Astro
 
 - Prefer native Astro mechanisms over custom solutions.
+- The site is static: resolve data at build time. Do not add client-side
+  JavaScript or runtime network requests unless a milestone requires it.
+- Keep the generator meta tag (`Astro.generator`) in every layout.
 - Environment variables: declare them in `env.schema` and import them from
   `astro:env/*`; never read project variables from `process.env` or
   `import.meta.env`.
@@ -59,6 +77,18 @@ plan for its current scope.
   `import.meta.env.BASE_URL` or `Astro.site`; never hardcode paths.
 - Data goes through content collections (loaders and schemas); images go through
   Astro's asset pipeline.
+
+### GitHub data
+
+- Read GitHub data with `@octokit/rest`; do not reach the API with native
+  `fetch`.
+- Type the payloads with the endpoint types `@octokit/rest` exposes
+  (`RestEndpointMethodTypes`) instead of declaring them by hand; hand-write only
+  the domain types the project maps to.
+- Handle API failures with `RequestError` from `@octokit/request-error` and
+  report which lookup failed.
+- Declare in `package.json` every octokit package imported directly, even when
+  it arrives as a transitive dependency.
 
 ## Git
 
