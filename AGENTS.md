@@ -75,7 +75,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   value is needed in the config, read it with Vite's `loadEnv`.
 - `site` and `base` live in `astro.config.mjs`; derive links from
   `import.meta.env.BASE_URL` or `Astro.site`; never hardcode paths.
-- Data goes through content collections (loaders and schemas); images go through
+- Repeated data goes through content collections (loaders and schemas); single
+  records are resolved directly from the service layer. Images go through
   Astro's asset pipeline.
 
 ### GitHub data
