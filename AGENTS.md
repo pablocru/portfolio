@@ -78,6 +78,18 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Data goes through content collections (loaders and schemas); images go through
   Astro's asset pipeline.
 
+### GitHub data
+
+- Read GitHub data with `@octokit/rest`; do not reach the API with native
+  `fetch`.
+- Type the payloads with the endpoint types `@octokit/rest` exposes
+  (`RestEndpointMethodTypes`) instead of declaring them by hand; hand-write only
+  the domain types the project maps to.
+- Handle API failures with `RequestError` from `@octokit/request-error` and
+  report which lookup failed.
+- Declare in `package.json` every octokit package imported directly, even when
+  it arrives as a transitive dependency.
+
 ## Git
 
 - **Branch `main` is readonly. Commits are forbidden there. Warn the
