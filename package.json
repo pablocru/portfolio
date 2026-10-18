@@ -18,6 +18,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "type:check": "astro check",
     "type:sync": "astro sync",
     "astro": "astro",
@@ -42,6 +44,7 @@
     "lefthook": "2.1.17",
     "prettier": "3.9.9",
     "rumdl": "0.2.78",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "5.0.5"
   }
 }
