@@ -20,6 +20,7 @@ shows both what I build and how I learn.
 - Runtime and tooling versions are declared in `package.json`.
 - Web framework: [Astro](https://astro.build/) with SSG and TypeScript.
 - Quality tooling: Biome, Prettier (YAML), rumdl, and Lefthook.
+- Testing: [Vitest](https://vitest.dev/).
 - Automation: GitHub Actions workflows in `.github/workflows`.
 
 ## How to start
