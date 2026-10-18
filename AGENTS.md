@@ -34,8 +34,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Ensure tooling with `mise install`; install dependencies with
   `pnpm safe-install` (frozen lockfile).
 - Run, build, and preview the project: `pnpm dev`, `pnpm build`, `pnpm preview`.
-- Quality: `pnpm quality:check` and `pnpm quality:fix`. These run Biome,
-  Prettier (yml/yaml), rumdl, and `pnpm type:check` (`astro check`).
+- Quality: `pnpm quality:check` and `pnpm quality:fix` run Biome, Prettier
+  (yml/yaml), rumdl, `astro check` and the test suite; `quality:fix` rewrites
+  the fixable files.
 - Type generation: after changes that affect generated/content types, run
   `pnpm type:sync` (`astro sync`).
 - `package.json` is the source of truth for available scripts.
@@ -94,6 +95,21 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Declare in `package.json` every octokit package imported directly, even when
   it arrives as a transitive dependency.
 
+## Testing
+
+- Tests are colocated with the code they cover, suffixed `.test.ts`, under
+  `src/`.
+- The suite is deterministic and offline: no test performs a network request or
+  reads credentials.
+- Run the suite with the `test` script declared in `package.json`.
+- Use the `test` commit scope.
+
+### Unit testing
+
+- Unit tests run under Vitest, declared as a dev dependency in `package.json`.
+- When a unit declares a collaborator, inject it instead of mocking the module
+  (for example, the Octokit client in the profile service).
+
 ## Git
 
 - **Branch `main` is readonly. Commits are forbidden there. Warn the
@@ -110,8 +126,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   when the _why_ is not obvious.
   - Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `ci`, `build`, `style`.
   - Scopes: `config`, `types`, `utils`, `mappers`, `services`, `loader`,
-    `content`, `ui`, `pages`, `ci`, `deps`, `docs`, `security`. It is optional
-    but recommended.
+    `content`, `ui`, `pages`, `ci`, `deps`, `docs`, `agents`, `security`,
+    `test`. It is optional but recommended.
 - Atomic commits: one logical change each, and every commit leaves the repo
   green (`pnpm quality:check`, plus build/preview as applicable).
 - The Lefthook pre-commit hook formats staged files. Never use `--no-verify`.
