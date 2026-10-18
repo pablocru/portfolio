@@ -35,3 +35,6 @@ jobs:
 
       - name: Type check with Astro
         run: pnpm astro check
+
+      - name: Test with Vitest
+        run: pnpm test

@@ -18,6 +18,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "type:check": "astro check",
     "type:sync": "astro sync",
     "astro": "astro",
@@ -27,8 +29,8 @@
     "quality:fix:biome": "biome check --write .",
     "quality:fix:prettier": "prettier --write \"**/*.{yml,yaml}\"",
     "quality:fix:rumdl": "rumdl fmt .",
-    "quality:check": "pnpm run \"/^quality:check:/\" && pnpm type:check",
-    "quality:fix": "pnpm run \"/^quality:fix:/\" && pnpm type:check"
+    "quality:check": "pnpm run \"/^quality:check:/\" && pnpm type:check && pnpm test",
+    "quality:fix": "pnpm run \"/^quality:fix:/\" && pnpm type:check && pnpm test"
   },
   "dependencies": {
     "@octokit/request-error": "7.1.2",
@@ -42,6 +44,7 @@
     "lefthook": "2.1.17",
     "prettier": "3.9.9",
     "rumdl": "0.2.78",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "5.0.5"
   }
 }

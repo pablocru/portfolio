@@ -4,11 +4,11 @@ import { GITHUB_USERNAME } from "../constants";
 import { mapProfile } from "../mappers/profile.mapper";
 import type { Profile } from "../types/profile.type";
 
-export async function getProfile(): Promise<Profile> {
-  const octokit = new Octokit();
-
+export async function getProfile(
+  client: Octokit = new Octokit(),
+): Promise<Profile> {
   try {
-    const { data } = await octokit.rest.users.getByUsername({
+    const { data } = await client.rest.users.getByUsername({
       username: GITHUB_USERNAME,
     });
 
