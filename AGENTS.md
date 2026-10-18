@@ -11,6 +11,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 
 ## Milestone specs
 
+- A milestone is required for new behavior, content, or data scope. Dependency
+  and security updates, documentation, and fixes that restore intended behavior
+  do not need a milestone.
 - Specs live in `docs/plan/` and are versioned with the repository. Do not add
   version suffixes to file names: Git history is the versioning. Do not keep
   implementation plans in the repository; a spec defines _what_ to build, and
@@ -107,8 +110,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   when the _why_ is not obvious.
   - Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `ci`, `build`, `style`.
   - Scopes: `config`, `types`, `utils`, `mappers`, `services`, `loader`,
-    `content`, `ui`, `pages`, `ci`, `deps`, `docs`. It is optional but
-    recommended.
+    `content`, `ui`, `pages`, `ci`, `deps`, `docs`, `security`. It is optional
+    but recommended.
 - Atomic commits: one logical change each, and every commit leaves the repo
   green (`pnpm quality:check`, plus build/preview as applicable).
 - The Lefthook pre-commit hook formats staged files. Never use `--no-verify`.
@@ -148,6 +151,17 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   - Review supply-chain exceptions when adding or upgrading dependencies; remove
     entries no longer needed after validation. Node and pnpm versions are
     declared in `package.json`.
+- Vulnerabilities:
+  - When Dependabot opens a fix for an alert, review and merge that PR as is,
+    keeping its `dependabot/…` branch and its `chore(deps)` message.
+  - When Dependabot cannot handle it, use a `fix/deps-<package>-ghsa-<id>`
+    branch with a `fix(deps): update <package> to <patched version>` commit;
+    update a pinned `overrides` entry in the same change when it is affected.
+  - Describe the advisory in the commit body (advisory id, severity, why the
+    version fixes it) and confirm it no longer appears in `pnpm audit`, then run
+    `pnpm quality:check` and `pnpm build`.
+  - For supply-chain hardening that is not tied to an advisory, use the
+    `chore(security)` scope.
 - Never print, log, or commit secrets. Use `.env` files and commit
   `.env.example` files with placeholders.
 - In GitHub Actions, use minimal `permissions` and pin actions as the existing
