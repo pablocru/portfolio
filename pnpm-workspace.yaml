@@ -4,5 +4,3 @@ allowBuilds:
   esbuild: true
   lefthook: true
   sharp: true
-overrides:
-  sharp: 0.35.5
