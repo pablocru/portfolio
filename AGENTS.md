@@ -133,7 +133,11 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - The Lefthook pre-commit hook formats staged files. Never use `--no-verify`.
 - If a check fails, fix it in a new commit or amend only the commit you just
   made.
-- `main` uses squash merges, so the PR title is the final message.
+- `main` uses squash merges: the final commit message is the PR title with the
+  pull request reference appended (`(#<number>)`) and the PR's `## Why` section
+  as the body. Never pass `--subject` to `gh pr merge`: it drops the reference.
+- The PR title is the commit that lands on `main`: write it as a Conventional
+  Commit and decide it before opening the PR.
 - Open PRs following `.github/pull_request_template.md`; consult it for required
   sections and wording.
 - PR titles and bodies are rendered by GitHub: write them as normal prose and
