@@ -177,9 +177,11 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   - When Dependabot cannot handle it, use a `fix/deps-<package>-ghsa-<id>`
     branch with a `fix(deps): update <package> to <patched version>` commit;
     update a pinned `overrides` entry in the same change when it is affected.
-  - Describe the advisory in the commit body (advisory id, severity, why the
-    version fixes it) and confirm it no longer appears in `pnpm audit`, then run
-    `pnpm quality:check` and `pnpm build`.
+  - When one audit pass leaves several packages vulnerable, fix them in a single
+    `fix/deps-audit` branch, one such commit per package.
+  - Describe every advisory in the PR body (id, severity, why the version fixes
+    it); squash keeps the body, not the branch commits. Confirm they no longer
+    appear in `pnpm audit`, then run `pnpm quality:check` and `pnpm build`.
   - For supply-chain hardening that is not tied to an advisory, use the
     `chore(security)` scope.
 - Never print, log, or commit secrets. Use `.env` files and commit
