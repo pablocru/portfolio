@@ -1,11 +1,13 @@
 ---
-import Welcome from "../components/Welcome.astro";
+import Profile from "../components/Profile.astro";
 import Layout from "../layouts/Layout.astro";
+import { getProfile } from "../services/github.service";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const profile = await getProfile();
 ---
 
-<Layout>
-  <Welcome />
+<Layout title={`Portfolio of ${profile.name}`}>
+  <main>
+    <Profile profile={profile} />
+  </main>
 </Layout>
