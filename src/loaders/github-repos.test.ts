@@ -13,7 +13,13 @@ const repo: Repo = {
 };
 
 function createLoadContext() {
-  const store = { clear: vi.fn(), set: vi.fn() };
+  const entries = new Map<string, Repo>();
+  const store = {
+    clear: () => entries.clear(),
+    set: vi.fn((entry: { id: string; data: Repo }) =>
+      entries.set(entry.id, entry.data),
+    ),
+  };
   const logger = { warn: vi.fn() };
   const context = {
     store,
@@ -22,16 +28,17 @@ function createLoadContext() {
     generateDigest: () => "digest",
   } as unknown as LoaderContext;
 
-  return { context, store, logger };
+  return { context, entries, store, logger };
 }
 
 describe("githubReposLoader", () => {
-  test("writes one entry per repository", async () => {
-    const { context, store, logger } = createLoadContext();
+  test("replaces the entries of a previous listing", async () => {
+    const { context, entries, store, logger } = createLoadContext();
+    entries.set("removed", { ...repo, name: "removed" });
 
     await githubReposLoader(async () => [repo]).load(context);
 
-    expect(store.clear).toHaveBeenCalledOnce();
+    expect([...entries.keys()]).toEqual(["portfolio"]);
     expect(store.set).toHaveBeenCalledWith({
       id: "portfolio",
       data: repo,
@@ -41,10 +48,12 @@ describe("githubReposLoader", () => {
   });
 
   test("warns when no repository qualifies", async () => {
-    const { context, store, logger } = createLoadContext();
+    const { context, entries, store, logger } = createLoadContext();
+    entries.set("removed", { ...repo, name: "removed" });
 
     await githubReposLoader(async () => []).load(context);
 
+    expect(entries.size).toBe(0);
     expect(store.set).not.toHaveBeenCalled();
     expect(logger.warn).toHaveBeenCalledWith(
       expect.stringContaining(PORTFOLIO_TOPIC),
