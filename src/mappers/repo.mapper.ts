@@ -14,8 +14,8 @@ type GitHubRepo = Pick<
 >;
 
 /**
- * Tells whether a repository belongs to the portfolio: only public
- * repositories the owner tagged with the portfolio topic are published.
+ * Private repositories are rejected on purpose: the site is public, so
+ * everything it builds is exposed.
  */
 export function isPortfolioRepo(repo: GitHubRepo): boolean {
   return !repo.private && (repo.topics ?? []).includes(PORTFOLIO_TOPIC);
