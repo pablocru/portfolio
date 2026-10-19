@@ -2,7 +2,8 @@
 
 Permanent instructions for coding agents working in this repository. Keep this
 file accurate: if you change tooling, scripts or conventions, update it in the
-same commit.
+same commit. State the outcome a rule protects, not the implementation that
+achieves it: a rule that prescribes code belongs to the change that needs it.
 
 ## Project
 
@@ -50,16 +51,19 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   formats and lints md.
 - The developer works on Linux and Windows: scripts must not rely on bash-only
   syntax.
-- KISS: no abstractions, options, or features that were not asked for. No CSS
-  resets, frameworks, or custom styles: use browser default styles unless a
-  milestone asks for styling. Never invent content (names, dates, links,
-  images); ask the developer instead.
+- KISS: make the smallest change that meets the acceptance criteria. Do not add
+  options, flags or extension points that nothing requires, and no CSS resets,
+  frameworks or custom styles: use browser default styles unless a milestone
+  asks for styling. Never invent content (names, dates, links, images); ask the
+  developer instead.
 - When creating domain code, use the project layers (`src/types`, `src/mappers`,
   `src/services`, `src/utils`, `src/loaders`, `src/clients`) with suffixes
   `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`.
-- Wrap third-party clients in `src/clients` (composition: auth, plugins) and
-  inject them into services, which stay pure; only the Astro layer imports the
-  wrapper, because it may read the environment.
+- Build third-party clients in `src/clients` (composition: auth, plugins) and
+  pass them to services and loaders, which take their collaborators as
+  parameters and read no environment. Only the Astro layer (`src/pages`,
+  `src/content.config.ts`, layouts) imports the wrapper, because it may read the
+  environment.
 - Closed vocabularies are plain TypeScript `enum`s, never `const enum`, defined
   in a shared constants module (e.g. `src/constants.ts`).
 - Avoid duplicating facts that already have a source of truth; reference instead
@@ -111,11 +115,12 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 
 - Unit tests run under Vitest, declared as a dev dependency in `package.json`.
 - When a unit declares a collaborator, inject it instead of mocking the module
-  (for example, the Octokit client in the profile service).
-- Name fixtures after the data they hold (`githubRepo`, not `published`), so the
-  same object keeps one name across test files. Keep each fixture local to its
-  test file and share it only when a third file needs it, as a builder that
-  takes overrides.
+  (for example, the Octokit client in the profile service, or the repository
+  source in the content loader). Inject the narrowest collaborator the unit
+  uses: a module that imports `astro:env` cannot be imported by the suite.
+- Give a fixture the name of the data it holds (`githubRepo`, not `published`),
+  and keep that name for the same object across test files. Share a fixture when
+  several tests need it.
 
 ## Git
 
@@ -136,7 +141,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
     `content`, `ui`, `pages`, `clients`, `ci`, `deps`, `docs`, `agents`,
     `security`, `test`. It is optional but recommended.
 - Atomic commits: one logical change each, and every commit leaves the repo
-  green (`pnpm quality:check`, plus build/preview as applicable).
+  green (`pnpm quality:check`, which queries the public GitHub API, plus
+  `pnpm build` when the change touches the site or its data pipeline).
 - The Lefthook pre-commit hook formats staged files. Never use `--no-verify`.
 - If a check fails, fix it in a new commit or amend only the commit you just
   made.
