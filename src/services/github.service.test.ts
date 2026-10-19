@@ -3,7 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 import { GITHUB_USERNAME, PORTFOLIO_TOPIC } from "../constants";
 import { getProfile, getRepos } from "./github.service";
 
-const published = {
+const githubRepo = {
   name: "portfolio",
   description: "A window to my projects",
   language: "TypeScript",
@@ -30,9 +30,9 @@ describe("getRepos", () => {
   test("lists only the public repositories tagged for the portfolio", async () => {
     const client = new Octokit();
     vi.spyOn(client, "paginate").mockResolvedValue([
-      published,
-      { ...published, name: "hidden", topics: ["astro"] },
-      { ...published, name: "secret", private: true },
+      githubRepo,
+      { ...githubRepo, name: "hidden", topics: ["astro"] },
+      { ...githubRepo, name: "secret", private: true },
     ]);
 
     await expect(getRepos(client)).resolves.toEqual([
