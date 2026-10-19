@@ -13,14 +13,14 @@ without changing the selection rule or the loader.
 
 ## User stories
 
-| ID       | Role      | Action                                      | Benefit                                    | Acceptance criteria                                                                                                                                                                                                       |
-| -------- | --------- | ------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| US-003.1 | Visitor   | See the repositories the owner publishes    | Discover the owner's work                  | The page renders one entry per public repository of `pablocru` whose topics include `pf-show`, and no entry for any other repository                                                                                      |
-| US-003.2 | Visitor   | Recognize each repository                   | Decide which one to open                   | Every entry renders the repository name, its description when the API reports one, its primary language when the API reports one, and a link to the repository page on GitHub                                             |
-| US-003.3 | Visitor   | Spot repositories that are no longer active | Judge whether to rely on them              | An entry whose repository is archived on GitHub is marked as archived; an entry whose repository is not archived carries no such mark                                                                                     |
-| US-003.4 | Visitor   | Understand an empty portfolio               | Not read the page as broken                | When no repository qualifies, the page renders a message stating that no repository is published yet, instead of an empty list                                                                                            |
-| US-003.5 | Developer | Build the site without credentials          | Work from a clean checkout                 | `pnpm build` completes without `GITHUB_TOKEN` while the public GitHub API is reachable                                                                                                                                    |
-| US-003.6 | Developer | Trust the repository pipeline               | Change the selection or the mapping safely | The selection rules (public repository, `pf-show` topic), the field mapping, the failed listing message and the loader (one entry per repository, warning when none qualifies) are covered by unit tests that run offline |
+| ID       | Role      | Action                                      | Benefit                                    | Acceptance criteria                                                                                                                                                                                                                                             |
+| -------- | --------- | ------------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| US-003.1 | Visitor   | See the repositories the owner publishes    | Discover the owner's work                  | The page renders one entry per public repository of `pablocru` whose topics include `pf-show`, and no entry for any other repository                                                                                                                            |
+| US-003.2 | Visitor   | Recognize each repository                   | Decide which one to open                   | Every entry renders the repository name, its description when the API reports one, its primary language when the API reports one, and a link to the repository page on GitHub                                                                                   |
+| US-003.3 | Visitor   | Spot repositories that are no longer active | Judge whether to rely on them              | An entry whose repository is archived on GitHub is marked as archived; an entry whose repository is not archived carries no such mark                                                                                                                           |
+| US-003.4 | Visitor   | Understand an empty portfolio               | Not read the page as broken                | When no repository qualifies, the page renders a message stating that no repository is published yet, instead of an empty list                                                                                                                                  |
+| US-003.5 | Developer | Build the site without credentials          | Work from a clean checkout                 | `pnpm build` completes without `GITHUB_TOKEN` while the public GitHub API is reachable                                                                                                                                                                          |
+| US-003.6 | Developer | Trust the repository pipeline               | Change the selection or the mapping safely | The selection rules (public repository, `pf-show` topic), the field mapping, the failed listing message and the loader (one entry per repository, nothing left from a previous listing, warning when none qualifies) are covered by unit tests that run offline |
 
 ## Constraints
 
@@ -66,8 +66,10 @@ requirement ID as described in `AGENTS.md`.
   repository tagged with `pf-show`; without one, the positive case is reported
   as `NOT VERIFIED`.
 - US-003.6: `pnpm test` covers the selection, the field mapping, the failed
-  listing and the loader (one entry per repository, warning when none
-  qualifies); the loader test fakes the Astro context, so it runs offline.
+  listing and the loader. The loader test seeds an entry left by a previous
+  listing, loads the current repositories against a fake store and asserts that
+  only those remain; it also asserts the warning when none qualifies, and the
+  fake context keeps the test offline.
 - C-003.4: confirm `dist/index.html` contains no `<script>` element added by
   this milestone and no repository data requested at runtime.
 - C-003.6: build while no public repository carries `pf-show` and confirm both
