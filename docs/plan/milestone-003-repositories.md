@@ -7,8 +7,9 @@ repositories the owner publishes, so the page becomes a window to their work.
 Repositories are resolved at build time and reach the page through a content
 collection: the home page reads a `repos` collection fed by a custom loader on
 top of the GitHub API. The owner decides which repositories are published by
-tagging them with the `pf-show` topic, so the same data can be classified and
-grouped by later milestones without touching this pipeline.
+tagging them with the `pf-show` topic, so later milestones can classify and
+group the same repositories by extending the mapping and the collection schema,
+without changing the selection rule or the loader.
 
 ## User stories
 
