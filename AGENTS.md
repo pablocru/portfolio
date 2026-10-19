@@ -116,8 +116,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Unit tests run under Vitest, declared as a dev dependency in `package.json`.
 - When a unit declares a collaborator, inject it instead of mocking the module
   (for example, the Octokit client in the profile service, or the repository
-  source in the content loader). Inject the narrowest collaborator the unit
-  uses: a module that imports `astro:env` cannot be imported by the suite.
+  source in the content loader). A unit does not build its own collaborator,
+  which is why a unit that imports `astro:env` cannot be tested.
 - Give a fixture the name of the data it holds (`githubRepo`, not `published`),
   and keep that name for the same object across test files. Share a fixture when
   several tests need it.
