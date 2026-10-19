@@ -1,6 +1,5 @@
-import { GITHUB_TOKEN } from "astro:env/server";
-import { Octokit } from "@octokit/rest";
 import type { Loader } from "astro/loaders";
+import { createGitHubClient } from "../clients/github.client";
 import { GITHUB_USERNAME, PORTFOLIO_TOPIC } from "../constants";
 import { getRepos } from "../services/github.service";
 
@@ -10,9 +9,7 @@ export function githubReposLoader(): Loader {
     load: async ({ store, logger, parseData, generateDigest }) => {
       store.clear();
 
-      // The client is built here and not in the service so the service stays
-      // importable by the offline tests: `astro:env` does not resolve there.
-      const repos = await getRepos(new Octokit({ auth: GITHUB_TOKEN }));
+      const repos = await getRepos(createGitHubClient());
 
       for (const repo of repos) {
         const data = await parseData({ id: repo.name, data: repo });

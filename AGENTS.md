@@ -55,8 +55,11 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   milestone asks for styling. Never invent content (names, dates, links,
   images); ask the developer instead.
 - When creating domain code, use the project layers (`src/types`, `src/mappers`,
-  `src/services`, `src/utils`, `src/loaders`) with suffixes `.type.ts`,
-  `.mapper.ts`, `.service.ts`, `.util.ts`.
+  `src/services`, `src/utils`, `src/loaders`, `src/clients`) with suffixes
+  `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`.
+- Wrap third-party clients in `src/clients` (composition: auth, plugins) and
+  inject them into services, which stay pure; only the Astro layer imports the
+  wrapper, because it may read the environment.
 - Closed vocabularies are plain TypeScript `enum`s, never `const enum`, defined
   in a shared constants module (e.g. `src/constants.ts`).
 - Avoid duplicating facts that already have a source of truth; reference instead
@@ -126,8 +129,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   when the _why_ is not obvious.
   - Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `ci`, `build`, `style`.
   - Scopes: `config`, `types`, `utils`, `mappers`, `services`, `loader`,
-    `content`, `ui`, `pages`, `ci`, `deps`, `docs`, `agents`, `security`,
-    `test`. It is optional but recommended.
+    `content`, `ui`, `pages`, `clients`, `ci`, `deps`, `docs`, `agents`,
+    `security`, `test`. It is optional but recommended.
 - Atomic commits: one logical change each, and every commit leaves the repo
   green (`pnpm quality:check`, plus build/preview as applicable).
 - The Lefthook pre-commit hook formats staged files. Never use `--no-verify`.

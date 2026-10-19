@@ -1,11 +1,13 @@
 ---
 import { getCollection } from "astro:content";
+import { createGitHubClient } from "../clients/github.client";
 import Profile from "../components/Profile.astro";
 import RepoCard from "../components/RepoCard.astro";
 import Layout from "../layouts/Layout.astro";
 import { getProfile } from "../services/github.service";
 
-const profile = await getProfile();
+const client = createGitHubClient();
+const profile = await getProfile(client);
 const repos = await getCollection("repos");
 ---
 

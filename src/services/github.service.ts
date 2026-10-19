@@ -1,5 +1,5 @@
 import { RequestError } from "@octokit/request-error";
-import { Octokit } from "@octokit/rest";
+import type { Octokit } from "@octokit/rest";
 import { GITHUB_USERNAME } from "../constants";
 import { mapProfile } from "../mappers/profile.mapper";
 import { isPortfolioRepo, mapRepo } from "../mappers/repo.mapper";
@@ -12,9 +12,7 @@ function describeError(error: unknown): string {
     : "an unknown error";
 }
 
-export async function getProfile(
-  client: Octokit = new Octokit(),
-): Promise<Profile> {
+export async function getProfile(client: Octokit): Promise<Profile> {
   try {
     const { data } = await client.rest.users.getByUsername({
       username: GITHUB_USERNAME,
@@ -29,9 +27,7 @@ export async function getProfile(
   }
 }
 
-export async function getRepos(
-  client: Octokit = new Octokit(),
-): Promise<Repo[]> {
+export async function getRepos(client: Octokit): Promise<Repo[]> {
   try {
     const repositories = await client.paginate(client.rest.repos.listForUser, {
       username: GITHUB_USERNAME,
