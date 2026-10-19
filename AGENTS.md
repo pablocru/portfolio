@@ -3,12 +3,23 @@
 Permanent instructions for coding agents working in this repository. Keep this
 file accurate: if you change tooling, scripts or conventions, update it in the
 same commit. State the outcome a rule protects, not the implementation that
-achieves it: a rule that prescribes code belongs to the change that needs it.
+achieves it.
 
 ## Project
 
 This project is a static Astro site: the home page of everything published on
 GitHub Pages by `pablocru`. Code, content and commits are in **English**.
+
+## Where each rule lives
+
+- `AGENTS.md`: invariants (what must always be true), policy (what is forbidden)
+  and boundaries (where code lives and what may import what). A rule belongs
+  here when a behavior-preserving refactor cannot falsify it; otherwise it is
+  implementation.
+- `docs/plan/`: what a milestone delivers and how it is checked. It defines the
+  outcome, not the technique.
+- Code and tests: how the outcome is built and the proof that it holds. A rule
+  that dictates a technique belongs to the change that needs it.
 
 ## Milestone specs
 
@@ -17,8 +28,7 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   do not need a milestone.
 - Specs live in `docs/plan/` and are versioned with the repository. Do not add
   version suffixes to file names: Git history is the versioning. Do not keep
-  implementation plans in the repository; a spec defines _what_ to build, and
-  the implementer chooses _how_ following this file.
+  implementation plans in the repository.
 - A spec contains context, user stories (`US-XXX.Y`), constraints with
   acceptance criteria (`C-XXX.Y`), and verification.
 - Acceptance criteria state the observable outcome only; the procedure used to
