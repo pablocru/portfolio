@@ -112,6 +112,10 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Unit tests run under Vitest, declared as a dev dependency in `package.json`.
 - When a unit declares a collaborator, inject it instead of mocking the module
   (for example, the Octokit client in the profile service).
+- Name fixtures after the data they hold (`githubRepo`, not `published`), so the
+  same object keeps one name across test files. Keep each fixture local to its
+  test file and share it only when a third file needs it, as a builder that
+  takes overrides.
 
 ## Git
 
