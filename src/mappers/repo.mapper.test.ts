@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import { PORTFOLIO_TOPIC } from "../constants";
 import { isPortfolioRepo, mapRepo } from "./repo.mapper";
 
-const repo = {
+const githubRepo = {
   name: "portfolio",
   description: "A window to my projects",
   language: "TypeScript",
@@ -14,25 +14,25 @@ const repo = {
 
 describe("isPortfolioRepo", () => {
   test("accepts a public repository tagged for the portfolio", () => {
-    expect(isPortfolioRepo(repo)).toBe(true);
+    expect(isPortfolioRepo(githubRepo)).toBe(true);
   });
 
   test("rejects a repository without the portfolio topic", () => {
-    expect(isPortfolioRepo({ ...repo, topics: ["astro"] })).toBe(false);
+    expect(isPortfolioRepo({ ...githubRepo, topics: ["astro"] })).toBe(false);
   });
 
   test("rejects a repository without topics", () => {
-    expect(isPortfolioRepo({ ...repo, topics: undefined })).toBe(false);
+    expect(isPortfolioRepo({ ...githubRepo, topics: undefined })).toBe(false);
   });
 
   test("rejects a private repository", () => {
-    expect(isPortfolioRepo({ ...repo, private: true })).toBe(false);
+    expect(isPortfolioRepo({ ...githubRepo, private: true })).toBe(false);
   });
 });
 
 describe("mapRepo", () => {
   test("maps the repository fields", () => {
-    expect(mapRepo(repo)).toEqual({
+    expect(mapRepo(githubRepo)).toEqual({
       name: "portfolio",
       description: "A window to my projects",
       language: "TypeScript",
@@ -42,23 +42,23 @@ describe("mapRepo", () => {
   });
 
   test("keeps the trimmed description", () => {
-    expect(mapRepo({ ...repo, description: "  A window  " }).description).toBe(
-      "A window",
-    );
+    expect(
+      mapRepo({ ...githubRepo, description: "  A window  " }).description,
+    ).toBe("A window");
   });
 
   test.each([null, "", "   "])(
     "drops the description when it is %j",
     (description) => {
-      expect(mapRepo({ ...repo, description }).description).toBeNull();
+      expect(mapRepo({ ...githubRepo, description }).description).toBeNull();
     },
   );
 
   test("maps a repository without a language", () => {
-    expect(mapRepo({ ...repo, language: null }).language).toBeNull();
+    expect(mapRepo({ ...githubRepo, language: null }).language).toBeNull();
   });
 
   test("maps an archived repository", () => {
-    expect(mapRepo({ ...repo, archived: true }).archived).toBe(true);
+    expect(mapRepo({ ...githubRepo, archived: true }).archived).toBe(true);
   });
 });
