@@ -1,0 +1,16 @@
+---
+import type { Repo } from "../types/repo.type";
+
+interface Props {
+  repo: Repo;
+}
+
+const { repo } = Astro.props;
+---
+
+<article>
+  <h2><a href={repo.url}>{repo.name}</a></h2>
+  {repo.description !== null && <p>{repo.description}</p>}
+  {repo.language !== null && <p>{repo.language}</p>}
+  {repo.archived && <p>Archived</p>}
+</article>

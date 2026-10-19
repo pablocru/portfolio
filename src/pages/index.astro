@@ -1,13 +1,20 @@
 ---
+import { getCollection } from "astro:content";
 import Profile from "../components/Profile.astro";
+import RepoCard from "../components/RepoCard.astro";
 import Layout from "../layouts/Layout.astro";
 import { getProfile } from "../services/github.service";
 
 const profile = await getProfile();
+const repos = await getCollection("repos");
 ---
 
 <Layout title={`Portfolio of ${profile.name}`}>
   <main>
     <Profile profile={profile} />
+
+    {repos.length === 0 && <p>No repositories are published yet.</p>}
+
+    {repos.map((repo) => <RepoCard repo={repo.data} />)}
   </main>
 </Layout>
