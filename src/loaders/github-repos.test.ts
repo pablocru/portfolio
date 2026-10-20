@@ -1,7 +1,7 @@
 import type { LoaderContext } from "astro/loaders";
 import { describe, expect, test, vi } from "vitest";
-import { PORTFOLIO_OPT_IN_TOPIC } from "../constants";
-import type { Repo } from "../types/repo.type";
+import { PORTFOLIO_OPT_IN_TOPIC, RepoCategory, RepoTier } from "../constants";
+import type { Repo, RepoListing } from "../types/repo.type";
 import { githubReposLoader } from "./github-repos";
 
 const repo: Repo = {
@@ -10,6 +10,9 @@ const repo: Repo = {
   language: "TypeScript",
   url: "https://github.com/pablocru/portfolio",
   archived: false,
+  pushedAt: "2026-10-20T09:00:00Z",
+  category: RepoCategory.Web,
+  tier: RepoTier.Project,
 };
 
 function createLoadContext() {
@@ -31,12 +34,16 @@ function createLoadContext() {
   return { context, entries, store, logger };
 }
 
+function listing(overrides: Partial<RepoListing> = {}): RepoListing {
+  return { repos: [repo], warnings: [], ...overrides };
+}
+
 describe("githubReposLoader", () => {
   test("replaces the entries of a previous listing", async () => {
     const { context, entries, store, logger } = createLoadContext();
     entries.set("removed", { ...repo, name: "removed" });
 
-    await githubReposLoader(async () => [repo]).load(context);
+    await githubReposLoader(async () => listing()).load(context);
 
     expect([...entries.keys()]).toEqual(["portfolio"]);
     expect(store.set).toHaveBeenCalledWith({
@@ -47,11 +54,22 @@ describe("githubReposLoader", () => {
     expect(logger.warn).not.toHaveBeenCalled();
   });
 
+  test("forwards the warnings of the listing", async () => {
+    const { context, logger } = createLoadContext();
+    const warning = 'Repository "secret" carries pf-show but is private.';
+
+    await githubReposLoader(async () => listing({ warnings: [warning] })).load(
+      context,
+    );
+
+    expect(logger.warn).toHaveBeenCalledWith(warning);
+  });
+
   test("warns when no repository qualifies", async () => {
     const { context, entries, store, logger } = createLoadContext();
     entries.set("removed", { ...repo, name: "removed" });
 
-    await githubReposLoader(async () => []).load(context);
+    await githubReposLoader(async () => listing({ repos: [] })).load(context);
 
     expect(entries.size).toBe(0);
     expect(store.set).not.toHaveBeenCalled();

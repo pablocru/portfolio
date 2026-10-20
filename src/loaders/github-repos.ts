@@ -1,14 +1,20 @@
 import type { Loader } from "astro/loaders";
 import { GITHUB_USERNAME, PORTFOLIO_OPT_IN_TOPIC } from "../constants";
-import type { Repo } from "../types/repo.type";
+import type { RepoListing } from "../types/repo.type";
 
-export function githubReposLoader(listRepos: () => Promise<Repo[]>): Loader {
+export function githubReposLoader(
+  listRepos: () => Promise<RepoListing>,
+): Loader {
   return {
     name: "github-repos",
     load: async ({ store, logger, parseData, generateDigest }) => {
       store.clear();
 
-      const repos = await listRepos();
+      const { repos, warnings } = await listRepos();
+
+      for (const warning of warnings) {
+        logger.warn(warning);
+      }
 
       for (const repo of repos) {
         const data = await parseData({ id: repo.name, data: repo });

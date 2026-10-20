@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { PORTFOLIO_OPT_IN_TOPIC } from "../constants";
-import { isPublishedRepo, mapRepo } from "./repo.mapper";
+import { PORTFOLIO_OPT_IN_TOPIC, RepoCategory, RepoTier } from "../constants";
+import { classifyRepo, isPublishedRepo } from "./repo.mapper";
 
 const githubRepo = {
   name: "portfolio",
@@ -9,7 +9,8 @@ const githubRepo = {
   html_url: "https://github.com/pablocru/portfolio",
   archived: false,
   private: false,
-  topics: [PORTFOLIO_OPT_IN_TOPIC],
+  pushed_at: "2026-10-20T09:00:00Z",
+  topics: [PORTFOLIO_OPT_IN_TOPIC, "pf-cat-web"],
 };
 
 describe("isPublishedRepo", () => {
@@ -30,35 +31,157 @@ describe("isPublishedRepo", () => {
   });
 });
 
-describe("mapRepo", () => {
-  test("maps the repository fields", () => {
-    expect(mapRepo(githubRepo)).toEqual({
-      name: "portfolio",
-      description: "A window to my projects",
-      language: "TypeScript",
-      url: "https://github.com/pablocru/portfolio",
-      archived: false,
+describe("classifyRepo", () => {
+  test("maps a published repository with its classification", () => {
+    expect(classifyRepo(githubRepo)).toEqual({
+      kind: "published",
+      repo: {
+        name: "portfolio",
+        description: "A window to my projects",
+        language: "TypeScript",
+        url: "https://github.com/pablocru/portfolio",
+        archived: false,
+        pushedAt: "2026-10-20T09:00:00Z",
+        category: RepoCategory.Web,
+        tier: RepoTier.Project,
+      },
     });
   });
 
   test("keeps the trimmed description", () => {
-    expect(
-      mapRepo({ ...githubRepo, description: "  A window  " }).description,
-    ).toBe("A window");
+    const result = classifyRepo({
+      ...githubRepo,
+      description: "  A window  ",
+    });
+
+    expect(result).toMatchObject({
+      repo: { description: "A window" },
+    });
   });
 
   test.each([null, "", "   "])(
     "drops the description when it is %j",
     (description) => {
-      expect(mapRepo({ ...githubRepo, description }).description).toBeNull();
+      expect(classifyRepo({ ...githubRepo, description })).toMatchObject({
+        repo: { description: null },
+      });
     },
   );
 
   test("maps a repository without a language", () => {
-    expect(mapRepo({ ...githubRepo, language: null }).language).toBeNull();
+    expect(classifyRepo({ ...githubRepo, language: null })).toMatchObject({
+      repo: { language: null },
+    });
   });
 
   test("maps an archived repository", () => {
-    expect(mapRepo({ ...githubRepo, archived: true }).archived).toBe(true);
+    expect(classifyRepo({ ...githubRepo, archived: true })).toMatchObject({
+      repo: { archived: true },
+    });
+  });
+
+  test("maps a repository without a push date", () => {
+    expect(classifyRepo({ ...githubRepo, pushed_at: null })).toMatchObject({
+      repo: { pushedAt: null },
+    });
+  });
+
+  test("reads a featured tier", () => {
+    const result = classifyRepo({
+      ...githubRepo,
+      topics: [...githubRepo.topics, "pf-tier-featured"],
+    });
+
+    expect(result).toMatchObject({ repo: { tier: RepoTier.Featured } });
+  });
+
+  test("treats an explicit project tier as the default", () => {
+    const implicit = classifyRepo(githubRepo);
+    const explicit = classifyRepo({
+      ...githubRepo,
+      topics: [...githubRepo.topics, "pf-tier-project"],
+    });
+
+    expect(explicit).toEqual(implicit);
+  });
+
+  test("rejects two tier topics", () => {
+    expect(() =>
+      classifyRepo({
+        ...githubRepo,
+        topics: [...githubRepo.topics, "pf-tier-featured", "pf-tier-lab"],
+      }),
+    ).toThrow(
+      'Repository "portfolio" carries more than one tier topic: pf-tier-featured, pf-tier-lab',
+    );
+  });
+
+  test("rejects a published repository without a category", () => {
+    expect(() =>
+      classifyRepo({ ...githubRepo, topics: [PORTFOLIO_OPT_IN_TOPIC] }),
+    ).toThrow(
+      'Repository "portfolio" is published but carries no category topic',
+    );
+  });
+
+  test("rejects two category topics", () => {
+    expect(() =>
+      classifyRepo({
+        ...githubRepo,
+        topics: [...githubRepo.topics, "pf-cat-data"],
+      }),
+    ).toThrow(
+      'Repository "portfolio" carries more than one category topic: pf-cat-web, pf-cat-data',
+    );
+  });
+
+  test("rejects an unknown control topic", () => {
+    expect(() =>
+      classifyRepo({
+        ...githubRepo,
+        topics: [...githubRepo.topics, "pf-cat-desgin"],
+      }),
+    ).toThrow(
+      'Repository "portfolio" carries unknown control topics: pf-cat-desgin',
+    );
+  });
+
+  test("warns about a private repository tagged for publication", () => {
+    const result = classifyRepo({ ...githubRepo, private: true });
+
+    expect(result).toMatchObject({ kind: "warned" });
+    expect(result).toHaveProperty(
+      "warning",
+      expect.stringContaining('Repository "portfolio"'),
+    );
+    expect(result).toHaveProperty(
+      "warning",
+      expect.stringContaining("private"),
+    );
+  });
+
+  test("warns about a classified repository without the opt-in topic", () => {
+    const result = classifyRepo({
+      ...githubRepo,
+      topics: ["pf-cat-data", "pf-tier-lab"],
+    });
+
+    expect(result).toMatchObject({ kind: "warned" });
+    expect(result).toHaveProperty(
+      "warning",
+      expect.stringContaining("pf-cat-data, pf-tier-lab but not pf-show"),
+    );
+  });
+
+  test("ignores a repository the owner did not classify", () => {
+    expect(classifyRepo({ ...githubRepo, topics: ["astro"] })).toEqual({
+      kind: "ignored",
+    });
+  });
+
+  test("ignores a repository without topics", () => {
+    expect(classifyRepo({ ...githubRepo, topics: undefined })).toEqual({
+      kind: "ignored",
+    });
   });
 });
