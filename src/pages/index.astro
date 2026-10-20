@@ -15,8 +15,20 @@ const repos = await getCollection("repos");
   <main>
     <Profile profile={profile} />
 
-    {repos.length === 0 && <p>No repositories are published yet.</p>}
+    <section aria-labelledby="repositories">
+      <h2 id="repositories">Repositories</h2>
 
-    {repos.map((repo) => <RepoCard repo={repo.data} />)}
+      {repos.length === 0 ? (
+        <p>No repositories are published yet.</p>
+      ) : (
+        <ul>
+          {repos.map((repo) => (
+            <li>
+              <RepoCard repo={repo.data} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   </main>
 </Layout>
