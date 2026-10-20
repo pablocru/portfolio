@@ -100,6 +100,17 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   records are resolved directly from the service layer. Images go through
   Astro's asset pipeline.
 
+### Accessibility
+
+- Every page is usable with assistive technology: declare the page language,
+  keep one `<main>` landmark, and order headings without skipping levels.
+- Let native HTML carry the semantics: a list for an enumeration, a section
+  named by its heading for a group, an article for a self-contained entry. Add
+  ARIA only where no native element expresses the meaning.
+- Styling never removes semantics: a list whose markers are hidden stays a list.
+- Every image has a non-empty `alt`, and every link a name that makes sense out
+  of context.
+
 ### GitHub data
 
 - Read GitHub data with `@octokit/rest`; do not reach the API with native
