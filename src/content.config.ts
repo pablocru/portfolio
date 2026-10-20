@@ -3,10 +3,10 @@ import { z } from "astro/zod";
 import { createGitHubClient } from "./clients/github.client";
 import { RepoCategory, RepoTier } from "./constants";
 import { githubReposLoader } from "./loaders/github-repos";
-import { getRepos } from "./services/github.service";
+import { getRepoListing } from "./services/github.service";
 
 const repos = defineCollection({
-  loader: githubReposLoader(() => getRepos(createGitHubClient())),
+  loader: githubReposLoader(() => getRepoListing(createGitHubClient())),
   schema: z.object({
     name: z.string(),
     description: z.string().nullable(),

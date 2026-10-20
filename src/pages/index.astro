@@ -9,8 +9,9 @@ import { groupRepos } from "../utils/repo-groups.util";
 
 const client = createGitHubClient();
 const profile = await getProfile(client);
-const repos = await getCollection("repos");
-const { groups } = groupRepos(repos.map((entry) => entry.data));
+const repoEntries = await getCollection("repos");
+const repos = repoEntries.map((entry) => entry.data);
+const { groups } = groupRepos(repos);
 ---
 
 <Layout title={`Portfolio of ${profile.name}`}>

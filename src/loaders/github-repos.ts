@@ -4,14 +4,14 @@ import type { RepoListing } from "../types/repo.type";
 import { groupRepos } from "../utils/repo-groups.util";
 
 export function githubReposLoader(
-  listRepos: () => Promise<RepoListing>,
+  getRepoListing: () => Promise<RepoListing>,
 ): Loader {
   return {
     name: "github-repos",
     load: async ({ store, logger, parseData, generateDigest }) => {
       store.clear();
 
-      const { repos, warnings } = await listRepos();
+      const { repos, warnings } = await getRepoListing();
 
       for (const warning of warnings) {
         logger.warn(warning);

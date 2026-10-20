@@ -27,7 +27,7 @@ export async function getProfile(client: Octokit): Promise<Profile> {
   }
 }
 
-async function listUserRepositories(client: Octokit) {
+async function listGitHubRepos(client: Octokit) {
   try {
     // The listing endpoint has no topic filter, and the search API would delay
     // new tags, so filter locally. 100 is the maximum per page; the API
@@ -45,20 +45,20 @@ async function listUserRepositories(client: Octokit) {
   }
 }
 
-export async function getRepos(client: Octokit): Promise<RepoListing> {
-  const repositories = await listUserRepositories(client);
-  const repos: Repo[] = [];
+export async function getRepoListing(client: Octokit): Promise<RepoListing> {
+  const githubRepos = await listGitHubRepos(client);
+  const publishedRepos: Repo[] = [];
   const warnings: string[] = [];
 
-  for (const repository of repositories) {
-    const classification = classifyRepo(repository);
+  for (const githubRepo of githubRepos) {
+    const classification = classifyRepo(githubRepo);
 
     if (classification.kind === "published") {
-      repos.push(classification.repo);
+      publishedRepos.push(classification.repo);
     } else if (classification.kind === "warned") {
       warnings.push(classification.warning);
     }
   }
 
-  return { repos, warnings };
+  return { repos: publishedRepos, warnings };
 }

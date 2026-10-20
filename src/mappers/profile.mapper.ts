@@ -6,10 +6,10 @@ type GitHubUser = Pick<
   "login" | "name" | "avatar_url" | "bio"
 >;
 
-export function mapProfile(user: GitHubUser): Profile {
+export function mapProfile(githubUser: GitHubUser): Profile {
   return {
-    name: user.name?.trim() || user.login,
-    avatarUrl: user.avatar_url,
-    bio: user.bio?.trim() || null,
+    name: githubUser.name?.trim() || githubUser.login,
+    avatarUrl: githubUser.avatar_url,
+    bio: githubUser.bio?.trim() || null,
   };
 }

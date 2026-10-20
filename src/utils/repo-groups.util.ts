@@ -56,9 +56,9 @@ export function groupRepos(repos: Repo[]): RepoGrouping {
   const groups: RepoGroup[] = [];
 
   for (const definition of GROUP_DEFINITIONS) {
-    const grouped = repos.filter(definition.includes).sort(compareRepos);
+    const groupedRepos = repos.filter(definition.includes).sort(compareRepos);
 
-    if (grouped.length === 0) {
+    if (groupedRepos.length === 0) {
       warnings.push(definition.warning);
       continue;
     }
@@ -66,35 +66,43 @@ export function groupRepos(repos: Repo[]): RepoGrouping {
     groups.push({
       id: definition.id,
       label: definition.label,
-      repos: grouped,
+      repos: groupedRepos,
     });
   }
 
   return { groups, warnings };
 }
 
-function compareRepos(first: Repo, second: Repo): number {
-  if (first.archived !== second.archived) {
-    return first.archived ? 1 : -1;
+function compareRepos(firstRepo: Repo, secondRepo: Repo): number {
+  if (firstRepo.archived !== secondRepo.archived) {
+    return firstRepo.archived ? 1 : -1;
   }
 
-  const pushed = comparePushedAt(first.pushedAt, second.pushedAt);
+  const pushedComparison = comparePushedAt(
+    firstRepo.pushedAt,
+    secondRepo.pushedAt,
+  );
 
-  return pushed === 0 ? first.name.localeCompare(second.name) : pushed;
+  return pushedComparison === 0
+    ? firstRepo.name.localeCompare(secondRepo.name)
+    : pushedComparison;
 }
 
-function comparePushedAt(first: string | null, second: string | null): number {
-  if (first === second) {
+function comparePushedAt(
+  firstPushedAt: string | null,
+  secondPushedAt: string | null,
+): number {
+  if (firstPushedAt === secondPushedAt) {
     return 0;
   }
 
-  if (first === null) {
+  if (firstPushedAt === null) {
     return 1;
   }
 
-  if (second === null) {
+  if (secondPushedAt === null) {
     return -1;
   }
 
-  return second.localeCompare(first);
+  return secondPushedAt.localeCompare(firstPushedAt);
 }

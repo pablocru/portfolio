@@ -6,7 +6,7 @@ import {
   RepoCategory,
   RepoTier,
 } from "../constants";
-import { getProfile, getRepos } from "./github.service";
+import { getProfile, getRepoListing } from "./github.service";
 
 const githubRepo = {
   name: "portfolio",
@@ -32,7 +32,7 @@ describe("getProfile", () => {
   });
 });
 
-describe("getRepos", () => {
+describe("getRepoListing", () => {
   test("lists the published repositories and the misconfigurations", async () => {
     const client = new Octokit();
     vi.spyOn(client, "paginate").mockResolvedValue([
@@ -42,7 +42,7 @@ describe("getRepos", () => {
       { ...githubRepo, name: "classified", topics: ["pf-cat-data"] },
     ]);
 
-    const listing = await getRepos(client);
+    const listing = await getRepoListing(client);
 
     expect(listing.repos).toEqual([
       {
@@ -68,7 +68,7 @@ describe("getRepos", () => {
       { ...githubRepo, topics: [PORTFOLIO_OPT_IN_TOPIC] },
     ]);
 
-    await expect(getRepos(client)).rejects.toThrow(
+    await expect(getRepoListing(client)).rejects.toThrow(
       'Repository "portfolio" is published but carries no category topic',
     );
   });
@@ -79,7 +79,7 @@ describe("getRepos", () => {
       new Error("boom"),
     );
 
-    await expect(getRepos(client)).rejects.toThrow(
+    await expect(getRepoListing(client)).rejects.toThrow(
       `GitHub repository listing failed for username "${GITHUB_USERNAME}"`,
     );
   });

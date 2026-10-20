@@ -48,8 +48,11 @@ export type RepoClassification =
  * topic. Private repositories are rejected even when tagged: the site is
  * public, so everything it builds is exposed.
  */
-export function isPublishedRepo(repo: GitHubRepo): boolean {
-  return !repo.private && (repo.topics ?? []).includes(PORTFOLIO_OPT_IN_TOPIC);
+export function isPublishedRepo(githubRepo: GitHubRepo): boolean {
+  return (
+    !githubRepo.private &&
+    (githubRepo.topics ?? []).includes(PORTFOLIO_OPT_IN_TOPIC)
+  );
 }
 
 /**
@@ -57,17 +60,17 @@ export function isPublishedRepo(repo: GitHubRepo): boolean {
  * A repository the owner did not publish never stops the build; a published
  * repository whose classification is missing, duplicated or unknown throws.
  */
-export function classifyRepo(repo: GitHubRepo): RepoClassification {
-  const topics = repo.topics ?? [];
+export function classifyRepo(githubRepo: GitHubRepo): RepoClassification {
+  const topics = githubRepo.topics ?? [];
   const controlTopics = topics.filter((topic) =>
     topic.startsWith(PORTFOLIO_TOPIC_PREFIX),
   );
 
-  if (!isPublishedRepo(repo)) {
+  if (!isPublishedRepo(githubRepo)) {
     if (topics.includes(PORTFOLIO_OPT_IN_TOPIC)) {
       return {
         kind: "warned",
-        warning: `Repository "${repo.name}" carries ${PORTFOLIO_OPT_IN_TOPIC} but is private, so it is not published.`,
+        warning: `Repository "${githubRepo.name}" carries ${PORTFOLIO_OPT_IN_TOPIC} but is private, so it is not published.`,
       };
     }
 
@@ -77,7 +80,7 @@ export function classifyRepo(repo: GitHubRepo): RepoClassification {
 
     return {
       kind: "warned",
-      warning: `Repository "${repo.name}" carries the control topics ${list(controlTopics)} but not ${PORTFOLIO_OPT_IN_TOPIC}, so it is not published.`,
+      warning: `Repository "${githubRepo.name}" carries the control topics ${formatTopics(controlTopics)} but not ${PORTFOLIO_OPT_IN_TOPIC}, so it is not published.`,
     };
   }
 
@@ -87,7 +90,7 @@ export function classifyRepo(repo: GitHubRepo): RepoClassification {
 
   if (unknownTopics.length > 0) {
     throw new Error(
-      `Repository "${repo.name}" carries unknown control topics: ${list(unknownTopics)}.`,
+      `Repository "${githubRepo.name}" carries unknown control topics: ${formatTopics(unknownTopics)}.`,
     );
   }
 
@@ -97,7 +100,7 @@ export function classifyRepo(repo: GitHubRepo): RepoClassification {
 
   if (tiers.length > 1) {
     throw new Error(
-      `Repository "${repo.name}" carries more than one tier topic: ${list(tiers.map((tier) => REPO_TIER_TOPIC[tier]))}.`,
+      `Repository "${githubRepo.name}" carries more than one tier topic: ${formatTopics(tiers.map((tier) => REPO_TIER_TOPIC[tier]))}.`,
     );
   }
 
@@ -108,31 +111,31 @@ export function classifyRepo(repo: GitHubRepo): RepoClassification {
 
   if (category === undefined) {
     throw new Error(
-      `Repository "${repo.name}" is published but carries no category topic.`,
+      `Repository "${githubRepo.name}" is published but carries no category topic.`,
     );
   }
 
   if (categories.length > 1) {
     throw new Error(
-      `Repository "${repo.name}" carries more than one category topic: ${list(categories.map((value) => REPO_CATEGORY_TOPIC[value]))}.`,
+      `Repository "${githubRepo.name}" carries more than one category topic: ${formatTopics(categories.map((value) => REPO_CATEGORY_TOPIC[value]))}.`,
     );
   }
 
   return {
     kind: "published",
     repo: {
-      name: repo.name,
-      description: repo.description?.trim() || null,
-      language: repo.language ?? null,
-      url: repo.html_url,
-      archived: repo.archived ?? false,
-      pushedAt: repo.pushed_at ?? null,
+      name: githubRepo.name,
+      description: githubRepo.description?.trim() || null,
+      language: githubRepo.language ?? null,
+      url: githubRepo.html_url,
+      archived: githubRepo.archived ?? false,
+      pushedAt: githubRepo.pushed_at ?? null,
       category,
       tier: tiers[0] ?? RepoTier.Project,
     },
   };
 }
 
-function list(topics: string[]): string {
+function formatTopics(topics: string[]): string {
   return topics.join(", ");
 }
