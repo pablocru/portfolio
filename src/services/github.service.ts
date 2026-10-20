@@ -29,6 +29,9 @@ export async function getProfile(client: Octokit): Promise<Profile> {
 
 export async function getRepos(client: Octokit): Promise<Repo[]> {
   try {
+    // The listing endpoint has no topic filter, and the search API would delay
+    // new tags, so filter locally. 100 is the maximum per page; the API
+    // defaults to 30.
     const repositories = await client.paginate(client.rest.repos.listForUser, {
       username: GITHUB_USERNAME,
       type: "owner",
