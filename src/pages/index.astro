@@ -5,10 +5,12 @@ import Profile from "../components/Profile.astro";
 import RepoCard from "../components/RepoCard.astro";
 import Layout from "../layouts/Layout.astro";
 import { getProfile } from "../services/github.service";
+import { groupRepos } from "../utils/repo-groups.util";
 
 const client = createGitHubClient();
 const profile = await getProfile(client);
 const repos = await getCollection("repos");
+const { groups } = groupRepos(repos.map((entry) => entry.data));
 ---
 
 <Layout title={`Portfolio of ${profile.name}`}>
@@ -18,16 +20,22 @@ const repos = await getCollection("repos");
     <section aria-labelledby="repositories">
       <h2 id="repositories">Repositories</h2>
 
-      {repos.length === 0 ? (
+      {groups.length === 0 ? (
         <p>No repositories are published yet.</p>
       ) : (
-        <ul>
-          {repos.map((repo) => (
-            <li>
-              <RepoCard repo={repo.data} />
-            </li>
-          ))}
-        </ul>
+        groups.map((group) => (
+          <section aria-labelledby={`repositories-${group.id}`}>
+            <h3 id={`repositories-${group.id}`}>{group.label}</h3>
+
+            <ul>
+              {group.repos.map((repo) => (
+                <li>
+                  <RepoCard repo={repo} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
       )}
     </section>
   </main>
