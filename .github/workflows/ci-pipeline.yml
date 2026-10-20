@@ -7,6 +7,9 @@ concurrency:
   group: "ci-pipeline-${{ github.ref }}"
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   quality-gate:
     uses: "./.github/workflows/quality-gate.yml"
@@ -24,6 +27,8 @@ jobs:
 
       - name: "Build project"
         run: "pnpm build"
+        env:
+          GITHUB_TOKEN: "${{ github.token }}"
 
       - name: "Upload build artifact"
         uses: "actions/upload-artifact@v7"

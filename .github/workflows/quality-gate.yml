@@ -35,6 +35,8 @@ jobs:
 
       - name: Type check with Astro
         run: pnpm astro check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Test with Vitest
         run: pnpm test

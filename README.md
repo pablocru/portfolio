@@ -66,6 +66,10 @@ shows both what I build and how I learn.
    pnpm build
    ```
 
+   > The GitHub token is optional: the build reads the public GitHub API
+   > anonymously. Without it you can hit the anonymous rate limit; to raise it,
+   > set `GITHUB_TOKEN` in a `.env` file, as shown in `.env.example`.
+
 ## Contribute
 
 If you notice any mistakes or have suggestions, I’m all ears! I appreciate any
