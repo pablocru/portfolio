@@ -66,6 +66,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   frameworks or custom styles: use browser default styles unless a milestone
   asks for styling. Never invent content (names, dates, links, images); ask the
   developer instead.
+- Name a value after the data it holds. When a raw payload and the domain object
+  derived from it coexist, the name states the origin: `githubRepos` and
+  `publishedRepos`, never both `repos`.
 - When creating domain code, use the project layers (`src/types`, `src/mappers`,
   `src/services`, `src/utils`, `src/loaders`, `src/clients`) with suffixes
   `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`.
