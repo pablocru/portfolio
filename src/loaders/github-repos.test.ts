@@ -40,7 +40,7 @@ function listing(overrides: Partial<RepoListing> = {}): RepoListing {
 
 describe("githubReposLoader", () => {
   test("replaces the entries of a previous listing", async () => {
-    const { context, entries, store, logger } = createLoadContext();
+    const { context, entries, store } = createLoadContext();
     entries.set("removed", { ...repo, name: "removed" });
 
     await githubReposLoader(async () => listing()).load(context);
@@ -51,7 +51,6 @@ describe("githubReposLoader", () => {
       data: repo,
       digest: "digest",
     });
-    expect(logger.warn).not.toHaveBeenCalled();
   });
 
   test("forwards the warnings of the listing", async () => {
@@ -63,6 +62,20 @@ describe("githubReposLoader", () => {
     );
 
     expect(logger.warn).toHaveBeenCalledWith(warning);
+  });
+
+  test("warns about the groups that stay empty", async () => {
+    const { context, logger } = createLoadContext();
+
+    await githubReposLoader(async () => listing()).load(context);
+
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.stringContaining('"Featured"'),
+    );
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.stringContaining("Cloud & DevOps"),
+    );
+    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('"Lab"'));
   });
 
   test("warns when no repository qualifies", async () => {

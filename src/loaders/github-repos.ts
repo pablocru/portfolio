@@ -1,6 +1,7 @@
 import type { Loader } from "astro/loaders";
 import { GITHUB_USERNAME, PORTFOLIO_OPT_IN_TOPIC } from "../constants";
 import type { RepoListing } from "../types/repo.type";
+import { groupRepos } from "../utils/repo-groups.util";
 
 export function githubReposLoader(
   listRepos: () => Promise<RepoListing>,
@@ -30,6 +31,11 @@ export function githubReposLoader(
         logger.warn(
           `No repository to publish: no public repository of ${GITHUB_USERNAME} carries the ${PORTFOLIO_OPT_IN_TOPIC} topic.`,
         );
+        return;
+      }
+
+      for (const warning of groupRepos(repos).warnings) {
+        logger.warn(warning);
       }
     },
   };
