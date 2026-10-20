@@ -9,24 +9,13 @@ import {
 import { type GitHubRepo, mapRepo } from "../mappers/repo.mapper";
 import type { Repo, RepoListing } from "../types/repo.type";
 
-const CATEGORY_BY_TOPIC: ReadonlyMap<string, RepoCategory> = new Map(
-  Object.values(RepoCategory).map((category) => [
-    REPO_CATEGORY_TOPIC[category],
-    category,
-  ]),
-);
-
-const TIER_BY_TOPIC: ReadonlyMap<string, RepoTier> = new Map(
-  Object.values(RepoTier).map((tier) => [REPO_TIER_TOPIC[tier], tier]),
-);
-
 const KNOWN_TOPICS = new Set<string>([
   PORTFOLIO_OPT_IN_TOPIC,
-  ...CATEGORY_BY_TOPIC.keys(),
-  ...TIER_BY_TOPIC.keys(),
+  ...Object.values(REPO_CATEGORY_TOPIC),
+  ...Object.values(REPO_TIER_TOPIC),
 ]);
 
-export type RepoClassification =
+type RepoClassification =
   | { kind: "published"; repo: Repo }
   | { kind: "ignored" }
   | { kind: "warned"; warning: string };
