@@ -2,7 +2,7 @@ import { RequestError } from "@octokit/request-error";
 import type { Octokit } from "@octokit/rest";
 import { GITHUB_USERNAME } from "../constants";
 import { mapProfile } from "../mappers/profile.mapper";
-import { isPortfolioRepo, mapRepo } from "../mappers/repo.mapper";
+import { isPublishedRepo, mapRepo } from "../mappers/repo.mapper";
 import type { Profile } from "../types/profile.type";
 import type { Repo } from "../types/repo.type";
 
@@ -35,7 +35,7 @@ export async function getRepos(client: Octokit): Promise<Repo[]> {
       per_page: 100,
     });
 
-    return repositories.filter(isPortfolioRepo).map(mapRepo);
+    return repositories.filter(isPublishedRepo).map(mapRepo);
   } catch (error) {
     throw new Error(
       `GitHub repository listing failed for username "${GITHUB_USERNAME}": ${describeError(error)}`,

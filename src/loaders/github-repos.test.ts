@@ -1,6 +1,6 @@
 import type { LoaderContext } from "astro/loaders";
 import { describe, expect, test, vi } from "vitest";
-import { PORTFOLIO_TOPIC } from "../constants";
+import { PORTFOLIO_OPT_IN_TOPIC } from "../constants";
 import type { Repo } from "../types/repo.type";
 import { githubReposLoader } from "./github-repos";
 
@@ -56,7 +56,7 @@ describe("githubReposLoader", () => {
     expect(entries.size).toBe(0);
     expect(store.set).not.toHaveBeenCalled();
     expect(logger.warn).toHaveBeenCalledWith(
-      expect.stringContaining(PORTFOLIO_TOPIC),
+      expect.stringContaining(PORTFOLIO_OPT_IN_TOPIC),
     );
   });
 });

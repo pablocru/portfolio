@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { PORTFOLIO_TOPIC } from "../constants";
-import { isPortfolioRepo, mapRepo } from "./repo.mapper";
+import { PORTFOLIO_OPT_IN_TOPIC } from "../constants";
+import { isPublishedRepo, mapRepo } from "./repo.mapper";
 
 const githubRepo = {
   name: "portfolio",
@@ -9,24 +9,24 @@ const githubRepo = {
   html_url: "https://github.com/pablocru/portfolio",
   archived: false,
   private: false,
-  topics: [PORTFOLIO_TOPIC],
+  topics: [PORTFOLIO_OPT_IN_TOPIC],
 };
 
-describe("isPortfolioRepo", () => {
-  test("accepts a public repository tagged for the portfolio", () => {
-    expect(isPortfolioRepo(githubRepo)).toBe(true);
+describe("isPublishedRepo", () => {
+  test("accepts a public repository tagged with the opt-in topic", () => {
+    expect(isPublishedRepo(githubRepo)).toBe(true);
   });
 
-  test("rejects a repository without the portfolio topic", () => {
-    expect(isPortfolioRepo({ ...githubRepo, topics: ["astro"] })).toBe(false);
+  test("rejects a repository without the opt-in topic", () => {
+    expect(isPublishedRepo({ ...githubRepo, topics: ["astro"] })).toBe(false);
   });
 
   test("rejects a repository without topics", () => {
-    expect(isPortfolioRepo({ ...githubRepo, topics: undefined })).toBe(false);
+    expect(isPublishedRepo({ ...githubRepo, topics: undefined })).toBe(false);
   });
 
-  test("rejects a private repository", () => {
-    expect(isPortfolioRepo({ ...githubRepo, private: true })).toBe(false);
+  test("rejects a private repository even when tagged", () => {
+    expect(isPublishedRepo({ ...githubRepo, private: true })).toBe(false);
   });
 });
 

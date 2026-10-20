@@ -1,5 +1,5 @@
 import type { RestEndpointMethodTypes } from "@octokit/rest";
-import { PORTFOLIO_TOPIC } from "../constants";
+import { PORTFOLIO_OPT_IN_TOPIC } from "../constants";
 import type { Repo } from "../types/repo.type";
 
 type GitHubRepo = Pick<
@@ -14,11 +14,12 @@ type GitHubRepo = Pick<
 >;
 
 /**
- * Private repositories are rejected on purpose: the site is public, so
- * everything it builds is exposed.
+ * The owner publishes a repository by tagging it with the portfolio opt-in
+ * topic. Private repositories are rejected even when tagged: the site is
+ * public, so everything it builds is exposed.
  */
-export function isPortfolioRepo(repo: GitHubRepo): boolean {
-  return !repo.private && (repo.topics ?? []).includes(PORTFOLIO_TOPIC);
+export function isPublishedRepo(repo: GitHubRepo): boolean {
+  return !repo.private && (repo.topics ?? []).includes(PORTFOLIO_OPT_IN_TOPIC);
 }
 
 export function mapRepo(repo: GitHubRepo): Repo {

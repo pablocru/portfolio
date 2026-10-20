@@ -1,6 +1,6 @@
 import { Octokit } from "@octokit/rest";
 import { describe, expect, test, vi } from "vitest";
-import { GITHUB_USERNAME, PORTFOLIO_TOPIC } from "../constants";
+import { GITHUB_USERNAME, PORTFOLIO_OPT_IN_TOPIC } from "../constants";
 import { getProfile, getRepos } from "./github.service";
 
 const githubRepo = {
@@ -10,7 +10,7 @@ const githubRepo = {
   html_url: "https://github.com/pablocru/portfolio",
   archived: false,
   private: false,
-  topics: [PORTFOLIO_TOPIC],
+  topics: [PORTFOLIO_OPT_IN_TOPIC],
 };
 
 describe("getProfile", () => {
@@ -27,7 +27,7 @@ describe("getProfile", () => {
 });
 
 describe("getRepos", () => {
-  test("lists only the public repositories tagged for the portfolio", async () => {
+  test("lists only the public repositories that opted in", async () => {
     const client = new Octokit();
     vi.spyOn(client, "paginate").mockResolvedValue([
       githubRepo,
