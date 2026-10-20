@@ -2,9 +2,9 @@ import { RequestError } from "@octokit/request-error";
 import type { Octokit } from "@octokit/rest";
 import { GITHUB_USERNAME } from "../constants";
 import { mapProfile } from "../mappers/profile.mapper";
-import { classifyRepo } from "../mappers/repo.mapper";
 import type { Profile } from "../types/profile.type";
-import type { Repo, RepoListing } from "../types/repo.type";
+import type { RepoListing } from "../types/repo.type";
+import { classifyRepos } from "./repo-classification.service";
 
 function describeError(error: unknown): string {
   return error instanceof RequestError
@@ -46,19 +46,5 @@ async function listGitHubRepos(client: Octokit) {
 }
 
 export async function getRepoListing(client: Octokit): Promise<RepoListing> {
-  const githubRepos = await listGitHubRepos(client);
-  const publishedRepos: Repo[] = [];
-  const warnings: string[] = [];
-
-  for (const githubRepo of githubRepos) {
-    const classification = classifyRepo(githubRepo);
-
-    if (classification.kind === "published") {
-      publishedRepos.push(classification.repo);
-    } else if (classification.kind === "warned") {
-      warnings.push(classification.warning);
-    }
-  }
-
-  return { repos: publishedRepos, warnings };
+  return classifyRepos(await listGitHubRepos(client));
 }

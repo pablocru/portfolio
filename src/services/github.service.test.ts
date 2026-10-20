@@ -4,7 +4,6 @@ import {
   GITHUB_USERNAME,
   PORTFOLIO_OPT_IN_TOPIC,
   RepoCategory,
-  RepoTier,
 } from "../constants";
 import { getProfile, getRepoListing } from "./github.service";
 
@@ -33,33 +32,22 @@ describe("getProfile", () => {
 });
 
 describe("getRepoListing", () => {
-  test("lists the published repositories and the misconfigurations", async () => {
+  test("classifies the listed repositories", async () => {
     const client = new Octokit();
     vi.spyOn(client, "paginate").mockResolvedValue([
       githubRepo,
       { ...githubRepo, name: "hidden", topics: ["astro"] },
-      { ...githubRepo, name: "secret", private: true },
-      { ...githubRepo, name: "classified", topics: ["pf-cat-data"] },
     ]);
 
     const listing = await getRepoListing(client);
 
-    expect(listing.repos).toEqual([
-      {
-        name: "portfolio",
-        description: "A window to my projects",
-        language: "TypeScript",
-        url: "https://github.com/pablocru/portfolio",
-        archived: false,
-        pushedAt: "2026-10-20T09:00:00Z",
-        category: RepoCategory.Web,
-        tier: RepoTier.Project,
-      },
-    ]);
-    expect(listing.warnings).toEqual([
-      expect.stringContaining('Repository "secret"'),
-      expect.stringContaining('Repository "classified"'),
-    ]);
+    expect(listing.repos).toHaveLength(1);
+    expect(listing.repos[0]).toMatchObject({
+      name: "portfolio",
+      url: "https://github.com/pablocru/portfolio",
+      category: RepoCategory.Web,
+    });
+    expect(listing.warnings).toEqual([]);
   });
 
   test("reports a published repository without a category", async () => {

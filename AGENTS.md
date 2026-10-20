@@ -72,6 +72,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - When creating domain code, use the project layers (`src/types`, `src/mappers`,
   `src/services`, `src/utils`, `src/loaders`, `src/clients`) with suffixes
   `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`.
+- Mappers transform one representation into another and decide nothing;
+  validation and policy live in services.
 - Build third-party clients in `src/clients` (composition: auth, plugins) and
   pass them to services and loaders, which take their collaborators as
   parameters and read no environment. Only the Astro layer (`src/pages`,
