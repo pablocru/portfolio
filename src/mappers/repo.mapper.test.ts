@@ -105,14 +105,17 @@ describe("classifyRepo", () => {
     expect(explicit).toEqual(implicit);
   });
 
-  test("rejects two tier topics", () => {
+  test.each([
+    [["pf-tier-featured", "pf-tier-lab"], "pf-tier-featured, pf-tier-lab"],
+    [["pf-tier-project", "pf-tier-lab"], "pf-tier-project, pf-tier-lab"],
+  ])("rejects the tier topics %j", (tierTopics, expected) => {
     expect(() =>
       classifyRepo({
         ...githubRepo,
-        topics: [...githubRepo.topics, "pf-tier-featured", "pf-tier-lab"],
+        topics: [...githubRepo.topics, ...tierTopics],
       }),
     ).toThrow(
-      'Repository "portfolio" carries more than one tier topic: pf-tier-featured, pf-tier-lab',
+      `Repository "portfolio" carries more than one tier topic: ${expected}`,
     );
   });
 

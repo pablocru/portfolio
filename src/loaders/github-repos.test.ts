@@ -86,6 +86,7 @@ describe("githubReposLoader", () => {
 
     expect(entries.size).toBe(0);
     expect(store.set).not.toHaveBeenCalled();
+    expect(logger.warn).toHaveBeenCalledTimes(1);
     expect(logger.warn).toHaveBeenCalledWith(
       expect.stringContaining(PORTFOLIO_OPT_IN_TOPIC),
     );
