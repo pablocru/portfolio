@@ -99,6 +99,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Repeated data goes through content collections (loaders and schemas); single
   records are resolved directly from the service layer. Images go through
   Astro's asset pipeline.
+- Mutually exclusive UI states are one decision: render one branch or the other,
+  never two independent conditions that can both hold. The invalid combination
+  must be impossible, not merely unlikely.
 
 ### Accessibility
 
