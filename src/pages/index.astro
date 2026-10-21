@@ -24,19 +24,23 @@ const { groups } = groupRepos(repos);
       {groups.length === 0 ? (
         <p>No repositories are published yet.</p>
       ) : (
-        groups.map((group) => (
-          <section aria-labelledby={`repositories-${group.id}`}>
-            <h3 id={`repositories-${group.id}`}>{group.label}</h3>
+        groups.map((group) => {
+          const headingId = `repositories-${group.id}`;
 
-            <ul>
-              {group.repos.map((repo) => (
-                <li>
-                  <RepoCard repo={repo} />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))
+          return (
+            <section aria-labelledby={headingId}>
+              <h3 id={headingId}>{group.label}</h3>
+
+              <ul>
+                {group.repos.map((repo) => (
+                  <li>
+                    <RepoCard repo={repo} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })
       )}
     </section>
   </main>
