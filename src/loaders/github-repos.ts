@@ -1,24 +1,31 @@
 import type { Loader } from "astro/loaders";
 import { GITHUB_USERNAME, PORTFOLIO_OPT_IN_TOPIC } from "../constants";
-import type { RepoListing } from "../types/repo.type";
+import type { PortfolioRepoSelection } from "../types/repo.type";
 import { groupRepos } from "../utils/repo-groups.util";
 
+/**
+ * Writes the portfolio repositories to the content store and logs the warnings
+ * from selection and grouping.
+ */
 export function githubReposLoader(
-  getRepositories: () => Promise<RepoListing>,
+  getPortfolioRepos: () => Promise<PortfolioRepoSelection>,
 ): Loader {
   return {
     name: "github-repos",
     load: async ({ store, logger, parseData, generateDigest }) => {
       store.clear();
 
-      const { repos, warnings } = await getRepositories();
+      const { repos, warnings } = await getPortfolioRepos();
 
       for (const warning of warnings) {
         logger.warn(warning);
       }
 
       for (const repo of repos) {
-        const data = await parseData({ id: repo.name, data: repo });
+        const data = await parseData({
+          id: repo.name,
+          data: repo,
+        });
 
         store.set({
           id: repo.name,

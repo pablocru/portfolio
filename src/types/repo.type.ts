@@ -1,11 +1,11 @@
 import type { RepoCategory, RepoTier } from "../constants";
 
 /**
- * Repository published in the portfolio. It is a type alias, not an interface,
+ * Repository included in the portfolio. It is a type alias, not an interface,
  * because Astro's content loader API requires the entries to be assignable to
  * `Record<string, unknown>`.
  */
-export type Repo = {
+export type PortfolioRepo = {
   name: string;
   description: string | null;
   language: string | null;
@@ -17,10 +17,10 @@ export type Repo = {
 };
 
 /**
- * Outcome of one repository listing: the repositories the owner publishes and
- * the misconfigurations that do not stop the build.
+ * Repositories selected for the portfolio, plus the warnings about the GitHub
+ * repositories that were left out or misconfigured.
  */
-export type RepoListing = {
-  repos: Repo[];
+export type PortfolioRepoSelection = {
+  repos: PortfolioRepo[];
   warnings: string[];
 };

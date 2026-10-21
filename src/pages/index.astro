@@ -8,15 +8,15 @@ import { getProfile } from "../services/portfolio.service";
 import { groupRepos } from "../utils/repo-groups.util";
 
 const client = createGitHubClient();
-const profile = await getProfile(client);
+const portfolioProfile = await getProfile(client);
 const repoEntries = await getCollection("repos");
-const repos = repoEntries.map((entry) => entry.data);
-const { groups } = groupRepos(repos);
+const portfolioRepos = repoEntries.map((entry) => entry.data);
+const { groups } = groupRepos(portfolioRepos);
 ---
 
-<Layout title={`Portfolio of ${profile.name}`}>
+<Layout title={`Portfolio of ${portfolioProfile.name}`}>
   <main>
-    <Profile profile={profile} />
+    <Profile profile={portfolioProfile} />
 
     <section aria-labelledby="repositories">
       <h2 id="repositories">Repositories</h2>
@@ -32,9 +32,9 @@ const { groups } = groupRepos(repos);
               <h3 id={headingId}>{group.label}</h3>
 
               <ul>
-                {group.repos.map((repo) => (
+                {group.repos.map((portfolioRepo) => (
                   <li>
-                    <RepoCard repo={repo} />
+                    <RepoCard repo={portfolioRepo} />
                   </li>
                 ))}
               </ul>

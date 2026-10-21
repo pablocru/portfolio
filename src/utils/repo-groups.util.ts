@@ -1,5 +1,5 @@
 import { RepoCategory, RepoTier } from "../constants";
-import type { Repo } from "../types/repo.type";
+import type { PortfolioRepo } from "../types/repo.type";
 import type {
   RepoGroup,
   RepoGroupId,
@@ -9,7 +9,7 @@ import type {
 type GroupDefinition = {
   id: RepoGroupId;
   label: string;
-  includes: (repo: Repo) => boolean;
+  includes: (portfolioRepo: PortfolioRepo) => boolean;
   warning: string;
 };
 
@@ -23,32 +23,33 @@ const GROUP_DEFINITIONS: GroupDefinition[] = [
   {
     id: "featured",
     label: RepoTier.Featured,
-    includes: (repo) => repo.tier === RepoTier.Featured,
+    includes: (portfolioRepo) => portfolioRepo.tier === RepoTier.Featured,
     warning: `The "${RepoTier.Featured}" group has no repository; its section is omitted.`,
   },
   ...Object.values(RepoCategory).map((category) => ({
     id: CATEGORY_GROUP_ID[category],
     label: category,
-    includes: (repo: Repo) =>
-      repo.tier === RepoTier.Project && repo.category === category,
+    includes: (portfolioRepo: PortfolioRepo) =>
+      portfolioRepo.tier === RepoTier.Project &&
+      portfolioRepo.category === category,
     warning: `Category "${category}" has no project-tier repository; its section is omitted.`,
   })),
   {
     id: "lab",
     label: RepoTier.Lab,
-    includes: (repo) => repo.tier === RepoTier.Lab,
+    includes: (portfolioRepo) => portfolioRepo.tier === RepoTier.Lab,
     warning: `The "${RepoTier.Lab}" group has no repository; its section is omitted.`,
   },
 ];
 
 /**
- * Splits the published repositories into the sections of the page. The tier
- * wins over the category, so every repository belongs to exactly one group.
- * Empty groups are left out and reported; with no repository at all the page
- * shows its empty state instead of a list of empty sections.
+ * Splits the repositories included in the portfolio into the sections of the
+ * page. The tier wins over the category, so every repository belongs to exactly
+ * one group. Empty groups are left out and reported; with no repository at all
+ * the page shows its empty state instead of a list of empty sections.
  */
-export function groupRepos(repos: Repo[]): RepoGrouping {
-  if (repos.length === 0) {
+export function groupRepos(portfolioRepos: PortfolioRepo[]): RepoGrouping {
+  if (portfolioRepos.length === 0) {
     return { groups: [], warnings: [] };
   }
 
@@ -56,7 +57,9 @@ export function groupRepos(repos: Repo[]): RepoGrouping {
   const groups: RepoGroup[] = [];
 
   for (const definition of GROUP_DEFINITIONS) {
-    const groupedRepos = repos.filter(definition.includes).sort(compareRepos);
+    const groupedRepos = portfolioRepos
+      .filter(definition.includes)
+      .sort(compareRepos);
 
     if (groupedRepos.length === 0) {
       warnings.push(definition.warning);
@@ -73,7 +76,10 @@ export function groupRepos(repos: Repo[]): RepoGrouping {
   return { groups, warnings };
 }
 
-function compareRepos(firstRepo: Repo, secondRepo: Repo): number {
+function compareRepos(
+  firstRepo: PortfolioRepo,
+  secondRepo: PortfolioRepo,
+): number {
   if (firstRepo.archived !== secondRepo.archived) {
     return firstRepo.archived ? 1 : -1;
   }

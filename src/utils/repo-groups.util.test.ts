@@ -1,9 +1,12 @@
 import { describe, expect, test } from "vitest";
 import { RepoCategory, RepoTier } from "../constants";
-import type { Repo } from "../types/repo.type";
+import type { PortfolioRepo } from "../types/repo.type";
 import { groupRepos } from "./repo-groups.util";
 
-function repo(name: string, overrides: Partial<Repo> = {}): Repo {
+function portfolioRepo(
+  name: string,
+  overrides: Partial<PortfolioRepo> = {},
+): PortfolioRepo {
   return {
     name,
     description: null,
@@ -17,13 +20,13 @@ function repo(name: string, overrides: Partial<Repo> = {}): Repo {
   };
 }
 
-function fullSet(): Repo[] {
+function fullSet(): PortfolioRepo[] {
   return [
-    repo("web-project"),
-    repo("data-project", { category: RepoCategory.Data }),
-    repo("cloud-project", { category: RepoCategory.CloudDevOps }),
-    repo("featured-project", { tier: RepoTier.Featured }),
-    repo("lab-project", { tier: RepoTier.Lab }),
+    portfolioRepo("web-project"),
+    portfolioRepo("data-project", { category: RepoCategory.Data }),
+    portfolioRepo("cloud-project", { category: RepoCategory.CloudDevOps }),
+    portfolioRepo("featured-project", { tier: RepoTier.Featured }),
+    portfolioRepo("lab-project", { tier: RepoTier.Lab }),
   ];
 }
 
@@ -53,11 +56,11 @@ describe("groupRepos", () => {
 
   test("lets the tier win over the category", () => {
     const grouping = groupRepos([
-      repo("featured-data", {
+      portfolioRepo("featured-data", {
         category: RepoCategory.Data,
         tier: RepoTier.Featured,
       }),
-      repo("lab-web", { tier: RepoTier.Lab }),
+      portfolioRepo("lab-web", { tier: RepoTier.Lab }),
     ]);
 
     expect(grouping.groups.map((group) => group.id)).toEqual([
@@ -74,12 +77,15 @@ describe("groupRepos", () => {
 
   test("orders entries by archived, push date and name", () => {
     const grouping = groupRepos([
-      repo("archived", { archived: true, pushedAt: "2026-12-01T00:00:00Z" }),
-      repo("older", { pushedAt: "2025-01-01T00:00:00Z" }),
-      repo("newer", { pushedAt: "2026-01-01T00:00:00Z" }),
-      repo("undated", { pushedAt: null }),
-      repo("bravo", { pushedAt: "2024-01-01T00:00:00Z" }),
-      repo("alpha", { pushedAt: "2024-01-01T00:00:00Z" }),
+      portfolioRepo("archived", {
+        archived: true,
+        pushedAt: "2026-12-01T00:00:00Z",
+      }),
+      portfolioRepo("older", { pushedAt: "2025-01-01T00:00:00Z" }),
+      portfolioRepo("newer", { pushedAt: "2026-01-01T00:00:00Z" }),
+      portfolioRepo("undated", { pushedAt: null }),
+      portfolioRepo("bravo", { pushedAt: "2024-01-01T00:00:00Z" }),
+      portfolioRepo("alpha", { pushedAt: "2024-01-01T00:00:00Z" }),
     ]);
 
     expect(grouping.groups[0]?.repos.map((value) => value.name)).toEqual([
@@ -93,7 +99,7 @@ describe("groupRepos", () => {
   });
 
   test("warns about every group that stays empty", () => {
-    const grouping = groupRepos([repo("web-project")]);
+    const grouping = groupRepos([portfolioRepo("web-project")]);
 
     expect(grouping.groups.map((group) => group.id)).toEqual(["web"]);
     expect(grouping.warnings).toEqual([
@@ -106,11 +112,11 @@ describe("groupRepos", () => {
 
   test("warns when a category only holds featured or lab repositories", () => {
     const grouping = groupRepos([
-      repo("featured-data", {
+      portfolioRepo("featured-data", {
         category: RepoCategory.Data,
         tier: RepoTier.Featured,
       }),
-      repo("lab-data", {
+      portfolioRepo("lab-data", {
         category: RepoCategory.Data,
         tier: RepoTier.Lab,
       }),

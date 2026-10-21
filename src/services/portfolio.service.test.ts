@@ -1,7 +1,7 @@
 import { Octokit } from "@octokit/rest";
 import { describe, expect, test, vi } from "vitest";
 import { PORTFOLIO_OPT_IN_TOPIC, RepoCategory, RepoTier } from "../constants";
-import { getProfile, getRepositories } from "./portfolio.service";
+import { getPortfolioRepos, getProfile } from "./portfolio.service";
 
 const githubRepo = {
   name: "portfolio",
@@ -34,7 +34,7 @@ describe("getProfile", () => {
   });
 });
 
-describe("getRepositories", () => {
+describe("getPortfolioRepos", () => {
   test("maps the published repositories", async () => {
     const client = new Octokit();
     vi.spyOn(client, "paginate").mockResolvedValue([
@@ -42,9 +42,9 @@ describe("getRepositories", () => {
       { ...githubRepo, name: "hidden", topics: ["astro"] },
     ]);
 
-    const listing = await getRepositories(client);
+    const selection = await getPortfolioRepos(client);
 
-    expect(listing.repos).toEqual([
+    expect(selection.repos).toEqual([
       {
         name: "portfolio",
         description: "A window to my projects",
@@ -56,7 +56,7 @@ describe("getRepositories", () => {
         tier: RepoTier.Project,
       },
     ]);
-    expect(listing.warnings).toEqual([]);
+    expect(selection.warnings).toEqual([]);
   });
 
   test("collects the warnings of the unpublished repositories", async () => {
@@ -67,10 +67,12 @@ describe("getRepositories", () => {
       { ...githubRepo, name: "classified", topics: ["pf-cat-data"] },
     ]);
 
-    const listing = await getRepositories(client);
+    const selection = await getPortfolioRepos(client);
 
-    expect(listing.repos.map((repo) => repo.name)).toEqual(["portfolio"]);
-    expect(listing.warnings).toEqual([
+    expect(selection.repos.map((portfolioRepo) => portfolioRepo.name)).toEqual([
+      "portfolio",
+    ]);
+    expect(selection.warnings).toEqual([
       expect.stringContaining('Repository "secret"'),
       expect.stringContaining('Repository "classified"'),
     ]);
@@ -82,7 +84,7 @@ describe("getRepositories", () => {
       { ...githubRepo, topics: [PORTFOLIO_OPT_IN_TOPIC] },
     ]);
 
-    await expect(getRepositories(client)).rejects.toThrow(
+    await expect(getPortfolioRepos(client)).rejects.toThrow(
       'Repository "portfolio" is published but carries no category topic',
     );
   });

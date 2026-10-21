@@ -1,11 +1,11 @@
-import type { Repo } from "./repo.type";
+import type { PortfolioRepo } from "./repo.type";
 
 export type RepoGroupId = "featured" | "web" | "data" | "cloud-devops" | "lab";
 
 export type RepoGroup = {
   id: RepoGroupId;
   label: string;
-  repos: Repo[];
+  repos: PortfolioRepo[];
 };
 
 /**

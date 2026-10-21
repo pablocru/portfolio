@@ -66,9 +66,10 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   frameworks or custom styles: use browser default styles unless a milestone
   asks for styling. Never invent content (names, dates, links, images); ask the
   developer instead.
-- Name a value after the data it holds. When a raw payload and the domain object
-  derived from it coexist, the name states the origin: `githubRepos` and
-  `publishedRepos`, never both `repos`.
+- Name values and types after the data they hold so each file can be read in
+  isolation, adding only the context a reader cannot get from the surrounding
+  code. Keep raw source payloads and portfolio domain objects distinguishable by
+  name; fields and attributes may rely on their owner for context.
 - When creating domain code, use the project layers (`src/types`, `src/mappers`,
   `src/services`, `src/utils`, `src/loaders`, `src/clients`) with suffixes
   `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`.
@@ -147,9 +148,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   (for example, the Octokit client in the profile service, or the repository
   source in the content loader). A unit does not build its own collaborator,
   which is why a unit that imports `astro:env` cannot be tested.
-- Give a fixture the name of the data it holds (`githubRepo`, not `published`),
-  and keep that name for the same object across test files. Share a fixture when
-  several tests need it.
+- Give each fixture the name of the data it holds and keep that name for the
+  same object across test files. Share a fixture when several tests need it.
 
 ## Git
 
