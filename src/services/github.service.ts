@@ -1,10 +1,6 @@
 import { RequestError } from "@octokit/request-error";
 import type { Octokit } from "@octokit/rest";
 import { GITHUB_USERNAME } from "../constants";
-import { mapProfile } from "../mappers/profile.mapper";
-import type { Profile } from "../types/profile.type";
-import type { RepoListing } from "../types/repo.type";
-import { classifyRepos } from "./repo-classification.service";
 
 function describeError(error: unknown): string {
   return error instanceof RequestError
@@ -12,13 +8,13 @@ function describeError(error: unknown): string {
     : "an unknown error";
 }
 
-export async function getProfile(client: Octokit): Promise<Profile> {
+export async function fetchGitHubUser(client: Octokit) {
   try {
     const { data } = await client.rest.users.getByUsername({
       username: GITHUB_USERNAME,
     });
 
-    return mapProfile(data);
+    return data;
   } catch (error) {
     throw new Error(
       `GitHub profile lookup failed for username "${GITHUB_USERNAME}": ${describeError(error)}`,
@@ -27,7 +23,7 @@ export async function getProfile(client: Octokit): Promise<Profile> {
   }
 }
 
-async function listGitHubRepos(client: Octokit) {
+export async function fetchGitHubRepos(client: Octokit) {
   try {
     // The listing endpoint has no topic filter, and the search API would delay
     // new tags, so filter locally. 100 is the maximum per page; the API
@@ -43,8 +39,4 @@ async function listGitHubRepos(client: Octokit) {
       { cause: error },
     );
   }
-}
-
-export async function getRepoListing(client: Octokit): Promise<RepoListing> {
-  return classifyRepos(await listGitHubRepos(client));
 }

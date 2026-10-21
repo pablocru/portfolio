@@ -6,8 +6,7 @@ import {
   RepoCategory,
   RepoTier,
 } from "../constants";
-import { type GitHubRepo, mapRepo } from "../mappers/repo.mapper";
-import type { Repo, RepoListing } from "../types/repo.type";
+import type { GitHubRepo } from "../mappers/repo.mapper";
 
 const KNOWN_TOPICS = new Set<string>([
   PORTFOLIO_OPT_IN_TOPIC,
@@ -15,22 +14,15 @@ const KNOWN_TOPICS = new Set<string>([
   ...Object.values(REPO_TIER_TOPIC),
 ]);
 
-type RepoClassification =
-  | { kind: "published"; repo: Repo }
+type PublicationDecision =
+  | { kind: "published" }
   | { kind: "ignored" }
   | { kind: "warned"; warning: string };
 
-/**
- * The owner publishes a repository by tagging it with the portfolio opt-in
- * topic. Private repositories are rejected even when tagged: the site is
- * public, so everything it builds is exposed.
- */
-function isPublishedRepo(githubRepo: GitHubRepo): boolean {
-  return (
-    !githubRepo.private &&
-    (githubRepo.topics ?? []).includes(PORTFOLIO_OPT_IN_TOPIC)
-  );
-}
+type RepoClassification =
+  | { kind: "published"; category: RepoCategory; tier: RepoTier }
+  | { kind: "ignored" }
+  | { kind: "warned"; warning: string };
 
 /**
  * Places one repository in the portfolio or explains why it stays out.
@@ -38,31 +30,16 @@ function isPublishedRepo(githubRepo: GitHubRepo): boolean {
  * repository whose classification is missing, duplicated or unknown throws.
  */
 export function classifyRepo(githubRepo: GitHubRepo): RepoClassification {
-  const topics = githubRepo.topics ?? [];
-  const controlTopics = topics.filter((topic) =>
-    topic.startsWith(PORTFOLIO_TOPIC_PREFIX),
-  );
+  const publication = decidePublication(githubRepo);
 
-  if (!isPublishedRepo(githubRepo)) {
-    if (topics.includes(PORTFOLIO_OPT_IN_TOPIC)) {
-      return {
-        kind: "warned",
-        warning: `Repository "${githubRepo.name}" carries ${PORTFOLIO_OPT_IN_TOPIC} but is private, so it is not published.`,
-      };
-    }
-
-    if (controlTopics.length === 0) {
-      return { kind: "ignored" };
-    }
-
-    return {
-      kind: "warned",
-      warning: `Repository "${githubRepo.name}" carries the control topics ${formatTopics(controlTopics)} but not ${PORTFOLIO_OPT_IN_TOPIC}, so it is not published.`,
-    };
+  if (publication.kind !== "published") {
+    return publication;
   }
 
-  const unknownTopics = controlTopics.filter(
-    (topic) => !KNOWN_TOPICS.has(topic),
+  const topics = githubRepo.topics ?? [];
+  const unknownTopics = topics.filter(
+    (topic) =>
+      topic.startsWith(PORTFOLIO_TOPIC_PREFIX) && !KNOWN_TOPICS.has(topic),
   );
 
   if (unknownTopics.length > 0) {
@@ -71,16 +48,56 @@ export function classifyRepo(githubRepo: GitHubRepo): RepoClassification {
     );
   }
 
-  const tiers = Object.values(RepoTier).filter((tier) =>
-    topics.includes(REPO_TIER_TOPIC[tier]),
-  );
+  return {
+    kind: "published",
+    category: resolveCategory(githubRepo, topics),
+    tier: resolveTier(githubRepo, topics),
+  };
+}
 
-  if (tiers.length > 1) {
-    throw new Error(
-      `Repository "${githubRepo.name}" carries more than one tier topic: ${formatTopics(tiers.map((tier) => REPO_TIER_TOPIC[tier]))}.`,
-    );
+/**
+ * The owner publishes a repository by tagging it with the portfolio opt-in
+ * topic. Private repositories are rejected even when tagged: the site is
+ * public, so everything it builds is exposed.
+ */
+function decidePublication(githubRepo: GitHubRepo): PublicationDecision {
+  if (isPublishedRepo(githubRepo)) {
+    return { kind: "published" };
   }
 
+  const topics = githubRepo.topics ?? [];
+  const controlTopics = topics.filter((topic) =>
+    topic.startsWith(PORTFOLIO_TOPIC_PREFIX),
+  );
+
+  if (topics.includes(PORTFOLIO_OPT_IN_TOPIC)) {
+    return {
+      kind: "warned",
+      warning: `Repository "${githubRepo.name}" carries ${PORTFOLIO_OPT_IN_TOPIC} but is private, so it is not published.`,
+    };
+  }
+
+  if (controlTopics.length === 0) {
+    return { kind: "ignored" };
+  }
+
+  return {
+    kind: "warned",
+    warning: `Repository "${githubRepo.name}" carries the control topics ${formatTopics(controlTopics)} but not ${PORTFOLIO_OPT_IN_TOPIC}, so it is not published.`,
+  };
+}
+
+function isPublishedRepo(githubRepo: GitHubRepo): boolean {
+  return (
+    !githubRepo.private &&
+    (githubRepo.topics ?? []).includes(PORTFOLIO_OPT_IN_TOPIC)
+  );
+}
+
+function resolveCategory(
+  githubRepo: GitHubRepo,
+  topics: string[],
+): RepoCategory {
   const categories = Object.values(RepoCategory).filter((category) =>
     topics.includes(REPO_CATEGORY_TOPIC[category]),
   );
@@ -98,31 +115,21 @@ export function classifyRepo(githubRepo: GitHubRepo): RepoClassification {
     );
   }
 
-  return {
-    kind: "published",
-    repo: mapRepo(githubRepo, category, tiers[0] ?? RepoTier.Project),
-  };
+  return category;
 }
 
-/**
- * Classifies a whole listing: the repositories to publish and the
- * misconfigurations that do not stop the build.
- */
-export function classifyRepos(githubRepos: GitHubRepo[]): RepoListing {
-  const publishedRepos: Repo[] = [];
-  const warnings: string[] = [];
+function resolveTier(githubRepo: GitHubRepo, topics: string[]): RepoTier {
+  const tiers = Object.values(RepoTier).filter((tier) =>
+    topics.includes(REPO_TIER_TOPIC[tier]),
+  );
 
-  for (const githubRepo of githubRepos) {
-    const classification = classifyRepo(githubRepo);
-
-    if (classification.kind === "published") {
-      publishedRepos.push(classification.repo);
-    } else if (classification.kind === "warned") {
-      warnings.push(classification.warning);
-    }
+  if (tiers.length > 1) {
+    throw new Error(
+      `Repository "${githubRepo.name}" carries more than one tier topic: ${formatTopics(tiers.map((tier) => REPO_TIER_TOPIC[tier]))}.`,
+    );
   }
 
-  return { repos: publishedRepos, warnings };
+  return tiers[0] ?? RepoTier.Project;
 }
 
 function formatTopics(topics: string[]): string {

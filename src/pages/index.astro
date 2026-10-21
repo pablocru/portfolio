@@ -4,7 +4,7 @@ import { createGitHubClient } from "../clients/github.client";
 import Profile from "../components/Profile.astro";
 import RepoCard from "../components/RepoCard.astro";
 import Layout from "../layouts/Layout.astro";
-import { getProfile } from "../services/github.service";
+import { getProfile } from "../services/portfolio.service";
 import { groupRepos } from "../utils/repo-groups.util";
 
 const client = createGitHubClient();

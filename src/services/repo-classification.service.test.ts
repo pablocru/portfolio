@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { PORTFOLIO_OPT_IN_TOPIC, RepoCategory, RepoTier } from "../constants";
-import { classifyRepo, classifyRepos } from "./repo-classification.service";
+import { classifyRepo } from "./repo-classification.service";
 
 const githubRepo = {
   name: "portfolio",
@@ -17,16 +17,8 @@ describe("classifyRepo", () => {
   test("publishes a repository with its classification", () => {
     expect(classifyRepo(githubRepo)).toEqual({
       kind: "published",
-      repo: {
-        name: "portfolio",
-        description: "A window to my projects",
-        language: "TypeScript",
-        url: "https://github.com/pablocru/portfolio",
-        archived: false,
-        pushedAt: "2026-10-20T09:00:00Z",
-        category: RepoCategory.Web,
-        tier: RepoTier.Project,
-      },
+      category: RepoCategory.Web,
+      tier: RepoTier.Project,
     });
   });
 
@@ -36,7 +28,7 @@ describe("classifyRepo", () => {
         ...githubRepo,
         topics: [...githubRepo.topics, "pf-tier-featured"],
       }),
-    ).toMatchObject({ repo: { tier: RepoTier.Featured } });
+    ).toMatchObject({ tier: RepoTier.Featured });
   });
 
   test("treats an explicit project tier as the default", () => {
@@ -130,22 +122,5 @@ describe("classifyRepo", () => {
     expect(classifyRepo({ ...githubRepo, topics: undefined })).toEqual({
       kind: "ignored",
     });
-  });
-});
-
-describe("classifyRepos", () => {
-  test("collects the published repositories and the warnings", () => {
-    const listing = classifyRepos([
-      githubRepo,
-      { ...githubRepo, name: "hidden", topics: ["astro"] },
-      { ...githubRepo, name: "secret", private: true },
-      { ...githubRepo, name: "classified", topics: ["pf-cat-data"] },
-    ]);
-
-    expect(listing.repos.map((repo) => repo.name)).toEqual(["portfolio"]);
-    expect(listing.warnings).toEqual([
-      expect.stringContaining('Repository "secret"'),
-      expect.stringContaining('Repository "classified"'),
-    ]);
   });
 });
