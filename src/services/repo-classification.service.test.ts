@@ -112,6 +112,19 @@ describe("classifyRepo", () => {
     );
   });
 
+  test("warns about an unknown control topic without the opt-in topic", () => {
+    const result = classifyRepo({
+      ...githubRepo,
+      topics: ["pf-cat-desgin"],
+    });
+
+    expect(result).toMatchObject({ kind: "warned" });
+    expect(result).toHaveProperty(
+      "warning",
+      expect.stringContaining("pf-cat-desgin but not pf-show"),
+    );
+  });
+
   test("ignores a repository the owner did not classify", () => {
     expect(classifyRepo({ ...githubRepo, topics: ["astro"] })).toEqual({
       kind: "ignored",
