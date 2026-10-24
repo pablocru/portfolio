@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { RepoCategory, RepoTier } from "../constants";
-import type { PortfolioRepo } from "../types/repo.type";
-import { groupRepos } from "./repo-groups.util";
+import { RepoCategory, RepoTier } from "../../constants";
+import type { PortfolioRepo } from "../../types/repo.type";
+import { groupRepos } from "./repo-groups";
 
 function portfolioRepo(
   name: string,
@@ -81,6 +81,14 @@ describe("groupRepos", () => {
         archived: true,
         pushedAt: "2026-12-01T00:00:00Z",
       }),
+      portfolioRepo("archived-older", {
+        archived: true,
+        pushedAt: "2025-06-01T00:00:00Z",
+      }),
+      portfolioRepo("archived-undated", {
+        archived: true,
+        pushedAt: null,
+      }),
       portfolioRepo("older", { pushedAt: "2025-01-01T00:00:00Z" }),
       portfolioRepo("newer", { pushedAt: "2026-01-01T00:00:00Z" }),
       portfolioRepo("undated", { pushedAt: null }),
@@ -95,6 +103,8 @@ describe("groupRepos", () => {
       "bravo",
       "undated",
       "archived",
+      "archived-older",
+      "archived-undated",
     ]);
   });
 

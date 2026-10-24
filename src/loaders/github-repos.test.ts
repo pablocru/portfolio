@@ -66,20 +66,6 @@ describe("githubReposLoader", () => {
     expect(logger.warn).toHaveBeenCalledWith(warning);
   });
 
-  test("warns about the groups that stay empty", async () => {
-    const { context, logger } = createLoadContext();
-
-    await githubReposLoader(async () => selection()).load(context);
-
-    expect(logger.warn).toHaveBeenCalledWith(
-      expect.stringContaining('"Featured"'),
-    );
-    expect(logger.warn).toHaveBeenCalledWith(
-      expect.stringContaining("Cloud & DevOps"),
-    );
-    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('"Lab"'));
-  });
-
   test("warns when no repository qualifies", async () => {
     const { context, entries, store, logger } = createLoadContext();
     entries.set("removed", { ...portfolioRepo, name: "removed" });

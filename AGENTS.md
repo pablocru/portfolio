@@ -73,6 +73,13 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - When creating domain code, use the project layers (`src/types`, `src/mappers`,
   `src/services`, `src/utils`, `src/loaders`, `src/clients`) with suffixes
   `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`.
+- Presentation logic that belongs to one component lives beside it under
+  `src/components/<feature>/` and is tested in place; only the Astro layer may
+  import it. Repository ordering is a core rule in `src/utils`; grouping, labels
+  and section composition are presentation and live beside the repositories
+  component.
+- A component logs the diagnostics of its own presentation logic with
+  `Astro.logger`; the content loader logs only the warnings of data selection.
 - Mappers transform one representation into another and decide nothing;
   validation and policy live in services.
 - Build third-party clients in `src/clients` (composition: auth, plugins) and
@@ -80,8 +87,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   parameters and read no environment. Only the Astro layer (`src/pages`,
   `src/content.config.ts`, layouts) imports the wrapper, because it may read the
   environment.
-- Closed vocabularies are plain TypeScript `enum`s, never `const enum`, defined
-  in a shared constants module (e.g. `src/constants.ts`).
+- Closed domain vocabularies are plain TypeScript `enum`s, never `const enum`,
+  defined in a shared constants module (e.g. `src/constants.ts`).
+  Component-local presentation identifiers may be string unions.
 - Avoid duplicating facts that already have a source of truth; reference instead
   of repeating versions, scripts, or formatting rules already defined in
   `package.json`, tool configs, or workflows.

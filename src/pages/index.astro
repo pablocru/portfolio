@@ -2,46 +2,19 @@
 import { getCollection } from "astro:content";
 import { createGitHubClient } from "../clients/github.client";
 import Profile from "../components/Profile.astro";
-import RepoCard from "../components/RepoCard.astro";
+import Repositories from "../components/repositories/Repositories.astro";
 import Layout from "../layouts/Layout.astro";
 import { getProfile } from "../services/portfolio.service";
-import { groupRepos } from "../utils/repo-groups.util";
 
 const client = createGitHubClient();
 const portfolioProfile = await getProfile(client);
 const repoEntries = await getCollection("repos");
 const portfolioRepos = repoEntries.map((entry) => entry.data);
-const { groups } = groupRepos(portfolioRepos);
 ---
 
 <Layout title={`Portfolio of ${portfolioProfile.name}`}>
   <main>
     <Profile profile={portfolioProfile} />
-
-    <section aria-labelledby="repositories">
-      <h2 id="repositories">Repositories</h2>
-
-      {groups.length === 0 ? (
-        <p>No repositories are published yet.</p>
-      ) : (
-        groups.map((group) => {
-          const headingId = `repositories-${group.id}`;
-
-          return (
-            <section aria-labelledby={headingId}>
-              <h3 id={headingId}>{group.label}</h3>
-
-              <ul>
-                {group.repos.map((portfolioRepo) => (
-                  <li>
-                    <RepoCard repo={portfolioRepo} />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          );
-        })
-      )}
-    </section>
+    <Repositories portfolioRepos={portfolioRepos} />
   </main>
 </Layout>
