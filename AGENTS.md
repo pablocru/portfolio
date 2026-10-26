@@ -14,8 +14,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 
 - `AGENTS.md`: invariants (what must always be true), policy (what is forbidden)
   and boundaries (where code lives and what may import what). A rule belongs
-  here when a behavior-preserving refactor cannot falsify it; otherwise it is
-  implementation.
+  here when it protects an invariant, a policy, or a boundary. A boundary may be
+  falsified by a behavior-preserving move; stating it is the point. A rule that
+  only dictates a technique belongs in the change that needs it.
 - `docs/plan/`: what a milestone delivers and how it is checked. It defines the
   outcome, not the technique.
 - Code and tests: how the outcome is built and the proof that it holds. A rule
@@ -44,21 +45,17 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - **Do not use npm, yarn, or any package manager other than pnpm.**
 - Ensure tooling with `mise install`; install dependencies with
   `pnpm safe-install` (frozen lockfile).
-- Run, build, and preview the project: `pnpm dev`, `pnpm build`, `pnpm preview`.
-- Quality: `pnpm quality:check` and `pnpm quality:fix` run Biome, Prettier
-  (yml/yaml), rumdl, `astro check` and the test suite; `quality:fix` rewrites
-  the fixable files.
-- Type generation: after changes that affect generated/content types, run
-  `pnpm type:sync` (`astro sync`).
-- `package.json` is the source of truth for available scripts.
+- Run, build, preview, test and check the project with the scripts declared in
+  `package.json`; that file is the source of truth for available scripts.
+- After changes that affect generated or content types, run `pnpm type:sync`.
 
 ## Code conventions
 
-- TypeScript strict (`astro/tsconfigs/strict`).
+- TypeScript runs in strict mode; see `tsconfig.json`.
 - Formatting and line endings are defined by `.editorconfig` and
   `.gitattributes`; consult them when needed.
-- Biome formats code (ts, astro, json, css); Prettier formats yml/yaml; rumdl
-  formats and lints md.
+- Each file type has one configured formatter; do not reformat files by hand or
+  add another tool.
 - The developer works on Linux and Windows: scripts must not rely on bash-only
   syntax.
 - KISS: make the smallest change that meets the acceptance criteria. Do not add
@@ -111,11 +108,12 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - `astro:env` and `import.meta.env` do not work inside `astro.config.mjs` (Astro
   evaluates it before loading other files); declare the schema there and, if a
   value is needed in the config, read it with Vite's `loadEnv`.
-- `site` and `base` live in `astro.config.mjs`; derive links from
-  `import.meta.env.BASE_URL` or `Astro.site`; never hardcode paths.
+- `site` and `base` live in `astro.config.mjs` when the project needs them;
+  derive links from `import.meta.env.BASE_URL` or `Astro.site`; never hardcode
+  paths.
 - Repeated data goes through content collections (loaders and schemas); single
-  records are resolved directly from the service layer. Images go through
-  Astro's asset pipeline.
+  records are resolved directly from the service layer. Content images go
+  through Astro's asset pipeline.
 - Mutually exclusive UI states are one decision: render one branch or the other,
   never two independent conditions that can both hold. The invalid combination
   must be impossible, not merely unlikely.
@@ -135,13 +133,11 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 
 - Read GitHub data with `@octokit/rest`; do not reach the API with native
   `fetch`.
-- Type the payloads with the endpoint types `@octokit/rest` exposes
-  (`RestEndpointMethodTypes`) instead of declaring them by hand; hand-write only
-  the domain types the project maps to.
-- Handle API failures with `RequestError` from `@octokit/request-error` and
-  report which lookup failed.
-- Declare in `package.json` every octokit package imported directly, even when
-  it arrives as a transitive dependency.
+- Derive payload types from the endpoint types the client exposes; hand-write
+  only the domain types the project maps to.
+- API failures name the failing lookup and the status the API returned.
+- Declare in `package.json` every package imported directly, even when it
+  arrives as a transitive dependency.
 
 ## Testing
 
@@ -149,12 +145,10 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   `src/`.
 - The suite is deterministic and offline: no test performs a network request or
   reads credentials.
-- Run the suite with the `test` script declared in `package.json`.
-- Use the `test` commit scope.
+- Run the suite with `pnpm test`.
 
 ### Unit testing
 
-- Unit tests run under Vitest, declared as a dev dependency in `package.json`.
 - When a unit declares a collaborator, inject it instead of mocking the module
   (for example, the Octokit client in the profile service, or the repository
   source in the content loader). A unit does not build its own collaborator,
@@ -176,25 +170,29 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - **Conventional Commits in English**: `type(scope): imperative summary`,
   lowercase after the colon, no trailing period, 72 characters max. Body only
   when the _why_ is not obvious.
-  - Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `ci`, `build`, `style`.
-  - Scopes: `config`, `types`, `utils`, `mappers`, `services`, `loader`,
-    `content`, `ui`, `pages`, `clients`, `ci`, `deps`, `docs`, `agents`,
-    `security`, `test`. It is optional but recommended.
+  - Types: the Conventional Commits types `build`, `chore`, `ci`, `docs`,
+    `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, `test`. A type outside
+    this list needs a reason in the commit body.
+  - Scopes: optional, and taken from the project list: `config`, `types`,
+    `utils`, `mappers`, `services`, `loader`, `content`, `ui`, `pages`,
+    `clients`, `ci`, `deps`, `docs`, `agents`, `security`, `test`. A scope
+    outside this list needs a reason in the commit body.
 - Atomic commits: one logical change each, and every commit leaves the repo
   green (`pnpm quality:check`, which queries the public GitHub API, plus
   `pnpm build` when the change touches the site or its data pipeline).
-- The Lefthook pre-commit hook formats staged files. Never use `--no-verify`.
+- The pre-commit hook formats staged files; never bypass it with `--no-verify`.
 - If a check fails, fix it in a new commit or amend only the commit you just
   made.
 - `main` uses squash merges: the final commit message is the PR title with the
   pull request reference appended (`(#<number>)`) and the PR's `## Why` section
-  as the body. Never pass `--subject` to `gh pr merge`: it drops the reference.
+  as the body. Never pass a subject when merging a pull request: it drops the
+  reference.
 - The PR title is the commit that lands on `main`: write it as a Conventional
   Commit and decide it before opening the PR.
 - Open PRs following `.github/pull_request_template.md`; consult it for required
   sections and wording.
 - PR titles and bodies are rendered by GitHub: write them as normal prose and
-  never manually wrap or column-align them. `rumdl`'s `MD013` line-width limit
+  never manually wrap or column-align them. The Markdown line-width limit
   (configured in `rumdl.toml`) applies only to Markdown files committed in the
   repository.
 - **Never push, open PRs, or merge unless explicitly asked.**
@@ -228,8 +226,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
     entries no longer needed after validation. Node and pnpm versions are
     declared in `package.json`.
 - Vulnerabilities:
-  - When Dependabot opens a fix for an alert, review and merge that PR as is,
-    keeping its `dependabot/…` branch and its `chore(deps)` message.
+  - When Dependabot opens a fix for an alert, review it and keep its
+    `dependabot/…` branch and its `chore(deps)` message; merge it only when
+    explicitly asked.
   - When Dependabot cannot handle it, use a `fix/deps-<package>-ghsa-<id>`
     branch with a `fix(deps): update <package> to <patched version>` commit;
     update a pinned `overrides` entry in the same change when it is affected.
@@ -242,8 +241,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
     `chore(security)` scope.
 - Never print, log, or commit secrets. Use `.env` files and commit
   `.env.example` files with placeholders.
-- In GitHub Actions, use minimal `permissions` and pin actions as the existing
-  workflows do.
+- In GitHub Actions, use minimal `permissions` and the same action version tags
+  as the existing workflows.
 
 ## Working method
 
