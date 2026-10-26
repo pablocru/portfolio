@@ -45,4 +45,21 @@ describe("fetchGitHubRepos", () => {
       `GitHub repository listing failed for username "${GITHUB_USERNAME}": unexpected error occurred`,
     );
   });
+
+  test("quotes the API error message", async () => {
+    const client = new Octokit();
+    vi.spyOn(client.rest.repos, "listForUser").mockRejectedValue(
+      new RequestError("Bad credentials", 401, {
+        request: {
+          method: "GET",
+          url: `https://api.github.com/users/${GITHUB_USERNAME}/repos`,
+          headers: {},
+        },
+      }),
+    );
+
+    await expect(fetchGitHubRepos(client)).rejects.toThrow(
+      `GitHub repository listing failed for username "${GITHUB_USERNAME}": the API responded with 401 "Bad credentials"`,
+    );
+  });
 });
