@@ -27,7 +27,7 @@ export async function fetchGitHubRepos(client: Octokit) {
   try {
     // The listing endpoint has no topic filter, and the search API would delay
     // new tags, so filter locally. 100 is the maximum per page; the API
-    // defaults to 30.
+    // defaults to 30. So 101 repos are processed in 2 requests.
     return await client.paginate(client.rest.repos.listForUser, {
       username: GITHUB_USERNAME,
       type: "owner",
