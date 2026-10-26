@@ -66,10 +66,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   frameworks or custom styles: use browser default styles unless a milestone
   asks for styling. Never invent content (names, dates, links, images); ask the
   developer instead.
-- Name values and types after the data they hold so each file can be read in
-  isolation, adding only the context a reader cannot get from the surrounding
-  code. Keep raw source payloads and portfolio domain objects distinguishable by
-  name; fields and attributes may rely on their owner for context.
+- Keep raw GitHub payloads and portfolio domain objects distinguishable by name
+  so each file can be read in isolation; fields may rely on their owner for
+  context.
 - When creating domain code, use the project layers (`src/types`, `src/mappers`,
   `src/services`, `src/utils`, `src/loaders`, `src/clients`) with suffixes
   `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`.
@@ -78,21 +77,22 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   import it. Repository ordering is a core rule in `src/utils`; grouping, labels
   and section composition are presentation and live beside the repositories
   component.
-- A component logs the diagnostics of its own presentation logic with
-  `Astro.logger`; the content loader logs only the warnings of data selection.
+- Each layer logs only the diagnostics it owns: a component logs its
+  presentation warnings, and the content loader logs only the warnings of data
+  selection.
 - Build diagnostics delimit interpolated system values (repository names,
   usernames, topics, API error messages) so their boundaries stay unambiguous;
   user-facing copy follows its own presentation rules.
-- Mappers transform one representation into another and decide nothing;
-  validation and policy live in services.
+- Mappers transform and normalize one representation into another; they do not
+  decide publication, classification, ordering or presentation. Validation and
+  domain policy live in services.
 - Build third-party clients in `src/clients` (composition: auth, plugins) and
   pass them to services and loaders, which take their collaborators as
   parameters and read no environment. Only the Astro layer (`src/pages`,
   `src/content.config.ts`, layouts) imports the wrapper, because it may read the
   environment.
-- Closed domain vocabularies are plain TypeScript `enum`s, never `const enum`,
-  defined in a shared constants module (e.g. `src/constants.ts`).
-  Component-local presentation identifiers may be string unions.
+- Closed domain vocabularies have one shared source of truth; component-local
+  presentation identifiers may stay local.
 - Avoid duplicating facts that already have a source of truth; reference instead
   of repeating versions, scripts, or formatting rules already defined in
   `package.json`, tool configs, or workflows.
@@ -159,8 +159,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   (for example, the Octokit client in the profile service, or the repository
   source in the content loader). A unit does not build its own collaborator,
   which is why a unit that imports `astro:env` cannot be tested.
-- Give each fixture the name of the data it holds and keep that name for the
-  same object across test files. Share a fixture when several tests need it.
+- Name fixtures for the data they hold and reuse the same fixture for the same
+  object across tests.
 
 ## Git
 
