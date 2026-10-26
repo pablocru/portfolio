@@ -35,9 +35,10 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Acceptance criteria state the observable outcome only; the procedure used to
   check it belongs to verification.
 - Report the result per requirement ID as `PASS`, `FAIL`, or `NOT VERIFIED` with
-  evidence, together with the completion report described in "Working method".
-  Never report `PASS` for a criterion that was not checked, and never fake
-  inputs or mutate real data to make a check pass.
+  evidence, in the acceptance criteria table of the pull request template, and
+  together with the completion report described in "Working method". Never
+  report `PASS` for a criterion that was not checked, and never fake inputs or
+  mutate real data to make a check pass.
 - Do not weaken or omit a requirement to simplify the implementation.
 
 ## Commands
