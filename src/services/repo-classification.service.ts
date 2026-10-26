@@ -26,8 +26,8 @@ type RepoClassification =
 
 type GitHubRepoTopics = {
   optIn: boolean;
-  control: string[];
-  unknown: string[];
+  controlTopics: string[];
+  unknownControlTopics: string[];
   categories: RepoCategory[];
   tiers: RepoTier[];
 };
@@ -38,14 +38,14 @@ type GitHubRepoTopics = {
  * repository whose classification is missing, duplicated or unknown throws.
  */
 export function classifyRepo(githubRepo: GitHubRepo): RepoClassification {
-  const topics = readRepoTopics(githubRepo);
-  const publication = decidePublication(githubRepo, topics);
+  const repoTopics = readRepoTopics(githubRepo);
+  const publicationDecision = decidePublication(githubRepo, repoTopics);
 
-  if (publication.kind !== "published") {
-    return publication;
+  if (publicationDecision.kind !== "published") {
+    return publicationDecision;
   }
 
-  const { category, tier } = classifyPublishedRepo(githubRepo, topics);
+  const { category, tier } = classifyPublishedRepo(githubRepo, repoTopics);
 
   return { kind: "published", category, tier };
 }
@@ -57,14 +57,16 @@ export function classifyRepo(githubRepo: GitHubRepo): RepoClassification {
  */
 function readRepoTopics(githubRepo: GitHubRepo): GitHubRepoTopics {
   const topics = githubRepo.topics ?? [];
-  const control = topics.filter((topic) =>
+  const controlTopics = topics.filter((topic) =>
     topic.startsWith(PORTFOLIO_TOPIC_PREFIX),
   );
 
   return {
     optIn: topics.includes(PORTFOLIO_OPT_IN_TOPIC),
-    control,
-    unknown: control.filter((topic) => !KNOWN_TOPICS.has(topic)),
+    controlTopics,
+    unknownControlTopics: controlTopics.filter(
+      (topic) => !KNOWN_TOPICS.has(topic),
+    ),
     categories: Object.values(RepoCategory).filter((category) =>
       topics.includes(REPO_CATEGORY_TOPIC[category]),
     ),
@@ -81,13 +83,13 @@ function readRepoTopics(githubRepo: GitHubRepo): GitHubRepoTopics {
  */
 function decidePublication(
   githubRepo: GitHubRepo,
-  topics: GitHubRepoTopics,
+  repoTopics: GitHubRepoTopics,
 ): PublicationDecision {
-  if (!githubRepo.private && topics.optIn) {
+  if (!githubRepo.private && repoTopics.optIn) {
     return { kind: "published" };
   }
 
-  if (topics.optIn) {
+  if (repoTopics.optIn) {
     return {
       kind: "warned",
       warning:
@@ -96,13 +98,13 @@ function decidePublication(
     };
   }
 
-  return topics.control.length === 0
+  return repoTopics.controlTopics.length === 0
     ? { kind: "ignored" }
     : {
         kind: "warned",
         warning:
           `Repository "${githubRepo.name}" carries the control topics` +
-          ` ${formatTopics(topics.control)} but not "${PORTFOLIO_OPT_IN_TOPIC}",` +
+          ` ${formatTopics(repoTopics.controlTopics)} but not "${PORTFOLIO_OPT_IN_TOPIC}",` +
           " so it is not published.",
       };
 }
@@ -114,18 +116,18 @@ function decidePublication(
  */
 function classifyPublishedRepo(
   githubRepo: GitHubRepo,
-  topics: GitHubRepoTopics,
+  repoTopics: GitHubRepoTopics,
 ): { category: RepoCategory; tier: RepoTier } {
-  if (topics.unknown.length > 0) {
+  if (repoTopics.unknownControlTopics.length > 0) {
     throw new Error(
       `Repository "${githubRepo.name}" carries unknown control topics:` +
-        ` ${formatTopics(topics.unknown)}.`,
+        ` ${formatTopics(repoTopics.unknownControlTopics)}.`,
     );
   }
 
   return {
-    category: resolveCategory(githubRepo, topics.categories),
-    tier: resolveTier(githubRepo, topics.tiers),
+    category: resolveCategory(githubRepo, repoTopics.categories),
+    tier: resolveTier(githubRepo, repoTopics.tiers),
   };
 }
 
@@ -133,9 +135,9 @@ function resolveCategory(
   githubRepo: GitHubRepo,
   categories: RepoCategory[],
 ): RepoCategory {
-  const [category] = categories;
+  const [resolvedCategory] = categories;
 
-  if (category === undefined) {
+  if (resolvedCategory === undefined) {
     throw new Error(
       `Repository "${githubRepo.name}" is published but carries no category` +
         " topic.",
@@ -145,11 +147,11 @@ function resolveCategory(
   if (categories.length > 1) {
     throw new Error(
       `Repository "${githubRepo.name}" carries more than one category topic:` +
-        ` ${formatTopics(categories.map((value) => REPO_CATEGORY_TOPIC[value]))}.`,
+        ` ${formatTopics(categories.map((category) => REPO_CATEGORY_TOPIC[category]))}.`,
     );
   }
 
-  return category;
+  return resolvedCategory;
 }
 
 function resolveTier(githubRepo: GitHubRepo, tiers: RepoTier[]): RepoTier {
