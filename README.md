@@ -5,15 +5,36 @@
 
 This repository contains my personal portfolio website which is a window to my
 projects. The goal of this project is to create a clear entry point to my work
-on GitHub. Here you will find:
+on GitHub. The page groups the repositories I publish by category, and gives
+featured work and experiments a section of their own. Here you will find:
 
-- Selected projects
-- Experiments
-- Ideas I am exploring
-- Links to live demos (when available)
+- Featured work, before the categories
+- The `Web`, `Data` and `Cloud & DevOps` categories
+- The `Lab` section, for the experiments
+- A link to each repository on GitHub
 
 Not all projects are finished, and not all of them are deployed. This portfolio
 shows both what I build and how I learn.
+
+## Publishing a repository
+
+The portfolio lists the public repositories I tag with `pf-show`. Add the topic
+that describes the kind of work, and optionally the topic for its tier:
+
+| Topic                 | Effect                                             |
+| --------------------- | -------------------------------------------------- |
+| `pf-show`             | Publishes the repository                           |
+| `pf-cat-web`          | `Web` category                                     |
+| `pf-cat-data`         | `Data` category                                    |
+| `pf-cat-cloud-devops` | `Cloud & DevOps` category                          |
+| `pf-tier-featured`    | `Featured` section, before the categories          |
+| `pf-tier-project`     | `Project` tier, the same grouping as no tier topic |
+| `pf-tier-lab`         | `Lab` section, after the categories                |
+
+A published repository needs exactly one category and at most one tier. The next
+build picks the change up, and a repository with a missing, duplicated or
+unknown topic fails the build with an error that names it. The vocabulary is
+declared in `src/constants.ts`.
 
 ## Tech stack
 
@@ -45,7 +66,8 @@ shows both what I build and how I learn.
    ```
 
    Without `mise`, install the `Node.js` and `pnpm` versions declared in
-   `package.json` manually.
+   `package.json` manually. The pre-commit hook runs the pinned toolchain
+   through `mise`, so `mise` must be installed to commit.
 
 1. Install dependencies
 
@@ -82,6 +104,8 @@ submit a `Pull Request`.
 1. `Fork` the repository and make your changes in a `new branch`.
 1. Document your additions.
 1. Use [Conventional Commits](https://www.conventionalcommits.org).
+1. For a pull request that delivers a milestone, report every requirement in the
+   acceptance criteria table of the pull request template.
 1. Submit a `Pull Request` with a clear description of your changes.
 
 Thank you for helping improve this project!
