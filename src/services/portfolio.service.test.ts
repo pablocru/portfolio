@@ -63,6 +63,8 @@ describe("getPortfolioRepos", () => {
     const client = new Octokit();
     vi.spyOn(client, "paginate").mockResolvedValue([
       githubRepo,
+      // The public source never returns a private repository; this fixture
+      // keeps the defensive classifier path covered.
       { ...githubRepo, name: "secret", private: true },
       { ...githubRepo, name: "classified", topics: ["pf-cat-data"] },
     ]);

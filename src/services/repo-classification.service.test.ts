@@ -85,6 +85,35 @@ describe("classifyRepo", () => {
     );
   });
 
+  test("reports every classification fault in one error", () => {
+    expect(() =>
+      classifyRepo({
+        ...githubRepo,
+        topics: [
+          PORTFOLIO_OPT_IN_TOPIC,
+          "pf-cat-web",
+          "pf-cat-data",
+          "pf-tier-featured",
+          "pf-tier-lab",
+          "pf-cat-desgin",
+        ],
+      }),
+    ).toThrow(
+      /Repository "portfolio" has 3 classification faults:[\s\S]*unknown control topics[\s\S]*more than one category topic[\s\S]*more than one tier topic/,
+    );
+  });
+
+  test("aggregates a missing category with duplicated tiers", () => {
+    expect(() =>
+      classifyRepo({
+        ...githubRepo,
+        topics: [PORTFOLIO_OPT_IN_TOPIC, "pf-tier-featured", "pf-tier-lab"],
+      }),
+    ).toThrow(
+      /Repository "portfolio" has 2 classification faults:[\s\S]*no category topic[\s\S]*more than one tier topic/,
+    );
+  });
+
   test("warns about a private repository tagged for publication", () => {
     const result = classifyRepo({ ...githubRepo, private: true });
 

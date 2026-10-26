@@ -32,10 +32,15 @@ type GitHubRepoTopics = {
   tiers: RepoTier[];
 };
 
+type ClassificationPart<T> =
+  | { kind: "resolved"; value: T }
+  | { kind: "fault"; message: string };
+
 /**
  * Places one repository in the portfolio or explains why it stays out.
  * A repository the owner did not publish never stops the build; a published
- * repository whose classification is missing, duplicated or unknown throws.
+ * repository whose classification is missing, duplicated or unknown throws
+ * one error reporting every fault.
  */
 export function classifyRepo(githubRepo: GitHubRepo): RepoClassification {
   const repoTopics = readRepoTopics(githubRepo);
@@ -112,57 +117,87 @@ function decidePublication(
 /**
  * Classifies a repository that already passed the publication gate: its
  * control topics must belong to the vocabulary and it needs exactly one
- * category and at most one tier.
+ * category and at most one tier. Every fault is collected before throwing, so
+ * one build reveals all the topics the owner must fix.
  */
 function classifyPublishedRepo(
   githubRepo: GitHubRepo,
   repoTopics: GitHubRepoTopics,
 ): { category: RepoCategory; tier: RepoTier } {
-  if (repoTopics.unknownControlTopics.length > 0) {
-    throw new Error(
-      `Repository "${githubRepo.name}" carries unknown control topics:` +
-        ` ${formatTopics(repoTopics.unknownControlTopics)}.`,
-    );
+  const category = resolveCategory(repoTopics.categories);
+  const tier = resolveTier(repoTopics.tiers);
+  const faults = [
+    ...(repoTopics.unknownControlTopics.length > 0
+      ? [
+          "carries unknown control topics:" +
+            ` ${formatTopics(repoTopics.unknownControlTopics)}`,
+        ]
+      : []),
+    ...(category.kind === "fault" ? [category.message] : []),
+    ...(tier.kind === "fault" ? [tier.message] : []),
+  ];
+
+  if (category.kind === "fault" || tier.kind === "fault" || faults.length > 0) {
+    throw new Error(formatClassificationError(githubRepo.name, faults));
   }
 
-  return {
-    category: resolveCategory(githubRepo, repoTopics.categories),
-    tier: resolveTier(githubRepo, repoTopics.tiers),
-  };
+  return { category: category.value, tier: tier.value };
 }
 
+/**
+ * Returns the category or the fault that prevents it. It reports the fault
+ * instead of throwing so the caller can collect every fault at once.
+ */
 function resolveCategory(
-  githubRepo: GitHubRepo,
   categories: RepoCategory[],
-): RepoCategory {
+): ClassificationPart<RepoCategory> {
   const [resolvedCategory] = categories;
 
   if (resolvedCategory === undefined) {
-    throw new Error(
-      `Repository "${githubRepo.name}" is published but carries no category` +
-        " topic.",
-    );
+    return {
+      kind: "fault",
+      message: "is published but carries no category topic",
+    };
   }
 
   if (categories.length > 1) {
-    throw new Error(
-      `Repository "${githubRepo.name}" carries more than one category topic:` +
-        ` ${formatTopics(categories.map((category) => REPO_CATEGORY_TOPIC[category]))}.`,
-    );
+    return {
+      kind: "fault",
+      message:
+        "carries more than one category topic:" +
+        ` ${formatTopics(categories.map((category) => REPO_CATEGORY_TOPIC[category]))}`,
+    };
   }
 
-  return resolvedCategory;
+  return { kind: "resolved", value: resolvedCategory };
 }
 
-function resolveTier(githubRepo: GitHubRepo, tiers: RepoTier[]): RepoTier {
+/**
+ * Returns the tier or the fault that prevents it. It reports the fault instead
+ * of throwing so the caller can collect every fault at once.
+ */
+function resolveTier(tiers: RepoTier[]): ClassificationPart<RepoTier> {
   if (tiers.length > 1) {
-    throw new Error(
-      `Repository "${githubRepo.name}" carries more than one tier topic:` +
-        ` ${formatTopics(tiers.map((tier) => REPO_TIER_TOPIC[tier]))}.`,
-    );
+    return {
+      kind: "fault",
+      message:
+        "carries more than one tier topic:" +
+        ` ${formatTopics(tiers.map((tier) => REPO_TIER_TOPIC[tier]))}`,
+    };
   }
 
-  return tiers[0] ?? RepoTier.Project;
+  return { kind: "resolved", value: tiers[0] ?? RepoTier.Project };
+}
+
+function formatClassificationError(repoName: string, faults: string[]): string {
+  if (faults.length === 1) {
+    return `Repository "${repoName}" ${faults[0]}.`;
+  }
+
+  return (
+    `Repository "${repoName}" has ${faults.length} classification faults:\n` +
+    faults.map((fault) => `- ${fault}.`).join("\n")
+  );
 }
 
 function formatTopics(topics: string[]): string {
