@@ -7,14 +7,14 @@ import Layout from "../layouts/Layout.astro";
 import { getProfile } from "../services/portfolio.service";
 
 const client = createGitHubClient();
-const portfolioProfile = await getProfile(client);
+const profile = await getProfile(client);
 const repoEntries = await getCollection("repos");
-const portfolioRepos = repoEntries.map((entry) => entry.data);
+const repos = repoEntries.map((entry) => entry.data);
 ---
 
-<Layout title={`Portfolio of ${portfolioProfile.name}`}>
+<Layout title={`Portfolio of ${profile.name}`}>
   <main>
-    <Profile profile={portfolioProfile} />
-    <Repositories portfolioRepos={portfolioRepos} />
+    <Profile profile={profile} />
+    <Repositories repos={repos} />
   </main>
 </Layout>

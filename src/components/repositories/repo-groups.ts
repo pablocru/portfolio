@@ -25,7 +25,7 @@ export type RepoGrouping = {
 type GroupDefinition = {
   id: RepoGroupId;
   label: RepoGroupLabel;
-  includes: (portfolioRepo: PortfolioRepo) => boolean;
+  includes: (repo: PortfolioRepo) => boolean;
   warning: string;
 };
 
@@ -39,23 +39,22 @@ const GROUP_DEFINITIONS: GroupDefinition[] = [
   {
     id: "featured",
     label: RepoTier.Featured,
-    includes: (portfolioRepo) => portfolioRepo.tier === RepoTier.Featured,
+    includes: (repo) => repo.tier === RepoTier.Featured,
     warning: `The "${RepoTier.Featured}" group has no repository; its section is omitted.`,
   },
   ...Object.values(RepoCategory).map(
     (category): GroupDefinition => ({
       id: CATEGORY_GROUP_ID[category],
       label: category,
-      includes: (portfolioRepo) =>
-        portfolioRepo.tier === RepoTier.Project &&
-        portfolioRepo.category === category,
+      includes: (repo) =>
+        repo.tier === RepoTier.Project && repo.category === category,
       warning: `Category "${category}" has no project-tier repository; its section is omitted.`,
     }),
   ),
   {
     id: "lab",
     label: RepoTier.Lab,
-    includes: (portfolioRepo) => portfolioRepo.tier === RepoTier.Lab,
+    includes: (repo) => repo.tier === RepoTier.Lab,
     warning: `The "${RepoTier.Lab}" group has no repository; its section is omitted.`,
   },
 ];
@@ -66,8 +65,8 @@ const GROUP_DEFINITIONS: GroupDefinition[] = [
  * one group. Empty groups are left out and reported; with no repository at all
  * the page shows its empty state instead of a list of empty sections.
  */
-export function groupRepos(portfolioRepos: PortfolioRepo[]): RepoGrouping {
-  if (portfolioRepos.length === 0) {
+export function groupRepos(repos: PortfolioRepo[]): RepoGrouping {
+  if (repos.length === 0) {
     return { groups: [], warnings: [] };
   }
 
@@ -75,7 +74,7 @@ export function groupRepos(portfolioRepos: PortfolioRepo[]): RepoGrouping {
   const groups: RepoGroup[] = [];
 
   for (const definition of GROUP_DEFINITIONS) {
-    const groupedRepos = portfolioRepos
+    const groupedRepos = repos
       .filter(definition.includes)
       .sort(comparePortfolioRepos);
 

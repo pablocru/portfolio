@@ -4,11 +4,11 @@ import RepoCard from "../RepoCard.astro";
 import { groupRepos } from "./repo-groups";
 
 interface Props {
-  portfolioRepos: PortfolioRepo[];
+  repos: PortfolioRepo[];
 }
 
-const { portfolioRepos } = Astro.props;
-const { groups, warnings } = groupRepos(portfolioRepos);
+const { repos } = Astro.props;
+const { groups, warnings } = groupRepos(repos);
 
 for (const warning of warnings) {
   Astro.logger.warn(warning);
@@ -29,9 +29,9 @@ for (const warning of warnings) {
           <h3 id={headingId}>{group.label}</h3>
 
           <ul>
-            {group.repos.map((portfolioRepo) => (
+            {group.repos.map((repo) => (
               <li>
-                <RepoCard repo={portfolioRepo} />
+                <RepoCard repo={repo} />
               </li>
             ))}
           </ul>
