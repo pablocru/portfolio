@@ -137,7 +137,16 @@ describe("groupRepos", () => {
     );
   });
 
-  test("reports nothing without repositories", () => {
-    expect(groupRepos([])).toEqual({ groups: [], warnings: [] });
+  test("warns about every group without repositories", () => {
+    expect(groupRepos([])).toEqual({
+      groups: [],
+      warnings: [
+        'The "Featured" group has no repository; its section is omitted.',
+        'Category "Web" has no project-tier repository; its section is omitted.',
+        'Category "Data" has no project-tier repository; its section is omitted.',
+        'Category "Cloud & DevOps" has no project-tier repository; its section is omitted.',
+        'The "Lab" group has no repository; its section is omitted.',
+      ],
+    });
   });
 });

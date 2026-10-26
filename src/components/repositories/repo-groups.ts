@@ -63,13 +63,9 @@ const GROUP_DEFINITIONS: GroupDefinition[] = [
  * Splits the repositories included in the portfolio into the sections of the
  * page. The tier wins over the category, so every repository belongs to exactly
  * one group. Empty groups are left out and reported; with no repository at all
- * the page shows its empty state instead of a list of empty sections.
+ * every group is reported empty and the page shows its empty state.
  */
 export function groupRepos(repos: PortfolioRepo[]): RepoGrouping {
-  if (repos.length === 0) {
-    return { groups: [], warnings: [] };
-  }
-
   const warnings: string[] = [];
   const groups: RepoGroup[] = [];
 
