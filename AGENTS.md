@@ -216,11 +216,14 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 ## Dependencies and security
 
 - Dependencies and supply chain:
-  - `pnpm add --save-exact`; commit `package.json` with `pnpm-lock.yaml` in a
+  - Add dependencies with pnpm; exact versions are enforced by the workspace
+    configuration. Commit `package.json` with `pnpm-lock.yaml` in a
     `chore(deps)` commit.
-  - Respect `minimumReleaseAge` and do not change allowances, `engineStrict`,
-    `minimumReleaseAgeExclude`, or `overrides` in `pnpm-workspace.yaml` without
-    asking. If a version is blocked, choose an older one.
+  - Respect the release-age policy and do not change `minimumReleaseAge`,
+    `engineStrict`, the build allowlist, or any pinned `overrides` in
+    `pnpm-workspace.yaml` without asking. If a version is blocked, choose an
+    older one. A security fix that must land before the window passes needs an
+    explicit `minimumReleaseAgeExclude` entry.
   - Review supply-chain exceptions when adding or upgrading dependencies; remove
     entries no longer needed after validation. Node and pnpm versions are
     declared in `package.json`.
