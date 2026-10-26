@@ -1,8 +1,8 @@
 import type { RestEndpointMethodTypes } from "@octokit/rest";
-import { PORTFOLIO_OPT_IN_TOPIC } from "../constants";
-import type { Repo } from "../types/repo.type";
+import type { RepoCategory, RepoTier } from "../constants";
+import type { PortfolioRepo } from "../types/repo.type";
 
-type GitHubRepo = Pick<
+export type GitHubRepo = Pick<
   RestEndpointMethodTypes["repos"]["listForUser"]["response"]["data"][number],
   | "name"
   | "description"
@@ -11,23 +11,26 @@ type GitHubRepo = Pick<
   | "archived"
   | "private"
   | "topics"
+  | "pushed_at"
 >;
 
 /**
- * The owner publishes a repository by tagging it with the portfolio opt-in
- * topic. Private repositories are rejected even when tagged: the site is
- * public, so everything it builds is exposed.
+ * Maps the GitHub payload to the portfolio repository. The caller decides
+ * whether the repository is published and which category and tier it has.
  */
-export function isPublishedRepo(repo: GitHubRepo): boolean {
-  return !repo.private && (repo.topics ?? []).includes(PORTFOLIO_OPT_IN_TOPIC);
-}
-
-export function mapRepo(repo: GitHubRepo): Repo {
+export function mapRepo(
+  githubRepo: GitHubRepo,
+  category: RepoCategory,
+  tier: RepoTier,
+): PortfolioRepo {
   return {
-    name: repo.name,
-    description: repo.description?.trim() || null,
-    language: repo.language ?? null,
-    url: repo.html_url,
-    archived: repo.archived ?? false,
+    name: githubRepo.name,
+    description: githubRepo.description?.trim() || null,
+    language: githubRepo.language ?? null,
+    url: githubRepo.html_url,
+    archived: githubRepo.archived ?? false,
+    pushedAt: githubRepo.pushed_at ?? null,
+    category,
+    tier,
   };
 }

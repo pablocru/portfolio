@@ -1,24 +1,20 @@
 import { RequestError } from "@octokit/request-error";
 import type { Octokit } from "@octokit/rest";
 import { GITHUB_USERNAME } from "../constants";
-import { mapProfile } from "../mappers/profile.mapper";
-import { isPublishedRepo, mapRepo } from "../mappers/repo.mapper";
-import type { Profile } from "../types/profile.type";
-import type { Repo } from "../types/repo.type";
 
 function describeError(error: unknown): string {
   return error instanceof RequestError
-    ? `${error.status} ${error.message}`
-    : "an unknown error";
+    ? `the API responded with ${error.status} "${error.message}"`
+    : "unexpected error occurred";
 }
 
-export async function getProfile(client: Octokit): Promise<Profile> {
+export async function fetchGitHubUser(client: Octokit) {
   try {
     const { data } = await client.rest.users.getByUsername({
       username: GITHUB_USERNAME,
     });
 
-    return mapProfile(data);
+    return data;
   } catch (error) {
     throw new Error(
       `GitHub profile lookup failed for username "${GITHUB_USERNAME}": ${describeError(error)}`,
@@ -27,18 +23,18 @@ export async function getProfile(client: Octokit): Promise<Profile> {
   }
 }
 
-export async function getRepos(client: Octokit): Promise<Repo[]> {
+export async function fetchGitHubRepos(client: Octokit) {
   try {
-    // The listing endpoint has no topic filter, and the search API would delay
-    // new tags, so filter locally. 100 is the maximum per page; the API
-    // defaults to 30.
-    const repositories = await client.paginate(client.rest.repos.listForUser, {
+    // listForUser returns public repositories only and the token only raises
+    // the rate limit. The listing endpoint has no topic filter, and the search
+    // API would delay new tags, so the portfolio service filters locally. 100
+    // is the maximum per page; the API defaults to 30, so 101 repositories are
+    // processed in two requests.
+    return await client.paginate(client.rest.repos.listForUser, {
       username: GITHUB_USERNAME,
       type: "owner",
       per_page: 100,
     });
-
-    return repositories.filter(isPublishedRepo).map(mapRepo);
   } catch (error) {
     throw new Error(
       `GitHub repository listing failed for username "${GITHUB_USERNAME}": ${describeError(error)}`,

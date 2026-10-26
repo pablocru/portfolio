@@ -1,15 +1,15 @@
 ---
-import type { Repo } from "../types/repo.type";
+import type { PortfolioRepo } from "../types/repo.type";
 
 interface Props {
-  repo: Repo;
+  repo: PortfolioRepo;
 }
 
 const { repo } = Astro.props;
 ---
 
 <article>
-  <h3><a href={repo.url}>{repo.name}</a></h3>
+  <h4><a href={repo.url}>{repo.name}</a></h4>
   {repo.description !== null && <p>{repo.description}</p>}
   {repo.language !== null && <p>{repo.language}</p>}
   {repo.archived && <p>Archived</p>}

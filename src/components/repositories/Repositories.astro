@@ -1,0 +1,42 @@
+---
+import type { PortfolioRepo } from "../../types/repo.type";
+import RepoCard from "../RepoCard.astro";
+import { groupRepos } from "./repo-groups";
+
+interface Props {
+  repos: PortfolioRepo[];
+}
+
+const { repos } = Astro.props;
+const { groups, warnings } = groupRepos(repos);
+
+for (const warning of warnings) {
+  Astro.logger.warn(warning);
+}
+---
+
+<section aria-labelledby="repositories">
+  <h2 id="repositories">Repositories</h2>
+
+  {groups.length === 0 ? (
+    <p>No repositories are published yet.</p>
+  ) : (
+    groups.map((group) => {
+      const headingId = `repositories-${group.id}`;
+
+      return (
+        <section aria-labelledby={headingId}>
+          <h3 id={headingId}>{group.label}</h3>
+
+          <ul>
+            {group.repos.map((repo) => (
+              <li>
+                <RepoCard repo={repo} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    })
+  )}
+</section>

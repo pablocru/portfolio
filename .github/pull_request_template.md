@@ -16,6 +16,16 @@ Describe the final diff against main, not the intermediate steps that were later
 
 <!-- Commands run and any manual/visual verification. -->
 
+### Acceptance criteria
+
+<!--
+Only for pull requests that deliver a milestone. Delete this section otherwise.
+One row per requirement ID, reported as described in AGENTS.md.
+-->
+
+| Requirement | Result | Evidence |
+| ----------- | ------ | -------- |
+
 ## Notes
 
 <!-- Optional: follow-ups, decisions, or anything reviewers should know. -->
