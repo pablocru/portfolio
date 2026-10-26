@@ -81,6 +81,10 @@ requirement ID as described in `AGENTS.md`.
 - C-004.10: with no published repository, the build log must name all five
   groups (`Featured`, `Web`, `Data`, `Cloud & DevOps`, `Lab`); this can be
   checked without tagging a repository.
+- When the portfolio is empty, Astro's content layer also logs
+  `The collection "repos" does not exist or is empty`. This is a framework
+  warning for an empty content collection: it is benign, does not fail the
+  build, and is not one of the C-004.10 group warnings.
 - US-004.6, C-004.2 to C-004.6 and C-004.13: the warning and error paths are
   covered by `pnpm test` with an in-memory repository source. C-004.6 is a
   defensive path: the source lists public repositories only, so it is checked by
