@@ -20,24 +20,23 @@ export function githubReposLoader(
         logger.warn(warning);
       }
 
-      for (const repo of repos) {
-        const data = await parseData({
-          id: repo.name,
-          data: repo,
-        });
-
-        store.set({
-          id: repo.name,
-          data,
-          digest: generateDigest(data),
-        });
-      }
-
       if (repos.length === 0) {
         logger.warn(
           `No repository to publish: no public repository of ${GITHUB_USERNAME} carries the ${PORTFOLIO_OPT_IN_TOPIC} topic.`,
         );
-        return;
+      } else {
+        for (const repo of repos) {
+          const data = await parseData({
+            id: repo.name,
+            data: repo,
+          });
+
+          store.set({
+            id: repo.name,
+            data,
+            digest: generateDigest(data),
+          });
+        }
       }
     },
   };
