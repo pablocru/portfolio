@@ -91,7 +91,7 @@ function decidePublication(
     return {
       kind: "warned",
       warning:
-        `Repository "${githubRepo.name}" carries ${PORTFOLIO_OPT_IN_TOPIC}` +
+        `Repository "${githubRepo.name}" carries "${PORTFOLIO_OPT_IN_TOPIC}"` +
         " but is private, so it is not published.",
     };
   }
@@ -102,7 +102,7 @@ function decidePublication(
         kind: "warned",
         warning:
           `Repository "${githubRepo.name}" carries the control topics` +
-          ` ${formatTopics(topics.control)} but not ${PORTFOLIO_OPT_IN_TOPIC},` +
+          ` ${formatTopics(topics.control)} but not "${PORTFOLIO_OPT_IN_TOPIC}",` +
           " so it is not published.",
       };
 }
@@ -164,5 +164,5 @@ function resolveTier(githubRepo: GitHubRepo, tiers: RepoTier[]): RepoTier {
 }
 
 function formatTopics(topics: string[]): string {
-  return topics.join(", ");
+  return topics.map((topic) => `"${topic}"`).join(", ");
 }

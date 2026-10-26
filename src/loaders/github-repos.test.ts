@@ -1,6 +1,11 @@
 import type { LoaderContext } from "astro/loaders";
 import { describe, expect, test, vi } from "vitest";
-import { PORTFOLIO_OPT_IN_TOPIC, RepoCategory, RepoTier } from "../constants";
+import {
+  GITHUB_USERNAME,
+  PORTFOLIO_OPT_IN_TOPIC,
+  RepoCategory,
+  RepoTier,
+} from "../constants";
 import type { PortfolioRepo, PortfolioRepoSelection } from "../types/repo.type";
 import { githubReposLoader } from "./github-repos";
 
@@ -57,7 +62,7 @@ describe("githubReposLoader", () => {
 
   test("forwards the warnings of the selection", async () => {
     const { context, logger } = createLoadContext();
-    const warning = 'Repository "secret" carries pf-show but is private.';
+    const warning = 'Repository "secret" carries "pf-show" but is private.';
 
     await githubReposLoader(async () =>
       selection({ warnings: [warning] }),
@@ -76,7 +81,9 @@ describe("githubReposLoader", () => {
     expect(store.set).not.toHaveBeenCalled();
     expect(logger.warn).toHaveBeenCalledTimes(1);
     expect(logger.warn).toHaveBeenCalledWith(
-      expect.stringContaining(PORTFOLIO_OPT_IN_TOPIC),
+      expect.stringContaining(
+        `no public repository of "${GITHUB_USERNAME}" carries the "${PORTFOLIO_OPT_IN_TOPIC}" topic`,
+      ),
     );
   });
 });

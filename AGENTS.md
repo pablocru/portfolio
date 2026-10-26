@@ -80,6 +80,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   component.
 - A component logs the diagnostics of its own presentation logic with
   `Astro.logger`; the content loader logs only the warnings of data selection.
+- Build diagnostics delimit interpolated system values (repository names,
+  usernames, topics, API error messages) so their boundaries stay unambiguous;
+  user-facing copy follows its own presentation rules.
 - Mappers transform one representation into another and decide nothing;
   validation and policy live in services.
 - Build third-party clients in `src/clients` (composition: auth, plugins) and

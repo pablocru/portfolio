@@ -42,8 +42,8 @@ describe("classifyRepo", () => {
   });
 
   test.each([
-    [["pf-tier-featured", "pf-tier-lab"], "pf-tier-featured, pf-tier-lab"],
-    [["pf-tier-project", "pf-tier-lab"], "pf-tier-project, pf-tier-lab"],
+    [["pf-tier-featured", "pf-tier-lab"], '"pf-tier-featured", "pf-tier-lab"'],
+    [["pf-tier-project", "pf-tier-lab"], '"pf-tier-project", "pf-tier-lab"'],
   ])("rejects the tier topics %j", (tierTopics, expected) => {
     expect(() =>
       classifyRepo({
@@ -70,7 +70,7 @@ describe("classifyRepo", () => {
         topics: [...githubRepo.topics, "pf-cat-data"],
       }),
     ).toThrow(
-      'Repository "portfolio" carries more than one category topic: pf-cat-web, pf-cat-data',
+      'Repository "portfolio" carries more than one category topic: "pf-cat-web", "pf-cat-data"',
     );
   });
 
@@ -81,7 +81,7 @@ describe("classifyRepo", () => {
         topics: [...githubRepo.topics, "pf-cat-desgin"],
       }),
     ).toThrow(
-      'Repository "portfolio" carries unknown control topics: pf-cat-desgin',
+      'Repository "portfolio" carries unknown control topics: "pf-cat-desgin"',
     );
   });
 
@@ -95,7 +95,7 @@ describe("classifyRepo", () => {
     );
     expect(result).toHaveProperty(
       "warning",
-      expect.stringContaining("private"),
+      expect.stringContaining('carries "pf-show" but is private'),
     );
   });
 
@@ -108,7 +108,7 @@ describe("classifyRepo", () => {
     expect(result).toMatchObject({ kind: "warned" });
     expect(result).toHaveProperty(
       "warning",
-      expect.stringContaining("pf-cat-data, pf-tier-lab but not pf-show"),
+      expect.stringContaining('"pf-cat-data", "pf-tier-lab" but not "pf-show"'),
     );
   });
 
@@ -121,7 +121,7 @@ describe("classifyRepo", () => {
     expect(result).toMatchObject({ kind: "warned" });
     expect(result).toHaveProperty(
       "warning",
-      expect.stringContaining("pf-cat-desgin but not pf-show"),
+      expect.stringContaining('"pf-cat-desgin" but not "pf-show"'),
     );
   });
 

@@ -4,8 +4,8 @@ import { GITHUB_USERNAME } from "../constants";
 
 function describeError(error: unknown): string {
   return error instanceof RequestError
-    ? `${error.status} ${error.message}`
-    : "an unknown error";
+    ? `the API responded with ${error.status} "${error.message}"`
+    : "unexpected error occurred";
 }
 
 export async function fetchGitHubUser(client: Octokit) {
