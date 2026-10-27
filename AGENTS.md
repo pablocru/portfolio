@@ -170,14 +170,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   Names: `feat/…`, `fix/…`, `ci/…`, `docs/…`, `chore/…`.
 - **Conventional Commits in English**: `type(scope): imperative summary`,
   lowercase after the colon, no trailing period, 72 characters max. Body only
-  when the _why_ is not obvious.
-  - Types: the Conventional Commits types `build`, `chore`, `ci`, `docs`,
-    `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, `test`. A type outside
-    this list needs a reason in the commit body.
-  - Scopes: optional, and taken from the project list: `config`, `types`,
-    `utils`, `mappers`, `services`, `loader`, `content`, `ui`, `pages`,
-    `clients`, `ci`, `deps`, `docs`, `agents`, `security`, `test`. A scope
-    outside this list needs a reason in the commit body.
+  when the _why_ is not obvious. The types and the scope follow
+  [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 - Atomic commits: one logical change each, and every commit leaves the repo
   green (`pnpm quality:check`, which queries the public GitHub API, plus
   `pnpm build` when the change touches the site or its data pipeline).
