@@ -194,8 +194,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   Commit and decide it before opening the PR.
 - Open PRs following `.github/pull_request_template.md`; consult it for required
   sections and wording.
-- PR titles and bodies are rendered by GitHub: write them as normal prose and
-  never manually wrap or column-align them. The Markdown line-width limit
+- Commit messages, pull request titles and pull request bodies are rendered by
+  GitHub: write them as normal prose and never manually wrap or column-align
+  them, in every commit and in every pull request. The Markdown line-width limit
   (configured in `rumdl.toml`) applies only to Markdown files committed in the
   repository.
 - **Never push, open PRs, or merge unless explicitly asked.**
