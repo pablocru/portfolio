@@ -227,6 +227,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
     entries no longer needed after validation. Node and pnpm versions are
     declared in `package.json`.
 - Vulnerabilities:
+  - A runtime advisory follows the same shape as a package advisory: the
+    identifier in the branch name, and the identifier, severity and why in the
+    commit body and the pull request body.
   - When Dependabot opens a fix for an alert, review it and keep its
     `dependabot/…` branch and its `chore(deps)` message; merge it only when
     explicitly asked.
@@ -238,6 +241,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   - Describe every advisory in the PR body (id, severity, why the version fixes
     it); squash keeps the body, not the branch commits. Confirm they no longer
     appear in `pnpm audit`, then run `pnpm quality:check` and `pnpm build`.
+  - The pinned Node runtime is reviewed when Node.js publishes a security
+    release; the identifier, the severity and the why travel with the change.
   - For supply-chain hardening that is not tied to an advisory, use the
     `chore(security)` scope.
 - Never print, log, or commit secrets. Use `.env` files and commit
