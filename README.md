@@ -69,10 +69,6 @@ declared in `src/constants.ts`.
    `package.json` manually. The pre-commit hook runs the pinned toolchain
    through `mise`, so `mise` must be installed to commit.
 
-   The quality gate fails when the pinned `Node.js` version has a known
-   vulnerability or sits on a release line that no longer receives security
-   fixes.
-
 1. Install dependencies
 
    ```bash

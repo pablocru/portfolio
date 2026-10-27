@@ -1,5 +1,5 @@
 name: "Setup Node Project"
-description: "Install Node.js, pnpm and project dependencies, and check the runtime"
+description: "Install Node.js, pnpm and project dependencies"
 author: "Pablo Cru Delhom (pablocru)"
 
 runs:
@@ -11,7 +11,3 @@ runs:
       with:
         require-lockfile: true
         cache: true
-
-    - name: "Check the Node runtime for known vulnerabilities"
-      run: "pnpm dlx is-my-node-vulnerable@1.6.1"
-      shell: "bash"
