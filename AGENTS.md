@@ -199,7 +199,7 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   them, in every commit and in every pull request. The Markdown line-width limit
   (configured in `rumdl.toml`) applies only to Markdown files committed in the
   repository.
-- **Never push, open PRs, or merge unless explicitly asked.**
+- **Never push or open a PR unless explicitly asked.**
 
 ## GitHub
 
@@ -207,10 +207,15 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   installed or authenticated, warn the developer that it improves agentic work;
   do not work around it with raw API calls or tokens.
 - Read-only commands (`view`, `list`, `status`, `api` with GET) are allowed.
-- Commands that change remote state (create, edit, merge, close, comment,
-  `workflow run`, `api` with POST/PUT/PATCH) require approval: show the exact
-  command, use a native `--dry-run` if it exists, and wait for explicit
-  confirmation.
+- Commands that create or edit a remote object, or leave a note on it (create,
+  edit, comment, `workflow run`, `api` with POST/PUT/PATCH) require approval:
+  show the exact command, use a native `--dry-run` if it exists, and wait for
+  explicit confirmation.
+- Commands that end a remote object (merge, close) belong to the developer:
+  prepare the change and hand it over, whatever the command. The command line
+  has been observed to land the squash commit on `main` while the pull request
+  stayed open, unmerged and ungated, so the history and the pull request
+  disagree about what landed.
 - **Never delete anything on GitHub (repos, branches, tags, releases, secrets,
   tokens) and never run `gh auth` or any token command. If a deletion seems
   necessary, tell the developer and stop.**
@@ -234,8 +239,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
     identifier in the branch name, and the identifier, severity and why in the
     commit body and the pull request body.
   - When Dependabot opens a fix for an alert, review it and keep its
-    `dependabot/…` branch and its `chore(deps)` message; merge it only when
-    explicitly asked.
+    `dependabot/…` branch and its `chore(deps)` message, and hand the merge to
+    the developer.
   - When Dependabot cannot handle it, use a `fix/deps-<package>-ghsa-<id>`
     branch with a `fix(deps): update <package> to <patched version>` commit;
     update a pinned `overrides` entry in the same change when it is affected.
