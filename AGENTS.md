@@ -199,7 +199,11 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   them, in every commit and in every pull request. The Markdown line-width limit
   (configured in `rumdl.toml`) applies only to Markdown files committed in the
   repository.
-- **Never push, open PRs, or merge unless explicitly asked.**
+- **Never merge a pull request yourself: prepare the merge and let the developer
+  do it from the website.** The command line has been observed to land the
+  squash commit on `main` while the pull request stayed open, unmerged and
+  ungated, so the history and the pull request disagree about what landed.
+- **Never push or open a PR unless explicitly asked.**
 
 ## GitHub
 
@@ -207,7 +211,7 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   installed or authenticated, warn the developer that it improves agentic work;
   do not work around it with raw API calls or tokens.
 - Read-only commands (`view`, `list`, `status`, `api` with GET) are allowed.
-- Commands that change remote state (create, edit, merge, close, comment,
+- Commands that change remote state (create, edit, close, comment,
   `workflow run`, `api` with POST/PUT/PATCH) require approval: show the exact
   command, use a native `--dry-run` if it exists, and wait for explicit
   confirmation.
