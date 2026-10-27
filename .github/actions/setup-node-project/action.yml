@@ -14,3 +14,4 @@ runs:
 
     - name: "Check the Node runtime for known vulnerabilities"
       run: "pnpm dlx is-my-node-vulnerable@1.6.1"
+      shell: "bash"
