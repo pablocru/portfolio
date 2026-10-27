@@ -52,7 +52,6 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 
 ## Code conventions
 
-- TypeScript runs in strict mode; see `tsconfig.json`.
 - Formatting and line endings are defined by `.editorconfig` and
   `.gitattributes`; consult them when needed.
 - Each file type has one configured formatter; do not reformat files by hand or
@@ -61,9 +60,10 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   syntax.
 - KISS: make the smallest change that meets the acceptance criteria. Do not add
   options, flags or extension points that nothing requires, and no CSS resets,
-  frameworks or custom styles: use browser default styles unless a milestone
-  asks for styling. Never invent content (names, dates, links, images); ask the
-  developer instead.
+  frameworks or authored styles: use browser default styles unless a milestone
+  asks for styling. Styles a framework generates for a feature are part of that
+  feature. Never invent content (names, dates, links, images); ask the developer
+  instead.
 - Keep raw GitHub payloads and portfolio domain objects distinguishable by name
   so each file can be read in isolation; fields may rely on their owner for
   context.
@@ -99,6 +99,7 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 
 ### Astro
 
+- TypeScript runs in strict mode through `astro/tsconfigs/strict`.
 - Prefer native Astro mechanisms over custom solutions.
 - The site is static: resolve data at build time. Do not add client-side
   JavaScript or runtime network requests unless a milestone requires it.
@@ -113,11 +114,18 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   derive links from `import.meta.env.BASE_URL` or `Astro.site`; never hardcode
   paths.
 - Repeated data goes through content collections (loaders and schemas); single
-  records are resolved directly from the service layer. Content images go
-  through Astro's asset pipeline.
+  records are resolved directly from the service layer.
 - Mutually exclusive UI states are one decision: render one branch or the other,
   never two independent conditions that can both hold. The invalid combination
   must be impossible, not merely unlikely.
+
+### Images
+
+- Content images go through Astro's asset pipeline.
+- The first image on a page loads eagerly, so the largest contentful paint is
+  not delayed.
+- A displayed image is served at the density of the display it appears on, so it
+  stays sharp on high-density screens.
 
 ### Accessibility
 
