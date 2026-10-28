@@ -3,18 +3,16 @@
 [![Quality Gate](https://github.com/pablocru/portfolio/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/pablocru/portfolio/actions/workflows/quality-gate.yml)
 [![CI Pipeline](https://github.com/pablocru/portfolio/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/pablocru/portfolio/actions/workflows/ci-pipeline.yml)
 
-This repository contains my personal portfolio website which is a window to my
-projects. The goal of this project is to create a clear entry point to my work
-on GitHub. The page groups the repositories I publish by category, and gives
-featured work and experiments a section of their own. Here you will find:
+This repository contains the source of my portfolio: a window to my work on
+GitHub, grouped by category, with the featured work first and the experiments
+last. Here you will find:
 
 - Featured work, before the categories
 - The `Web`, `Data` and `Cloud & DevOps` categories
 - The `Lab` section, for the experiments
 - A link to each repository on GitHub
 
-Not all projects are finished, and not all of them are deployed. This portfolio
-shows both what I build and how I learn.
+Not all projects are finished, and not all of them are deployed.
 
 ## Publishing a repository
 
