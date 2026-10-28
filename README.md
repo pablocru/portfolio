@@ -91,7 +91,7 @@ declared in `src/constants.ts`.
 ## Contribute
 
 If you notice any mistakes or have suggestions, I’m all ears! I appreciate any
-feedback so don't hesitate to
+feedback, so don't hesitate to
 [open an Issue on GitHub](https://github.com/pablocru/portfolio/issues) or
 submit a `Pull Request`.
 
@@ -100,8 +100,7 @@ submit a `Pull Request`.
 1. `Fork` the repository and make your changes in a `new branch`.
 1. Document your additions.
 1. Use [Conventional Commits](https://www.conventionalcommits.org).
-1. For a pull request that delivers a milestone, report every requirement in the
-   acceptance criteria table of the pull request template.
-1. Submit a `Pull Request` with a clear description of your changes.
+1. Submit a `Pull Request` following
+   [the pull request template](.github/pull_request_template.md).
 
 Thank you for helping improve this project!
