@@ -53,19 +53,17 @@ declared in `src/constants.ts`.
 1. Prepare the toolchain
 
    The toolchain is pinned in `package.json`: Node.js via `devEngines.runtime`
-   and pnpm via `packageManager`. This keeps local and CI on the same versions.
-
-   The recommended way is [mise](https://mise.jdx.dev/), which reads those
-   versions from `package.json` and installs them for you:
+   and pnpm via `packageManager`, so local and CI run the same versions.
+   [mise](https://mise.jdx.dev/) installs them:
 
    ```bash
    # installs the pinned Node.js and pnpm
    mise install
    ```
 
-   Without `mise`, install the `Node.js` and `pnpm` versions declared in
-   `package.json` manually. The pre-commit hook runs the pinned toolchain
-   through `mise`, so `mise` must be installed to commit.
+   mise is required: the pre-commit hook runs the pinned toolchain through it.
+   The shell keeps the version it started with, so after the pinned version
+   changes, run `eval "$(mise activate bash)"` or open a new terminal.
 
 1. Install dependencies
 
