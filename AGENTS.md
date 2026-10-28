@@ -211,11 +211,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   edit, comment, `workflow run`, `api` with POST/PUT/PATCH) require approval:
   show the exact command, use a native `--dry-run` if it exists, and wait for
   explicit confirmation.
-- Commands that end a remote object (merge, close) belong to the developer:
-  prepare the change and hand it over, whatever the command. The command line
-  has been observed to land the squash commit on `main` while the pull request
-  stayed open, unmerged and ungated, so the history and the pull request
-  disagree about what landed.
+- **The developer decides what reaches `main`.** Ending a remote object, by
+  merging or closing it, is performed by the developer: prepare the change and
+  hand it over, whatever the command.
 - **Never delete anything on GitHub (repos, branches, tags, releases, secrets,
   tokens) and never run `gh auth` or any token command. If a deletion seems
   necessary, tell the developer and stop.**
