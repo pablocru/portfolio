@@ -20,11 +20,12 @@ Describe the final diff against main, not the intermediate steps that were later
 
 <!--
 Only for pull requests that deliver a milestone. Delete this section otherwise.
-One row per requirement ID, reported as described in AGENTS.md.
+One row per requirement ID, with the acceptance criterion it reports, the result
+and the evidence.
 -->
 
-| Requirement | Result | Evidence |
-| ----------- | ------ | -------- |
+| Requirement | Acceptance criteria | Result | Evidence |
+| ----------- | ------------------- | ------ | -------- |
 
 ## Notes
 
