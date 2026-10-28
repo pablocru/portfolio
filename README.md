@@ -3,18 +3,16 @@
 [![Quality Gate](https://github.com/pablocru/portfolio/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/pablocru/portfolio/actions/workflows/quality-gate.yml)
 [![CI Pipeline](https://github.com/pablocru/portfolio/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/pablocru/portfolio/actions/workflows/ci-pipeline.yml)
 
-This repository contains my personal portfolio website which is a window to my
-projects. The goal of this project is to create a clear entry point to my work
-on GitHub. The page groups the repositories I publish by category, and gives
-featured work and experiments a section of their own. Here you will find:
+This repository contains the source of my portfolio: a window to my work on
+GitHub, grouped by category, with the featured work first and the experiments
+last. Here you will find:
 
 - Featured work, before the categories
 - The `Web`, `Data` and `Cloud & DevOps` categories
 - The `Lab` section, for the experiments
 - A link to each repository on GitHub
 
-Not all projects are finished, and not all of them are deployed. This portfolio
-shows both what I build and how I learn.
+Not all projects are finished, and not all of them are deployed.
 
 ## Publishing a repository
 
@@ -55,19 +53,17 @@ declared in `src/constants.ts`.
 1. Prepare the toolchain
 
    The toolchain is pinned in `package.json`: Node.js via `devEngines.runtime`
-   and pnpm via `packageManager`. This keeps local and CI on the same versions.
-
-   The recommended way is [mise](https://mise.jdx.dev/), which reads those
-   versions from `package.json` and installs them for you:
+   and pnpm via `packageManager`, so local and CI run the same versions.
+   [mise](https://mise.jdx.dev/) installs them:
 
    ```bash
    # installs the pinned Node.js and pnpm
    mise install
    ```
 
-   Without `mise`, install the `Node.js` and `pnpm` versions declared in
-   `package.json` manually. The pre-commit hook runs the pinned toolchain
-   through `mise`, so `mise` must be installed to commit.
+   mise is required: the pre-commit hook runs the pinned toolchain through it.
+   The shell keeps the version it started with, so after the pinned version
+   changes, run `eval "$(mise activate bash)"` or open a new terminal.
 
 1. Install dependencies
 
@@ -95,7 +91,7 @@ declared in `src/constants.ts`.
 ## Contribute
 
 If you notice any mistakes or have suggestions, I’m all ears! I appreciate any
-feedback so don't hesitate to
+feedback, so don't hesitate to
 [open an Issue on GitHub](https://github.com/pablocru/portfolio/issues) or
 submit a `Pull Request`.
 
@@ -104,8 +100,7 @@ submit a `Pull Request`.
 1. `Fork` the repository and make your changes in a `new branch`.
 1. Document your additions.
 1. Use [Conventional Commits](https://www.conventionalcommits.org).
-1. For a pull request that delivers a milestone, report every requirement in the
-   acceptance criteria table of the pull request template.
-1. Submit a `Pull Request` with a clear description of your changes.
+1. Submit a `Pull Request` following
+   [the pull request template](.github/pull_request_template.md).
 
 Thank you for helping improve this project!

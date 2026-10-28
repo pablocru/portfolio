@@ -35,17 +35,17 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Acceptance criteria state the observable outcome only; the procedure used to
   check it belongs to verification.
 - Report the result per requirement ID as `PASS`, `FAIL`, or `NOT VERIFIED` with
-  evidence, in the acceptance criteria table of the pull request template, and
-  together with the completion report described in "Working method". Never
-  report `PASS` for a criterion that was not checked, and never fake inputs or
-  mutate real data to make a check pass.
+  evidence, in the acceptance criteria table of the
+  [pull request template](.github/pull_request_template.md), and together with
+  the completion report described in "Working method". Never report `PASS` for a
+  criterion that was not checked, and never fake inputs or mutate real data to
+  make a check pass.
 - Do not weaken or omit a requirement to simplify the implementation.
 
 ## Commands
 
 - **Do not use npm, yarn, or any package manager other than pnpm.**
-- Ensure tooling with `mise install`; install dependencies with
-  `pnpm safe-install` (frozen lockfile).
+- The toolchain in use is the one pinned in `package.json`; mise installs it.
 - Run, build, preview, test and check the project with the scripts declared in
   `package.json`; that file is the source of truth for available scripts.
 - After changes that affect generated or content types, run `pnpm type:sync`.
@@ -211,11 +211,10 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   edit, comment, `workflow run`, `api` with POST/PUT/PATCH) require approval:
   show the exact command, use a native `--dry-run` if it exists, and wait for
   explicit confirmation.
-- Commands that end a remote object (merge, close) belong to the developer:
-  prepare the change and hand it over, whatever the command. The command line
-  has been observed to land the squash commit on `main` while the pull request
-  stayed open, unmerged and ungated, so the history and the pull request
-  disagree about what landed.
+- **The developer decides what reaches `main`.** Ending a remote object, by
+  merging or closing it, is performed by the developer: prepare the change and
+  hand it over, whatever the command. The decision is never delegated to
+  automation.
 - **Never delete anything on GitHub (repos, branches, tags, releases, secrets,
   tokens) and never run `gh auth` or any token command. If a deletion seems
   necessary, tell the developer and stop.**
@@ -264,5 +263,7 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   using them. Do not rely on memory.
 - If the task conflicts with the repo, the tooling, or this file, or is
   ambiguous, stop and ask instead of improvising.
+- After a remote action, confirm the object it changed reports the intended
+  state, not only that a side effect happened.
 - When you finish, report what you changed, which checks you ran, and what you
   could not verify.
