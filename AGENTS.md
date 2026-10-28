@@ -213,7 +213,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   explicit confirmation.
 - **The developer decides what reaches `main`.** Ending a remote object, by
   merging or closing it, is performed by the developer: prepare the change and
-  hand it over, whatever the command.
+  hand it over, whatever the command. The decision is never delegated to
+  automation.
 - **Never delete anything on GitHub (repos, branches, tags, releases, secrets,
   tokens) and never run `gh auth` or any token command. If a deletion seems
   necessary, tell the developer and stop.**
