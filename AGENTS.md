@@ -261,5 +261,7 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   using them. Do not rely on memory.
 - If the task conflicts with the repo, the tooling, or this file, or is
   ambiguous, stop and ask instead of improvising.
+- After a remote action, confirm the object it changed reports the intended
+  state, not only that a side effect happened.
 - When you finish, report what you changed, which checks you ran, and what you
   could not verify.
