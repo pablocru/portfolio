@@ -44,8 +44,7 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 ## Commands
 
 - **Do not use npm, yarn, or any package manager other than pnpm.**
-- Ensure tooling with `mise install`; install dependencies with
-  `pnpm safe-install` (frozen lockfile).
+- The toolchain in use is the one pinned in `package.json`; mise installs it.
 - Run, build, preview, test and check the project with the scripts declared in
   `package.json`; that file is the source of truth for available scripts.
 - After changes that affect generated or content types, run `pnpm type:sync`.
