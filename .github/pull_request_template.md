@@ -1,6 +1,6 @@
 <!-- rumdl-disable-file MD041 -->
 <!--
-Write pull requests in English (only the CV content is in Spanish).
+Write pull requests in English.
 Describe the final diff against main, not the intermediate steps that were later changed.
 -->
 

@@ -104,12 +104,11 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - The site is static: resolve data at build time. Do not add client-side
   JavaScript or runtime network requests unless a milestone requires it.
 - Keep the generator meta tag (`Astro.generator`) in every layout.
-- Environment variables: declare them in `env.schema` and import them from
-  `astro:env/*`; never read project variables from `process.env` or
-  `import.meta.env`.
-- `astro:env` and `import.meta.env` do not work inside `astro.config.mjs` (Astro
-  evaluates it before loading other files); declare the schema there and, if a
-  value is needed in the config, read it with Vite's `loadEnv`.
+- Custom environment variables must be declared in `env.schema` in
+  `astro.config.mjs` and imported from `astro:env/*`; only native or
+  framework-provided values such as `import.meta.env.BASE_URL` are allowed.
+- Do not read `astro:env` or `import.meta.env` in `astro.config.mjs`; see
+  [Astro's environment variables guide](https://docs.astro.build/en/guides/environment-variables/#in-the-astro-config-file).
 - `site` and `base` live in `astro.config.mjs` when the project needs them;
   derive links from `import.meta.env.BASE_URL` or `Astro.site`; never hardcode
   paths.
@@ -160,8 +159,7 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 
 - When a unit declares a collaborator, inject it instead of mocking the module
   (for example, the Octokit client in the profile service, or the repository
-  source in the content loader). A unit does not build its own collaborator,
-  which is why a unit that imports `astro:env` cannot be tested.
+  source in the content loader). A unit does not build its own collaborator.
 - Name fixtures for the data they hold and reuse the same fixture for the same
   object across tests.
 
@@ -183,7 +181,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Atomic commits: one logical change each, and every commit leaves the repo
   green (`pnpm quality:check`, which queries the public GitHub API, plus
   `pnpm build` when the change touches the site or its data pipeline).
-- The pre-commit hook formats staged files; never bypass it with `--no-verify`.
+- The pre-commit hook formats staged files; [lefthook.yml](lefthook.yml) is the
+  source of truth for the checks that run on each commit. Never bypass it with
+  `--no-verify`.
 - If a check fails, fix it in a new commit or amend only the commit you just
   made.
 - `main` uses squash merges: the final commit message is the PR title with the
@@ -231,27 +231,16 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
     older one. A security fix that must land before the window passes needs an
     explicit `minimumReleaseAgeExclude` entry.
   - Review supply-chain exceptions when adding or upgrading dependencies; remove
-    entries no longer needed after validation. Node and pnpm versions are
-    declared in `package.json`.
-- Vulnerabilities:
-  - A runtime advisory follows the same shape as a package advisory: the
-    identifier in the branch name, and the identifier, severity and why in the
-    commit body and the pull request body.
-  - When Dependabot opens a fix for an alert, review it and keep its
-    `dependabot/…` branch and its `chore(deps)` message, and hand the merge to
-    the developer.
-  - When Dependabot cannot handle it, use a `fix/deps-<package>-ghsa-<id>`
-    branch with a `fix(deps): update <package> to <patched version>` commit;
-    update a pinned `overrides` entry in the same change when it is affected.
-  - When one audit pass leaves several packages vulnerable, fix them in a single
-    `fix/deps-audit` branch, one such commit per package.
-  - Describe every advisory in the PR body (id, severity, why the version fixes
-    it); squash keeps the body, not the branch commits. Confirm they no longer
-    appear in `pnpm audit`, then run `pnpm quality:check` and `pnpm build`.
-  - The pinned Node runtime is reviewed when Node.js publishes a security
-    release; the identifier, the severity and the why travel with the change.
-  - For supply-chain hardening that is not tied to an advisory, use the
-    `chore(security)` scope.
+    entries no longer needed after validation.
+- Vulnerabilities: fix an advisory on a `fix/deps-<package>-ghsa-<id>` branch
+  (`fix/deps-audit` when several packages are affected) with a
+  `fix(deps): update <package> to <patched version>` commit; update an affected
+  pinned `overrides` entry in the same change. When Dependabot already opened
+  the fix, keep its branch and message and hand the merge to the developer.
+  Describe every advisory in the PR body (id, severity, why the version fixes
+  it) and confirm it no longer appears in `pnpm audit`. Node security releases
+  follow the same rules; hardening not tied to an advisory uses the
+  `chore(security)` scope.
 - Never print, log, or commit secrets. Use `.env` files and commit
   `.env.example` files with placeholders.
 - In GitHub Actions, use minimal `permissions` and the same action version tags
