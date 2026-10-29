@@ -181,7 +181,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Atomic commits: one logical change each, and every commit leaves the repo
   green (`pnpm quality:check`, which queries the public GitHub API, plus
   `pnpm build` when the change touches the site or its data pipeline).
-- The pre-commit hook formats staged files; never bypass it with `--no-verify`.
+- The pre-commit hook formats staged files; [lefthook.yml](lefthook.yml) is the
+  source of truth for the checks that run on each commit. Never bypass it with
+  `--no-verify`.
 - If a check fails, fix it in a new commit or amend only the commit you just
   made.
 - `main` uses squash merges: the final commit message is the PR title with the
