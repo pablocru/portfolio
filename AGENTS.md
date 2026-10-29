@@ -107,9 +107,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Custom environment variables must be declared in `env.schema` in
   `astro.config.mjs` and imported from `astro:env/*`; only native or
   framework-provided values such as `import.meta.env.BASE_URL` are allowed.
-- `astro:env` and `import.meta.env` do not work inside `astro.config.mjs` (Astro
-  evaluates it before loading other files); declare the schema there and, if a
-  value is needed in the config, read it with Vite's `loadEnv`.
+- Do not read `astro:env` or `import.meta.env` in `astro.config.mjs`; see
+  [Astro's environment variables guide](https://docs.astro.build/en/guides/environment-variables/#in-the-astro-config-file).
 - `site` and `base` live in `astro.config.mjs` when the project needs them;
   derive links from `import.meta.env.BASE_URL` or `Astro.site`; never hardcode
   paths.
@@ -160,8 +159,7 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 
 - When a unit declares a collaborator, inject it instead of mocking the module
   (for example, the Octokit client in the profile service, or the repository
-  source in the content loader). A unit does not build its own collaborator,
-  which is why a unit that imports `astro:env` cannot be tested.
+  source in the content loader). A unit does not build its own collaborator.
 - Name fixtures for the data they hold and reuse the same fixture for the same
   object across tests.
 
