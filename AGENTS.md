@@ -163,6 +163,11 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Name fixtures for the data they hold and reuse the same fixture for the same
   object across tests.
 
+## Continuous integration
+
+- A quality gate reports the cheapest failure first, so a broken change fails as
+  early as possible.
+
 ## Git
 
 - **Branch `main` is readonly. Commits are forbidden there. Warn the
@@ -178,27 +183,12 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   lowercase after the colon, no trailing period, 72 characters max. Body only
   when the _why_ is not obvious. The types and the scope follow
   [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
-- Atomic commits: one logical change each, and every commit leaves the repo
-  green (`pnpm quality:check`, which queries the public GitHub API, plus
-  `pnpm build` when the change touches the site or its data pipeline).
-- The pre-commit hook formats staged files; [lefthook.yml](lefthook.yml) is the
-  source of truth for the checks that run on each commit. Never bypass it with
-  `--no-verify`.
+- Atomic commits: one logical change per commit, and every commit must pass the
+  checks declared in [lefthook.yml](lefthook.yml). Agents must use the
+  configured hooks and warn the developer when they are not installed. Never
+  bypass them with `--no-verify`.
 - If a check fails, fix it in a new commit or amend only the commit you just
   made.
-- `main` uses squash merges: the final commit message is the PR title with the
-  pull request reference appended (`(#<number>)`) and the PR's `## Why` section
-  as the body. Never pass a subject when merging a pull request: it drops the
-  reference.
-- The PR title is the commit that lands on `main`: write it as a Conventional
-  Commit and decide it before opening the PR.
-- Open PRs following `.github/pull_request_template.md`; consult it for required
-  sections and wording.
-- Commit messages, pull request titles and pull request bodies are rendered by
-  GitHub: write them as normal prose and never manually wrap or column-align
-  them, in every commit and in every pull request. The Markdown line-width limit
-  (configured in `rumdl.toml`) applies only to Markdown files committed in the
-  repository.
 - **Never push or open a PR unless explicitly asked.**
 
 ## GitHub
@@ -207,6 +197,20 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   installed or authenticated, warn the developer that it improves agentic work;
   do not work around it with raw API calls or tokens.
 - Read-only commands (`view`, `list`, `status`, `api` with GET) are allowed.
+- Before opening a pull request, run `pnpm quality:check`.
+- Open PRs following `.github/pull_request_template.md`; consult it for required
+  sections and wording.
+- The PR title is the commit that lands on `main`: write it as a Conventional
+  Commit and decide it before opening the PR.
+- `main` uses squash merges: the final commit message is the PR title with the
+  pull request reference appended (`(#<number>)`) and the PR's `## Why` section
+  as the body. Never pass a subject when merging a pull request: it drops the
+  reference.
+- Commit messages, pull request titles and pull request bodies are rendered by
+  GitHub: write them as normal prose and never manually wrap or column-align
+  them, in every commit and in every pull request. The Markdown line-width limit
+  (configured in `rumdl.toml`) applies only to Markdown files committed in the
+  repository.
 - Commands that create or edit a remote object, or leave a note on it (create,
   edit, comment, `workflow run`, `api` with POST/PUT/PATCH) require approval:
   show the exact command, use a native `--dry-run` if it exists, and wait for

@@ -15,6 +15,7 @@
   },
   "scripts": {
     "safe-install": "pnpm install --frozen-lockfile",
+    "prepare": "lefthook install",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
@@ -24,6 +25,7 @@
     "type:sync": "astro sync",
     "astro": "astro",
     "quality:check:biome": "biome ci .",
+    "quality:check:lefthook": "lefthook validate",
     "quality:check:prettier": "prettier --check \"**/*.{yml,yaml}\"",
     "quality:check:rumdl": "rumdl check .",
     "quality:fix:biome": "biome check --write .",

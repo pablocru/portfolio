@@ -1,15 +1,38 @@
+glob_matcher: doublestar
+
 pre-commit:
   parallel: true
   commands:
     biome:
-      glob: "*.{js,ts,cjs,cts,mjs,mts,jsx,tsx,astro,json,jsonc,css}"
+      glob: "**/*.{js,ts,cjs,cts,mjs,mts,jsx,tsx,astro,json,jsonc,css}"
       run: mise exec -- pnpm biome check --write --no-errors-on-unmatched {staged_files}
       stage_fixed: true
     prettier:
-      glob: "*.{yml,yaml}"
+      glob: "**/*.{yml,yaml}"
       run: mise exec -- pnpm prettier --write {staged_files}
       stage_fixed: true
     rumdl:
-      glob: "*.md"
+      glob: "**/*.md"
       run: mise exec -- pnpm rumdl fmt {staged_files}
       stage_fixed: true
+    lefthook:
+      glob: lefthook.yml
+      run: mise exec -- pnpm quality:check:lefthook
+    astro-check:
+      glob: "{astro.config.mjs,tsconfig.json,src/**/*.astro,src/**/*.*js,src/**/*.*ts}"
+      run: mise exec -- pnpm type:check
+    vitest:
+      glob: "src/**/*.test.ts"
+      run: mise exec -- pnpm test {staged_files}
+
+pre-push:
+  parallel: true
+  exclude:
+    - "docs/**"
+    - ".github/**"
+    - "*.md"
+  commands:
+    build:
+      run: mise exec -- pnpm build
+    test:
+      run: mise exec -- pnpm test
