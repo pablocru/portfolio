@@ -178,12 +178,11 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   lowercase after the colon, no trailing period, 72 characters max. Body only
   when the _why_ is not obvious. The types and the scope follow
   [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
-- Atomic commits: one logical change each, and every commit leaves the repo
-  green (`pnpm quality:check`, which queries the public GitHub API, plus
-  `pnpm build` when the change touches the site or its data pipeline).
-- The pre-commit hook formats staged files; [lefthook.yml](lefthook.yml) is the
-  source of truth for the checks that run on each commit. Never bypass it with
-  `--no-verify`.
+- Atomic commits: one logical change per commit, and every commit must pass the
+  checks declared in [lefthook.yml](lefthook.yml). Agents must use the
+  configured hooks and warn the developer when they are not installed. Never
+  bypass them with `--no-verify`.
+- Before opening a pull request, run `pnpm quality:check`.
 - If a check fails, fix it in a new commit or amend only the commit you just
   made.
 - `main` uses squash merges: the final commit message is the PR title with the
