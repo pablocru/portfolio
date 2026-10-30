@@ -1,3 +1,5 @@
+glob_matcher: doublestar
+
 pre-commit:
   parallel: true
   commands:
@@ -13,3 +15,6 @@ pre-commit:
       glob: "*.md"
       run: mise exec -- pnpm rumdl fmt {staged_files}
       stage_fixed: true
+    astro-check:
+      glob: "{astro.config.mjs,tsconfig.json,src/**/*.astro,src/**/*.*js,src/**/*.*ts}"
+      run: mise exec -- pnpm type:check
