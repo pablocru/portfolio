@@ -18,3 +18,6 @@ pre-commit:
     astro-check:
       glob: "{astro.config.mjs,tsconfig.json,src/**/*.astro,src/**/*.*js,src/**/*.*ts}"
       run: mise exec -- pnpm type:check
+    vitest:
+      glob: "src/**/*.test.ts"
+      run: mise exec -- pnpm test {staged_files}
