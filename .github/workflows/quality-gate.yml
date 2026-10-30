@@ -38,5 +38,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
+      - name: Build the site
+        run: pnpm build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
       - name: Test with Vitest
         run: pnpm test
