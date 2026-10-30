@@ -15,6 +15,9 @@ pre-commit:
       glob: "**/*.md"
       run: mise exec -- pnpm rumdl fmt {staged_files}
       stage_fixed: true
+    lefthook:
+      glob: lefthook.yml
+      run: mise exec -- pnpm quality:check:lefthook
     astro-check:
       glob: "{astro.config.mjs,tsconfig.json,src/**/*.astro,src/**/*.*js,src/**/*.*ts}"
       run: mise exec -- pnpm type:check
