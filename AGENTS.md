@@ -187,22 +187,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   checks declared in [lefthook.yml](lefthook.yml). Agents must use the
   configured hooks and warn the developer when they are not installed. Never
   bypass them with `--no-verify`.
-- Before opening a pull request, run `pnpm quality:check`.
 - If a check fails, fix it in a new commit or amend only the commit you just
   made.
-- `main` uses squash merges: the final commit message is the PR title with the
-  pull request reference appended (`(#<number>)`) and the PR's `## Why` section
-  as the body. Never pass a subject when merging a pull request: it drops the
-  reference.
-- The PR title is the commit that lands on `main`: write it as a Conventional
-  Commit and decide it before opening the PR.
-- Open PRs following `.github/pull_request_template.md`; consult it for required
-  sections and wording.
-- Commit messages, pull request titles and pull request bodies are rendered by
-  GitHub: write them as normal prose and never manually wrap or column-align
-  them, in every commit and in every pull request. The Markdown line-width limit
-  (configured in `rumdl.toml`) applies only to Markdown files committed in the
-  repository.
 - **Never push or open a PR unless explicitly asked.**
 
 ## GitHub
@@ -211,6 +197,20 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   installed or authenticated, warn the developer that it improves agentic work;
   do not work around it with raw API calls or tokens.
 - Read-only commands (`view`, `list`, `status`, `api` with GET) are allowed.
+- Before opening a pull request, run `pnpm quality:check`.
+- Open PRs following `.github/pull_request_template.md`; consult it for required
+  sections and wording.
+- The PR title is the commit that lands on `main`: write it as a Conventional
+  Commit and decide it before opening the PR.
+- `main` uses squash merges: the final commit message is the PR title with the
+  pull request reference appended (`(#<number>)`) and the PR's `## Why` section
+  as the body. Never pass a subject when merging a pull request: it drops the
+  reference.
+- Commit messages, pull request titles and pull request bodies are rendered by
+  GitHub: write them as normal prose and never manually wrap or column-align
+  them, in every commit and in every pull request. The Markdown line-width limit
+  (configured in `rumdl.toml`) applies only to Markdown files committed in the
+  repository.
 - Commands that create or edit a remote object, or leave a note on it (create,
   edit, comment, `workflow run`, `api` with POST/PUT/PATCH) require approval:
   show the exact command, use a native `--dry-run` if it exists, and wait for
