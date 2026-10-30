@@ -21,3 +21,15 @@ pre-commit:
     vitest:
       glob: "src/**/*.test.ts"
       run: mise exec -- pnpm test {staged_files}
+
+pre-push:
+  parallel: true
+  exclude:
+    - "docs/**"
+    - ".github/**"
+    - "*.md"
+  commands:
+    build:
+      run: mise exec -- pnpm build
+    test:
+      run: mise exec -- pnpm test
