@@ -163,6 +163,11 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Name fixtures for the data they hold and reuse the same fixture for the same
   object across tests.
 
+## Continuous integration
+
+- A quality gate reports the cheapest failure first, so a broken change fails as
+  early as possible.
+
 ## Git
 
 - **Branch `main` is readonly. Commits are forbidden there. Warn the
