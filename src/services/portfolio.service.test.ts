@@ -1,8 +1,11 @@
 import { Octokit } from "@octokit/rest";
 import { describe, expect, test, vi } from "vitest";
+import { CATEGORIES } from "../config/categories";
 import { PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
-import { RepoCategory, RepoTier } from "../constants";
+import { RepoTier } from "../constants";
 import { getPortfolioRepos, getProfile } from "./portfolio.service";
+
+const [web] = CATEGORIES;
 
 const githubRepo = {
   name: "portfolio",
@@ -53,7 +56,7 @@ describe("getPortfolioRepos", () => {
         url: "https://github.com/pablocru/portfolio",
         archived: false,
         pushedAt: "2026-10-20T09:00:00Z",
-        category: RepoCategory.Web,
+        category: web.id,
         tier: RepoTier.Project,
       },
     ]);

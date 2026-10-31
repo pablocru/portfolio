@@ -1,7 +1,8 @@
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { createGitHubClient } from "./clients/github.client";
-import { RepoCategory, RepoTier } from "./constants";
+import { CATEGORIES } from "./config/categories";
+import { RepoTier } from "./constants";
 import { githubReposLoader } from "./loaders/github-repos";
 import { getPortfolioRepos } from "./services/portfolio.service";
 
@@ -14,7 +15,7 @@ const repos = defineCollection({
     url: z.string(),
     archived: z.boolean(),
     pushedAt: z.string().nullable(),
-    category: z.enum(RepoCategory),
+    category: z.enum(CATEGORIES.map((category) => category.id)),
     tier: z.enum(RepoTier),
   }),
 });

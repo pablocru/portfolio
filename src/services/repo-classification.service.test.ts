@@ -1,7 +1,16 @@
 import { describe, expect, test } from "vitest";
-import { PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
-import { RepoCategory, RepoTier } from "../constants";
+import { CATEGORIES, categoryTopic } from "../config/categories";
+import {
+  PORTFOLIO_OPT_IN_TOPIC,
+  PORTFOLIO_TOPIC_PREFIX,
+} from "../config/portfolio";
+import { RepoTier } from "../constants";
 import { classifyRepo } from "./repo-classification.service";
+
+const [web, data] = CATEGORIES;
+const webTopic = categoryTopic(web.id);
+const dataTopic = categoryTopic(data.id);
+const UNKNOWN_CATEGORY_TOPIC = `${PORTFOLIO_TOPIC_PREFIX}cat-desgin`;
 
 const githubRepo = {
   name: "portfolio",
@@ -11,14 +20,14 @@ const githubRepo = {
   archived: false,
   private: false,
   pushed_at: "2026-10-20T09:00:00Z",
-  topics: [PORTFOLIO_OPT_IN_TOPIC, "pf-cat-web"],
+  topics: [PORTFOLIO_OPT_IN_TOPIC, webTopic],
 };
 
 describe("classifyRepo", () => {
   test("publishes a repository with its classification", () => {
     expect(classifyRepo(githubRepo)).toEqual({
       kind: "published",
-      category: RepoCategory.Web,
+      category: web.id,
       tier: RepoTier.Project,
     });
   });
@@ -68,10 +77,10 @@ describe("classifyRepo", () => {
     expect(() =>
       classifyRepo({
         ...githubRepo,
-        topics: [...githubRepo.topics, "pf-cat-data"],
+        topics: [...githubRepo.topics, dataTopic],
       }),
     ).toThrow(
-      'Repository "portfolio" carries more than one category topic: "pf-cat-web", "pf-cat-data"',
+      `Repository "portfolio" carries more than one category topic: "${webTopic}", "${dataTopic}"`,
     );
   });
 
@@ -79,10 +88,10 @@ describe("classifyRepo", () => {
     expect(() =>
       classifyRepo({
         ...githubRepo,
-        topics: [...githubRepo.topics, "pf-cat-desgin"],
+        topics: [...githubRepo.topics, UNKNOWN_CATEGORY_TOPIC],
       }),
     ).toThrow(
-      'Repository "portfolio" carries unknown control topics: "pf-cat-desgin"',
+      `Repository "portfolio" carries unknown control topics: "${UNKNOWN_CATEGORY_TOPIC}"`,
     );
   });
 
@@ -92,11 +101,11 @@ describe("classifyRepo", () => {
         ...githubRepo,
         topics: [
           PORTFOLIO_OPT_IN_TOPIC,
-          "pf-cat-web",
-          "pf-cat-data",
+          webTopic,
+          dataTopic,
           "pf-tier-featured",
           "pf-tier-lab",
-          "pf-cat-desgin",
+          UNKNOWN_CATEGORY_TOPIC,
         ],
       }),
     ).toThrow(
@@ -132,26 +141,28 @@ describe("classifyRepo", () => {
   test("warns about a classified repository without the opt-in topic", () => {
     const result = classifyRepo({
       ...githubRepo,
-      topics: ["pf-cat-data", "pf-tier-lab"],
+      topics: [dataTopic, "pf-tier-lab"],
     });
 
     expect(result).toMatchObject({ kind: "warned" });
     expect(result).toHaveProperty(
       "warning",
-      expect.stringContaining('"pf-cat-data", "pf-tier-lab" but not "pf-show"'),
+      expect.stringContaining(
+        `"${dataTopic}", "pf-tier-lab" but not "pf-show"`,
+      ),
     );
   });
 
   test("warns about an unknown control topic without the opt-in topic", () => {
     const result = classifyRepo({
       ...githubRepo,
-      topics: ["pf-cat-desgin"],
+      topics: [UNKNOWN_CATEGORY_TOPIC],
     });
 
     expect(result).toMatchObject({ kind: "warned" });
     expect(result).toHaveProperty(
       "warning",
-      expect.stringContaining('"pf-cat-desgin" but not "pf-show"'),
+      expect.stringContaining(`"${UNKNOWN_CATEGORY_TOPIC}" but not "pf-show"`),
     );
   });
 

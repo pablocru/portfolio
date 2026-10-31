@@ -1,7 +1,8 @@
 import type { LoaderContext } from "astro/loaders";
 import { describe, expect, test, vi } from "vitest";
+import { CATEGORIES } from "../config/categories";
 import { GITHUB_USERNAME, PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
-import { RepoCategory, RepoTier } from "../constants";
+import { RepoTier } from "../constants";
 import type { PortfolioRepo, PortfolioRepoSelection } from "../types/repo.type";
 import { githubReposLoader } from "./github-repos";
 
@@ -12,7 +13,7 @@ const portfolioRepo: PortfolioRepo = {
   url: "https://github.com/pablocru/portfolio",
   archived: false,
   pushedAt: "2026-10-20T09:00:00Z",
-  category: RepoCategory.Web,
+  category: CATEGORIES[0].id,
   tier: RepoTier.Project,
 };
 

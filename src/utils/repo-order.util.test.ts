@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { RepoCategory, RepoTier } from "../constants";
+import { CATEGORIES } from "../config/categories";
+import { RepoTier } from "../constants";
 import type { PortfolioRepo } from "../types/repo.type";
 import { comparePortfolioRepos } from "./repo-order.util";
 
@@ -14,7 +15,7 @@ function portfolioRepo(
     url: `https://github.com/pablocru/${name}`,
     archived: false,
     pushedAt: "2026-01-01T00:00:00Z",
-    category: RepoCategory.Web,
+    category: CATEGORIES[0].id,
     tier: RepoTier.Project,
     ...overrides,
   };

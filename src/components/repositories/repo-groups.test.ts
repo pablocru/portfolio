@@ -1,7 +1,10 @@
 import { describe, expect, test } from "vitest";
-import { RepoCategory, RepoTier } from "../../constants";
+import { CATEGORIES } from "../../config/categories";
+import { RepoTier } from "../../constants";
 import type { PortfolioRepo } from "../../types/repo.type";
 import { groupRepos } from "./repo-groups";
+
+const [web, data, cloudDevOps] = CATEGORIES;
 
 function portfolioRepo(
   name: string,
@@ -14,7 +17,7 @@ function portfolioRepo(
     url: `https://github.com/pablocru/${name}`,
     archived: false,
     pushedAt: "2026-01-01T00:00:00Z",
-    category: RepoCategory.Web,
+    category: web.id,
     tier: RepoTier.Project,
     ...overrides,
   };
@@ -23,8 +26,8 @@ function portfolioRepo(
 function fullSet(): PortfolioRepo[] {
   return [
     portfolioRepo("web-project"),
-    portfolioRepo("data-project", { category: RepoCategory.Data }),
-    portfolioRepo("cloud-project", { category: RepoCategory.CloudDevOps }),
+    portfolioRepo("data-project", { category: data.id }),
+    portfolioRepo("cloud-project", { category: cloudDevOps.id }),
     portfolioRepo("featured-project", { tier: RepoTier.Featured }),
     portfolioRepo("lab-project", { tier: RepoTier.Lab }),
   ];
@@ -36,9 +39,9 @@ describe("groupRepos", () => {
 
     expect(grouping.groups.map((group) => group.label)).toEqual([
       RepoTier.Featured,
-      RepoCategory.Web,
-      RepoCategory.Data,
-      RepoCategory.CloudDevOps,
+      web.label,
+      data.label,
+      cloudDevOps.label,
       RepoTier.Lab,
     ]);
     expect(grouping.warnings).toEqual([]);
@@ -57,7 +60,7 @@ describe("groupRepos", () => {
   test("lets the tier win over the category", () => {
     const grouping = groupRepos([
       portfolioRepo("featured-data", {
-        category: RepoCategory.Data,
+        category: data.id,
         tier: RepoTier.Featured,
       }),
       portfolioRepo("lab-web", { tier: RepoTier.Lab }),
@@ -111,11 +114,11 @@ describe("groupRepos", () => {
   test("warns about every group that stays empty", () => {
     const grouping = groupRepos([portfolioRepo("web-project")]);
 
-    expect(grouping.groups.map((group) => group.id)).toEqual(["web"]);
+    expect(grouping.groups.map((group) => group.id)).toEqual([web.id]);
     expect(grouping.warnings).toEqual([
       'The "Featured" group has no repository; its section is omitted.',
-      'Category "Data" has no project-tier repository; its section is omitted.',
-      'Category "Cloud & DevOps" has no project-tier repository; its section is omitted.',
+      `Category "${data.label}" has no project-tier repository; its section is omitted.`,
+      `Category "${cloudDevOps.label}" has no project-tier repository; its section is omitted.`,
       'The "Lab" group has no repository; its section is omitted.',
     ]);
   });
@@ -123,17 +126,17 @@ describe("groupRepos", () => {
   test("warns when a category only holds featured or lab repositories", () => {
     const grouping = groupRepos([
       portfolioRepo("featured-data", {
-        category: RepoCategory.Data,
+        category: data.id,
         tier: RepoTier.Featured,
       }),
       portfolioRepo("lab-data", {
-        category: RepoCategory.Data,
+        category: data.id,
         tier: RepoTier.Lab,
       }),
     ]);
 
     expect(grouping.warnings).toContain(
-      'Category "Data" has no project-tier repository; its section is omitted.',
+      `Category "${data.label}" has no project-tier repository; its section is omitted.`,
     );
   });
 
@@ -142,9 +145,10 @@ describe("groupRepos", () => {
       groups: [],
       warnings: [
         'The "Featured" group has no repository; its section is omitted.',
-        'Category "Web" has no project-tier repository; its section is omitted.',
-        'Category "Data" has no project-tier repository; its section is omitted.',
-        'Category "Cloud & DevOps" has no project-tier repository; its section is omitted.',
+        ...CATEGORIES.map(
+          (category) =>
+            `Category "${category.label}" has no project-tier repository; its section is omitted.`,
+        ),
         'The "Lab" group has no repository; its section is omitted.',
       ],
     });

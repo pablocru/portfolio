@@ -1,12 +1,15 @@
-import { RepoCategory, RepoTier } from "../../constants";
+import {
+  CATEGORIES,
+  type CategoryId,
+  type CategoryLabel,
+} from "../../config/categories";
+import { RepoTier } from "../../constants";
 import type { PortfolioRepo } from "../../types/repo.type";
 import { comparePortfolioRepos } from "../../utils/repo-order.util";
 
-type CategoryGroupId = "web" | "data" | "cloud-devops";
+export type RepoGroupId = "featured" | CategoryId | "lab";
 
-export type RepoGroupId = "featured" | CategoryGroupId | "lab";
-
-export type RepoGroupLabel = RepoTier | RepoCategory;
+export type RepoGroupLabel = RepoTier | CategoryLabel;
 
 export type RepoGroup = {
   id: RepoGroupId;
@@ -29,12 +32,6 @@ type GroupDefinition = {
   warning: string;
 };
 
-const CATEGORY_GROUP_ID: Record<RepoCategory, CategoryGroupId> = {
-  [RepoCategory.Web]: "web",
-  [RepoCategory.Data]: "data",
-  [RepoCategory.CloudDevOps]: "cloud-devops",
-};
-
 const GROUP_DEFINITIONS: GroupDefinition[] = [
   {
     id: "featured",
@@ -42,13 +39,13 @@ const GROUP_DEFINITIONS: GroupDefinition[] = [
     includes: (repo) => repo.tier === RepoTier.Featured,
     warning: `The "${RepoTier.Featured}" group has no repository; its section is omitted.`,
   },
-  ...Object.values(RepoCategory).map(
+  ...CATEGORIES.map(
     (category): GroupDefinition => ({
-      id: CATEGORY_GROUP_ID[category],
-      label: category,
+      id: category.id,
+      label: category.label,
       includes: (repo) =>
-        repo.tier === RepoTier.Project && repo.category === category,
-      warning: `Category "${category}" has no project-tier repository; its section is omitted.`,
+        repo.tier === RepoTier.Project && repo.category === category.id,
+      warning: `Category "${category.label}" has no project-tier repository; its section is omitted.`,
     }),
   ),
   {

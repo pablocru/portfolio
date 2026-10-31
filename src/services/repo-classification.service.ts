@@ -1,18 +1,18 @@
 import {
+  CATEGORIES,
+  type CategoryId,
+  categoryTopic,
+} from "../config/categories";
+import {
   PORTFOLIO_OPT_IN_TOPIC,
   PORTFOLIO_TOPIC_PREFIX,
 } from "../config/portfolio";
-import {
-  REPO_CATEGORY_TOPIC,
-  REPO_TIER_TOPIC,
-  RepoCategory,
-  RepoTier,
-} from "../constants";
+import { REPO_TIER_TOPIC, RepoTier } from "../constants";
 import type { GitHubRepo } from "../mappers/repo.mapper";
 
 const KNOWN_TOPICS = new Set<string>([
   PORTFOLIO_OPT_IN_TOPIC,
-  ...Object.values(REPO_CATEGORY_TOPIC),
+  ...CATEGORIES.map((category) => categoryTopic(category.id)),
   ...Object.values(REPO_TIER_TOPIC),
 ]);
 
@@ -23,14 +23,14 @@ type UnpublishedDecision =
 type PublicationDecision = { kind: "published" } | UnpublishedDecision;
 
 type RepoClassification =
-  | { kind: "published"; category: RepoCategory; tier: RepoTier }
+  | { kind: "published"; category: CategoryId; tier: RepoTier }
   | UnpublishedDecision;
 
 type GitHubRepoTopics = {
   optIn: boolean;
   controlTopics: string[];
   unknownControlTopics: string[];
-  categories: RepoCategory[];
+  categories: CategoryId[];
   tiers: RepoTier[];
 };
 
@@ -74,9 +74,9 @@ function readRepoTopics(githubRepo: GitHubRepo): GitHubRepoTopics {
     unknownControlTopics: controlTopics.filter(
       (topic) => !KNOWN_TOPICS.has(topic),
     ),
-    categories: Object.values(RepoCategory).filter((category) =>
-      topics.includes(REPO_CATEGORY_TOPIC[category]),
-    ),
+    categories: CATEGORIES.filter((category) =>
+      topics.includes(categoryTopic(category.id)),
+    ).map((category) => category.id),
     tiers: Object.values(RepoTier).filter((tier) =>
       topics.includes(REPO_TIER_TOPIC[tier]),
     ),
@@ -125,7 +125,7 @@ function decidePublication(
 function classifyPublishedRepo(
   githubRepo: GitHubRepo,
   repoTopics: GitHubRepoTopics,
-): { category: RepoCategory; tier: RepoTier } {
+): { category: CategoryId; tier: RepoTier } {
   const category = resolveCategory(repoTopics.categories);
   const tier = resolveTier(repoTopics.tiers);
   const faults = [
@@ -151,8 +151,8 @@ function classifyPublishedRepo(
  * instead of throwing so the caller can collect every fault at once.
  */
 function resolveCategory(
-  categories: RepoCategory[],
-): ClassificationPart<RepoCategory> {
+  categories: CategoryId[],
+): ClassificationPart<CategoryId> {
   const [resolvedCategory] = categories;
 
   if (resolvedCategory === undefined) {
@@ -167,7 +167,7 @@ function resolveCategory(
       kind: "fault",
       message:
         "carries more than one category topic:" +
-        ` ${formatTopics(categories.map((category) => REPO_CATEGORY_TOPIC[category]))}`,
+        ` ${formatTopics(categories.map((category) => categoryTopic(category)))}`,
     };
   }
 
