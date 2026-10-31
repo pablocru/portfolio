@@ -177,12 +177,13 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Do not run commands that discard local work (`git reset --hard`, `git clean`,
   `git restore` without `--staged`, `git checkout -- <path>`, `git branch -D`)
   without asking.
-- New additions to the project require a new branch from an up-to-date `main`.
-  Names: `feat/…`, `fix/…`, `ci/…`, `docs/…`, `chore/…`.
+- Every change is made on a new branch from an up-to-date `main`. Name the
+  branch with a valid [Conventional Commits][conventional-commits] type, for
+  example `refactor/…`.
 - **Conventional Commits in English**: `type(scope): imperative summary`,
   lowercase after the colon, no trailing period, 72 characters max. Body only
   when the _why_ is not obvious. The types and the scope follow
-  [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+  [Conventional Commits][conventional-commits].
 - Atomic commits: one logical change per commit, and every commit must pass the
   checks declared in [lefthook.yml](lefthook.yml). Agents must use the
   configured hooks and warn the developer when they are not installed. Never
@@ -260,3 +261,5 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   state, not only that a side effect happened.
 - When you finish, report what you changed, which checks you ran, and what you
   could not verify.
+
+[conventional-commits]: https://www.conventionalcommits.org/en/v1.0.0/
