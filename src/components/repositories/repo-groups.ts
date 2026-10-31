@@ -3,13 +3,20 @@ import {
   type CategoryId,
   type CategoryLabel,
 } from "../../config/categories";
-import { RepoTier } from "../../constants";
+import {
+  CATEGORIZED_TIER_ID,
+  TIERS,
+  type TierId,
+  type TierLabel,
+} from "../../config/tiers";
 import type { PortfolioRepo } from "../../types/repo.type";
 import { comparePortfolioRepos } from "../../utils/repo-order.util";
 
-export type RepoGroupId = "featured" | CategoryId | "lab";
+export type RepoGroupId =
+  | Exclude<TierId, typeof CATEGORIZED_TIER_ID>
+  | CategoryId;
 
-export type RepoGroupLabel = RepoTier | CategoryLabel;
+export type RepoGroupLabel = TierLabel | CategoryLabel;
 
 export type RepoGroup = {
   id: RepoGroupId;
@@ -32,29 +39,27 @@ type GroupDefinition = {
   warning: string;
 };
 
-const GROUP_DEFINITIONS: GroupDefinition[] = [
-  {
-    id: "featured",
-    label: RepoTier.Featured,
-    includes: (repo) => repo.tier === RepoTier.Featured,
-    warning: `The "${RepoTier.Featured}" group has no repository; its section is omitted.`,
-  },
-  ...CATEGORIES.map(
-    (category): GroupDefinition => ({
-      id: category.id,
-      label: category.label,
-      includes: (repo) =>
-        repo.tier === RepoTier.Project && repo.category === category.id,
-      warning: `Category "${category.label}" has no project-tier repository; its section is omitted.`,
-    }),
-  ),
-  {
-    id: "lab",
-    label: RepoTier.Lab,
-    includes: (repo) => repo.tier === RepoTier.Lab,
-    warning: `The "${RepoTier.Lab}" group has no repository; its section is omitted.`,
-  },
-];
+const GROUP_DEFINITIONS: GroupDefinition[] = TIERS.flatMap(
+  (tier): GroupDefinition[] =>
+    tier.id === CATEGORIZED_TIER_ID
+      ? CATEGORIES.map(
+          (category): GroupDefinition => ({
+            id: category.id,
+            label: category.label,
+            includes: (repo) =>
+              repo.tier === tier.id && repo.category === category.id,
+            warning: `Category "${category.label}" has no ${tier.label.toLowerCase()}-tier repository; its section is omitted.`,
+          }),
+        )
+      : [
+          {
+            id: tier.id,
+            label: tier.label,
+            includes: (repo) => repo.tier === tier.id,
+            warning: `The "${tier.label}" group has no repository; its section is omitted.`,
+          },
+        ],
+);
 
 /**
  * Splits the repositories included in the portfolio into the sections of the

@@ -2,7 +2,7 @@ import type { LoaderContext } from "astro/loaders";
 import { describe, expect, test, vi } from "vitest";
 import { CATEGORIES } from "../config/categories";
 import { GITHUB_USERNAME, PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
-import { RepoTier } from "../constants";
+import { TIERS } from "../config/tiers";
 import type { PortfolioRepo, PortfolioRepoSelection } from "../types/repo.type";
 import { githubReposLoader } from "./github-repos";
 
@@ -14,7 +14,7 @@ const portfolioRepo: PortfolioRepo = {
   archived: false,
   pushedAt: "2026-10-20T09:00:00Z",
   category: CATEGORIES[0].id,
-  tier: RepoTier.Project,
+  tier: TIERS[1].id,
 };
 
 function createLoadContext() {

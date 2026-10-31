@@ -1,5 +1,5 @@
 import type { CategoryId } from "../config/categories";
-import type { RepoTier } from "../constants";
+import type { TierId } from "../config/tiers";
 
 /**
  * Repository included in the portfolio. It is a type alias, not an interface,
@@ -14,7 +14,7 @@ export type PortfolioRepo = {
   archived: boolean;
   pushedAt: string | null;
   category: CategoryId;
-  tier: RepoTier;
+  tier: TierId;
 };
 
 /**

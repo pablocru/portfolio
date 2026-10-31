@@ -1,11 +1,12 @@
 import { Octokit } from "@octokit/rest";
 import { describe, expect, test, vi } from "vitest";
-import { CATEGORIES } from "../config/categories";
+import { CATEGORIES, categoryTopic } from "../config/categories";
 import { PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
-import { RepoTier } from "../constants";
+import { TIERS } from "../config/tiers";
 import { getPortfolioRepos, getProfile } from "./portfolio.service";
 
-const [web] = CATEGORIES;
+const [web, data] = CATEGORIES;
+const [, project] = TIERS;
 
 const githubRepo = {
   name: "portfolio",
@@ -15,7 +16,7 @@ const githubRepo = {
   archived: false,
   private: false,
   pushed_at: "2026-10-20T09:00:00Z",
-  topics: [PORTFOLIO_OPT_IN_TOPIC, "pf-cat-web"],
+  topics: [PORTFOLIO_OPT_IN_TOPIC, categoryTopic(web.id)],
 };
 
 describe("getProfile", () => {
@@ -57,7 +58,7 @@ describe("getPortfolioRepos", () => {
         archived: false,
         pushedAt: "2026-10-20T09:00:00Z",
         category: web.id,
-        tier: RepoTier.Project,
+        tier: project.id,
       },
     ]);
     expect(selection.warnings).toEqual([]);
@@ -70,7 +71,7 @@ describe("getPortfolioRepos", () => {
       // The public source never returns a private repository; this fixture
       // keeps the defensive classifier path covered.
       { ...githubRepo, name: "secret", private: true },
-      { ...githubRepo, name: "classified", topics: ["pf-cat-data"] },
+      { ...githubRepo, name: "classified", topics: [categoryTopic(data.id)] },
     ]);
 
     const selection = await getPortfolioRepos(client);

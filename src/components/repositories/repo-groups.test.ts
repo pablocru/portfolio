@@ -1,10 +1,11 @@
 import { describe, expect, test } from "vitest";
 import { CATEGORIES } from "../../config/categories";
-import { RepoTier } from "../../constants";
+import { TIERS } from "../../config/tiers";
 import type { PortfolioRepo } from "../../types/repo.type";
 import { groupRepos } from "./repo-groups";
 
 const [web, data, cloudDevOps] = CATEGORIES;
+const [featured, project, lab] = TIERS;
 
 function portfolioRepo(
   name: string,
@@ -18,7 +19,7 @@ function portfolioRepo(
     archived: false,
     pushedAt: "2026-01-01T00:00:00Z",
     category: web.id,
-    tier: RepoTier.Project,
+    tier: project.id,
     ...overrides,
   };
 }
@@ -28,8 +29,8 @@ function fullSet(): PortfolioRepo[] {
     portfolioRepo("web-project"),
     portfolioRepo("data-project", { category: data.id }),
     portfolioRepo("cloud-project", { category: cloudDevOps.id }),
-    portfolioRepo("featured-project", { tier: RepoTier.Featured }),
-    portfolioRepo("lab-project", { tier: RepoTier.Lab }),
+    portfolioRepo("featured-project", { tier: featured.id }),
+    portfolioRepo("lab-project", { tier: lab.id }),
   ];
 }
 
@@ -38,11 +39,11 @@ describe("groupRepos", () => {
     const grouping = groupRepos(fullSet());
 
     expect(grouping.groups.map((group) => group.label)).toEqual([
-      RepoTier.Featured,
+      featured.label,
       web.label,
       data.label,
       cloudDevOps.label,
-      RepoTier.Lab,
+      lab.label,
     ]);
     expect(grouping.warnings).toEqual([]);
   });
@@ -61,14 +62,14 @@ describe("groupRepos", () => {
     const grouping = groupRepos([
       portfolioRepo("featured-data", {
         category: data.id,
-        tier: RepoTier.Featured,
+        tier: featured.id,
       }),
-      portfolioRepo("lab-web", { tier: RepoTier.Lab }),
+      portfolioRepo("lab-web", { tier: lab.id }),
     ]);
 
     expect(grouping.groups.map((group) => group.id)).toEqual([
-      "featured",
-      "lab",
+      featured.id,
+      lab.id,
     ]);
     expect(grouping.groups[0]?.repos.map((value) => value.name)).toEqual([
       "featured-data",
@@ -116,10 +117,10 @@ describe("groupRepos", () => {
 
     expect(grouping.groups.map((group) => group.id)).toEqual([web.id]);
     expect(grouping.warnings).toEqual([
-      'The "Featured" group has no repository; its section is omitted.',
-      `Category "${data.label}" has no project-tier repository; its section is omitted.`,
-      `Category "${cloudDevOps.label}" has no project-tier repository; its section is omitted.`,
-      'The "Lab" group has no repository; its section is omitted.',
+      `The "${featured.label}" group has no repository; its section is omitted.`,
+      `Category "${data.label}" has no ${project.label.toLowerCase()}-tier repository; its section is omitted.`,
+      `Category "${cloudDevOps.label}" has no ${project.label.toLowerCase()}-tier repository; its section is omitted.`,
+      `The "${lab.label}" group has no repository; its section is omitted.`,
     ]);
   });
 
@@ -127,16 +128,16 @@ describe("groupRepos", () => {
     const grouping = groupRepos([
       portfolioRepo("featured-data", {
         category: data.id,
-        tier: RepoTier.Featured,
+        tier: featured.id,
       }),
       portfolioRepo("lab-data", {
         category: data.id,
-        tier: RepoTier.Lab,
+        tier: lab.id,
       }),
     ]);
 
     expect(grouping.warnings).toContain(
-      `Category "${data.label}" has no project-tier repository; its section is omitted.`,
+      `Category "${data.label}" has no ${project.label.toLowerCase()}-tier repository; its section is omitted.`,
     );
   });
 
@@ -144,12 +145,12 @@ describe("groupRepos", () => {
     expect(groupRepos([])).toEqual({
       groups: [],
       warnings: [
-        'The "Featured" group has no repository; its section is omitted.',
+        `The "${featured.label}" group has no repository; its section is omitted.`,
         ...CATEGORIES.map(
           (category) =>
-            `Category "${category.label}" has no project-tier repository; its section is omitted.`,
+            `Category "${category.label}" has no ${project.label.toLowerCase()}-tier repository; its section is omitted.`,
         ),
-        'The "Lab" group has no repository; its section is omitted.',
+        `The "${lab.label}" group has no repository; its section is omitted.`,
       ],
     });
   });

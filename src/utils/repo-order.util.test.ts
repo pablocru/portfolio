@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { CATEGORIES } from "../config/categories";
-import { RepoTier } from "../constants";
+import { TIERS } from "../config/tiers";
 import type { PortfolioRepo } from "../types/repo.type";
 import { comparePortfolioRepos } from "./repo-order.util";
 
@@ -16,7 +16,7 @@ function portfolioRepo(
     archived: false,
     pushedAt: "2026-01-01T00:00:00Z",
     category: CATEGORIES[0].id,
-    tier: RepoTier.Project,
+    tier: TIERS[1].id,
     ...overrides,
   };
 }

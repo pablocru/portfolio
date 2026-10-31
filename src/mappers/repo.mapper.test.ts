@@ -1,9 +1,11 @@
 import { describe, expect, test } from "vitest";
-import { CATEGORIES } from "../config/categories";
-import { RepoTier } from "../constants";
+import { CATEGORIES, categoryTopic } from "../config/categories";
+import { PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
+import { TIERS } from "../config/tiers";
 import { mapRepo } from "./repo.mapper";
 
 const [web, data] = CATEGORIES;
+const [, project, lab] = TIERS;
 
 const githubRepo = {
   name: "portfolio",
@@ -13,12 +15,12 @@ const githubRepo = {
   archived: false,
   private: false,
   pushed_at: "2026-10-20T09:00:00Z",
-  topics: ["pf-show", "pf-cat-web"],
+  topics: [PORTFOLIO_OPT_IN_TOPIC, categoryTopic(web.id)],
 };
 
 describe("mapRepo", () => {
   test("maps the repository fields", () => {
-    expect(mapRepo(githubRepo, web.id, RepoTier.Project)).toEqual({
+    expect(mapRepo(githubRepo, web.id, project.id)).toEqual({
       name: "portfolio",
       description: "A window to my projects",
       language: "TypeScript",
@@ -26,7 +28,7 @@ describe("mapRepo", () => {
       archived: false,
       pushedAt: "2026-10-20T09:00:00Z",
       category: web.id,
-      tier: RepoTier.Project,
+      tier: project.id,
     });
   });
 
@@ -35,7 +37,7 @@ describe("mapRepo", () => {
       mapRepo(
         { ...githubRepo, description: "  A window  " },
         web.id,
-        RepoTier.Project,
+        project.id,
       ).description,
     ).toBe("A window");
   });
@@ -44,37 +46,33 @@ describe("mapRepo", () => {
     "drops the description when it is %j",
     (description) => {
       expect(
-        mapRepo({ ...githubRepo, description }, web.id, RepoTier.Project)
-          .description,
+        mapRepo({ ...githubRepo, description }, web.id, project.id).description,
       ).toBeNull();
     },
   );
 
   test("maps a repository without a language", () => {
     expect(
-      mapRepo({ ...githubRepo, language: null }, web.id, RepoTier.Project)
-        .language,
+      mapRepo({ ...githubRepo, language: null }, web.id, project.id).language,
     ).toBeNull();
   });
 
   test("maps an archived repository", () => {
     expect(
-      mapRepo({ ...githubRepo, archived: true }, web.id, RepoTier.Project)
-        .archived,
+      mapRepo({ ...githubRepo, archived: true }, web.id, project.id).archived,
     ).toBe(true);
   });
 
   test("maps a repository without a push date", () => {
     expect(
-      mapRepo({ ...githubRepo, pushed_at: null }, web.id, RepoTier.Project)
-        .pushedAt,
+      mapRepo({ ...githubRepo, pushed_at: null }, web.id, project.id).pushedAt,
     ).toBeNull();
   });
 
   test("keeps the category and tier it receives", () => {
-    expect(mapRepo(githubRepo, data.id, RepoTier.Lab)).toMatchObject({
+    expect(mapRepo(githubRepo, data.id, lab.id)).toMatchObject({
       category: data.id,
-      tier: RepoTier.Lab,
+      tier: lab.id,
     });
   });
 });

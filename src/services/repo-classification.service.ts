@@ -7,13 +7,18 @@ import {
   PORTFOLIO_OPT_IN_TOPIC,
   PORTFOLIO_TOPIC_PREFIX,
 } from "../config/portfolio";
-import { REPO_TIER_TOPIC, RepoTier } from "../constants";
+import {
+  DEFAULT_TIER_ID,
+  TIERS,
+  type TierId,
+  tierTopic,
+} from "../config/tiers";
 import type { GitHubRepo } from "../mappers/repo.mapper";
 
 const KNOWN_TOPICS = new Set<string>([
   PORTFOLIO_OPT_IN_TOPIC,
   ...CATEGORIES.map((category) => categoryTopic(category.id)),
-  ...Object.values(REPO_TIER_TOPIC),
+  ...TIERS.map((tier) => tierTopic(tier.id)),
 ]);
 
 type UnpublishedDecision =
@@ -23,7 +28,7 @@ type UnpublishedDecision =
 type PublicationDecision = { kind: "published" } | UnpublishedDecision;
 
 type RepoClassification =
-  | { kind: "published"; category: CategoryId; tier: RepoTier }
+  | { kind: "published"; category: CategoryId; tier: TierId }
   | UnpublishedDecision;
 
 type GitHubRepoTopics = {
@@ -31,7 +36,7 @@ type GitHubRepoTopics = {
   controlTopics: string[];
   unknownControlTopics: string[];
   categories: CategoryId[];
-  tiers: RepoTier[];
+  tiers: TierId[];
 };
 
 type ClassificationPart<T> =
@@ -77,8 +82,8 @@ function readRepoTopics(githubRepo: GitHubRepo): GitHubRepoTopics {
     categories: CATEGORIES.filter((category) =>
       topics.includes(categoryTopic(category.id)),
     ).map((category) => category.id),
-    tiers: Object.values(RepoTier).filter((tier) =>
-      topics.includes(REPO_TIER_TOPIC[tier]),
+    tiers: TIERS.filter((tier) => topics.includes(tierTopic(tier.id))).map(
+      (tier) => tier.id,
     ),
   };
 }
@@ -125,7 +130,7 @@ function decidePublication(
 function classifyPublishedRepo(
   githubRepo: GitHubRepo,
   repoTopics: GitHubRepoTopics,
-): { category: CategoryId; tier: RepoTier } {
+): { category: CategoryId; tier: TierId } {
   const category = resolveCategory(repoTopics.categories);
   const tier = resolveTier(repoTopics.tiers);
   const faults = [
@@ -178,17 +183,17 @@ function resolveCategory(
  * Returns the tier or the fault that prevents it. It reports the fault instead
  * of throwing so the caller can collect every fault at once.
  */
-function resolveTier(tiers: RepoTier[]): ClassificationPart<RepoTier> {
+function resolveTier(tiers: TierId[]): ClassificationPart<TierId> {
   if (tiers.length > 1) {
     return {
       kind: "fault",
       message:
         "carries more than one tier topic:" +
-        ` ${formatTopics(tiers.map((tier) => REPO_TIER_TOPIC[tier]))}`,
+        ` ${formatTopics(tiers.map((tier) => tierTopic(tier)))}`,
     };
   }
 
-  return { kind: "resolved", value: tiers[0] ?? RepoTier.Project };
+  return { kind: "resolved", value: tiers[0] ?? DEFAULT_TIER_ID };
 }
 
 function formatClassificationError(repoName: string, faults: string[]): string {
