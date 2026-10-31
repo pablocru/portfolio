@@ -69,7 +69,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   context.
 - When creating domain code, use the project layers (`src/types`, `src/mappers`,
   `src/services`, `src/utils`, `src/loaders`, `src/clients`) with suffixes
-  `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`.
+  `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`. Static
+  portfolio configuration and closed vocabularies live in `src/config` as plain
+  modules that any layer may import.
 - Presentation logic that belongs to one component lives beside it under
   `src/components/<feature>/` and is tested in place; only the Astro layer may
   import it. Repository ordering is a core rule in `src/utils`; grouping, labels
