@@ -1,11 +1,7 @@
 import type { LoaderContext } from "astro/loaders";
 import { describe, expect, test, vi } from "vitest";
-import {
-  GITHUB_USERNAME,
-  PORTFOLIO_OPT_IN_TOPIC,
-  RepoCategory,
-  RepoTier,
-} from "../constants";
+import { GITHUB_USERNAME, PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
+import { RepoCategory, RepoTier } from "../constants";
 import type { PortfolioRepo, PortfolioRepoSelection } from "../types/repo.type";
 import { githubReposLoader } from "./github-repos";
 

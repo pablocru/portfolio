@@ -1,6 +1,6 @@
 import { RequestError } from "@octokit/request-error";
 import type { Octokit } from "@octokit/rest";
-import { GITHUB_USERNAME } from "../constants";
+import { GITHUB_USERNAME } from "../config/portfolio";
 
 function describeError(error: unknown): string {
   return error instanceof RequestError

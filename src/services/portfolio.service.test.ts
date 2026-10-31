@@ -1,6 +1,7 @@
 import { Octokit } from "@octokit/rest";
 import { describe, expect, test, vi } from "vitest";
-import { PORTFOLIO_OPT_IN_TOPIC, RepoCategory, RepoTier } from "../constants";
+import { PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
+import { RepoCategory, RepoTier } from "../constants";
 import { getPortfolioRepos, getProfile } from "./portfolio.service";
 
 const githubRepo = {

@@ -1,5 +1,5 @@
 import type { Loader } from "astro/loaders";
-import { GITHUB_USERNAME, PORTFOLIO_OPT_IN_TOPIC } from "../constants";
+import { GITHUB_USERNAME, PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
 import type { PortfolioRepoSelection } from "../types/repo.type";
 
 /**

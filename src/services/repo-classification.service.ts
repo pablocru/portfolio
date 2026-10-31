@@ -1,6 +1,8 @@
 import {
   PORTFOLIO_OPT_IN_TOPIC,
   PORTFOLIO_TOPIC_PREFIX,
+} from "../config/portfolio";
+import {
   REPO_CATEGORY_TOPIC,
   REPO_TIER_TOPIC,
   RepoCategory,

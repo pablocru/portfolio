@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { PORTFOLIO_OPT_IN_TOPIC, RepoCategory, RepoTier } from "../constants";
+import { PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
+import { RepoCategory, RepoTier } from "../constants";
 import { classifyRepo } from "./repo-classification.service";
 
 const githubRepo = {
