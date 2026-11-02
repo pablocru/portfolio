@@ -107,15 +107,13 @@ describe("classifyRepo", () => {
     );
   });
 
-  test("aggregates a missing category with duplicated tiers", () => {
+  test("reports only the tier fault when the category requirement is unknown", () => {
     expect(() =>
       classifyRepo({
         ...githubRepo,
         topics: [PORTFOLIO_OPT_IN_TOPIC, featuredTopic, labTopic],
       }),
-    ).toThrow(
-      /Repository "portfolio" has 2 classification faults:[\s\S]*no category topic[\s\S]*more than one tier topic/,
-    );
+    ).toThrow(/Repository "portfolio" carries more than one tier topic:/);
   });
 
   test("warns about a private repository tagged for publication", () => {

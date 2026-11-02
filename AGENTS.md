@@ -80,6 +80,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`. Static
   portfolio configuration and closed vocabularies live in `src/config` as plain
   modules that any layer may import.
+- A content collection schema lives beside its loader as `.schema.ts`: it stays
+  testable because `content.config.ts` imports `astro:env/server`.
 - Presentation logic that belongs to one component lives beside it under
   `src/components/<feature>/` and is tested in place; only the Astro layer may
   import it. Repository ordering is a core rule in `src/utils`; grouping, labels

@@ -17,11 +17,12 @@ export type GitHubRepo = Pick<
 
 /**
  * Maps the GitHub payload to the portfolio repository. The caller decides
- * whether the repository is published and which category and tier it has.
+ * whether the repository is published and which category, if any, and tier it
+ * has.
  */
 export function mapRepo(
   githubRepo: GitHubRepo,
-  category: CategoryId,
+  category: CategoryId | null,
   tier: TierId,
 ): PortfolioRepo {
   return {

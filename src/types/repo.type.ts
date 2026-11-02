@@ -13,7 +13,12 @@ export type PortfolioRepo = {
   url: string;
   archived: boolean;
   pushedAt: string | null;
-  category: CategoryId;
+  /**
+   * Category of the repository. It is `null` only for tiers that do not
+   * require a category (see `tierRequiresCategory`); those tiers may still
+   * carry one.
+   */
+  category: CategoryId | null;
   tier: TierId;
 };
 
