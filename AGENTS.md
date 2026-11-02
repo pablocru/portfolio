@@ -69,6 +69,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   scripts or formatting rules in `package.json`, tool configs and workflows).
   Keep incidental similarity local when sharing it would make the code harder to
   read or couple unrelated concepts.
+- A public function's parameter and return types are fixed at its declaration. A
+  call-site type argument may not be the only thing keeping them narrow: a later
+  edit can drop it and silently widen the contract.
 - Keep raw GitHub payloads and portfolio domain objects distinguishable by name
   so each file can be read in isolation; fields may rely on their owner for
   context.
