@@ -8,8 +8,10 @@ import { portfolioRepo } from "../types/repo.fixture";
 import type { PortfolioRepo } from "../types/repo.type";
 import { repoSchema } from "./repo.schema";
 
-const [, data] = CATEGORIES;
-const [featured, project, lab] = TIERS;
+const [firstCategory] = CATEGORIES;
+
+const requiredTiers = TIERS.filter((tier) => tier.requiresCategory);
+const optionalTiers = TIERS.filter((tier) => !tier.requiresCategory);
 
 function parse(overrides: Partial<PortfolioRepo> = {}) {
   return repoSchema.safeParse(portfolioRepo("portfolio", overrides));
@@ -30,40 +32,37 @@ function classificationOutcome(tier: TierId): "published" | "rejected" {
 }
 
 describe("repoSchema", () => {
-  test("accepts a lab without a category", () => {
-    expect(parse({ category: null, tier: lab.id }).success).toBe(true);
-  });
+  test.each(optionalTiers)(
+    "accepts a %s-tier repository without a category",
+    (tier) => {
+      expect(parse({ category: null, tier: tier.id }).success).toBe(true);
+    },
+  );
 
-  test("stores the category of a lab that has one", () => {
-    const result = parse({ category: data.id, tier: lab.id });
+  test.each(optionalTiers)(
+    "stores the category of a %s-tier repository that has one",
+    (tier) => {
+      const result = parse({ category: firstCategory.id, tier: tier.id });
 
-    expect(result.success).toBe(true);
-    expect(result.data?.category).toBe(data.id);
-  });
+      expect(result.success).toBe(true);
+      expect(result.data?.category).toBe(firstCategory.id);
+    },
+  );
 
-  test("rejects a project without a category, naming the tier", () => {
-    const result = parse({ category: null, tier: project.id });
+  test.each(requiredTiers)(
+    "rejects a %s-tier repository without a category, naming the tier",
+    (tier) => {
+      const result = parse({ category: null, tier: tier.id });
 
-    expect(result.success).toBe(false);
-    expect(result.error?.issues).toContainEqual(
-      expect.objectContaining({
-        message: `Tier "${project.id}" requires a category`,
-        path: ["category"],
-      }),
-    );
-  });
-
-  test("rejects a featured repository without a category, naming the tier", () => {
-    const result = parse({ category: null, tier: featured.id });
-
-    expect(result.success).toBe(false);
-    expect(result.error?.issues).toContainEqual(
-      expect.objectContaining({
-        message: `Tier "${featured.id}" requires a category`,
-        path: ["category"],
-      }),
-    );
-  });
+      expect(result.success).toBe(false);
+      expect(result.error?.issues).toContainEqual(
+        expect.objectContaining({
+          message: `Tier "${tier.id}" requires a category`,
+          path: ["category"],
+        }),
+      );
+    },
+  );
 
   test("rejects an unknown category", () => {
     const result = repoSchema.safeParse({
