@@ -64,6 +64,11 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   asks for styling. Styles a framework generates for a feature are part of that
   feature. Never invent content (names, dates, links, images); ask the developer
   instead.
+- DRY: remove duplicated facts, not duplicated shapes. When a fact already has a
+  source of truth, reference it instead of repeating it (for example versions,
+  scripts or formatting rules in `package.json`, tool configs and workflows).
+  Keep incidental similarity local when sharing it would make the code harder to
+  read or couple unrelated concepts.
 - Keep raw GitHub payloads and portfolio domain objects distinguishable by name
   so each file can be read in isolation; fields may rely on their owner for
   context.
@@ -93,9 +98,6 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   environment.
 - Closed domain vocabularies have one shared source of truth; component-local
   presentation identifiers may stay local.
-- Avoid duplicating facts that already have a source of truth; reference instead
-  of repeating versions, scripts, or formatting rules already defined in
-  `package.json`, tool configs, or workflows.
 - **When adding or changing a rule, audit the repository for related stale or
   duplicated references and update them in the same change.**
 
