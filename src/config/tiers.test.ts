@@ -4,6 +4,7 @@ import {
   CATEGORIZED_TIER_ID,
   DEFAULT_TIER_ID,
   TIERS,
+  tierRequiresCategory,
   tierTopic,
 } from "./tiers";
 
@@ -26,5 +27,11 @@ describe("TIERS", () => {
 
     expect(ids).toContain(DEFAULT_TIER_ID);
     expect(ids).toContain(CATEGORIZED_TIER_ID);
+  });
+
+  test("reads the category requirement of every tier entry", () => {
+    for (const tier of TIERS) {
+      expect(tierRequiresCategory(tier.id)).toBe(tier.requiresCategory);
+    }
   });
 });
