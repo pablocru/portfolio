@@ -3,21 +3,11 @@ import { describe, expect, test, vi } from "vitest";
 import { CATEGORIES, categoryTopic } from "../config/categories";
 import { PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
 import { TIERS } from "../config/tiers";
+import { githubRepo } from "../mappers/repo.fixture";
 import { getPortfolioRepos, getProfile } from "./portfolio.service";
 
 const [web, data] = CATEGORIES;
 const [, project] = TIERS;
-
-const githubRepo = {
-  name: "portfolio",
-  description: "A window to my projects",
-  language: "TypeScript",
-  html_url: "https://github.com/pablocru/portfolio",
-  archived: false,
-  private: false,
-  pushed_at: "2026-10-20T09:00:00Z",
-  topics: [PORTFOLIO_OPT_IN_TOPIC, categoryTopic(web.id)],
-};
 
 describe("getProfile", () => {
   test("maps the fetched GitHub user", async () => {

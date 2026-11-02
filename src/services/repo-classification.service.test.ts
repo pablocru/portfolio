@@ -5,6 +5,7 @@ import {
   PORTFOLIO_TOPIC_PREFIX,
 } from "../config/portfolio";
 import { TIERS, tierTopic } from "../config/tiers";
+import { githubRepo } from "../mappers/repo.fixture";
 import { classifyRepo } from "./repo-classification.service";
 
 const [web, data] = CATEGORIES;
@@ -15,17 +16,6 @@ const featuredTopic = tierTopic(featured.id);
 const projectTopic = tierTopic(project.id);
 const labTopic = tierTopic(lab.id);
 const UNKNOWN_CATEGORY_TOPIC = `${PORTFOLIO_TOPIC_PREFIX}cat-desgin`;
-
-const githubRepo = {
-  name: "portfolio",
-  description: "A window to my projects",
-  language: "TypeScript",
-  html_url: "https://github.com/pablocru/portfolio",
-  archived: false,
-  private: false,
-  pushed_at: "2026-10-20T09:00:00Z",
-  topics: [PORTFOLIO_OPT_IN_TOPIC, webTopic],
-};
 
 describe("classifyRepo", () => {
   test("publishes a repository with its classification", () => {

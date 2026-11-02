@@ -164,8 +164,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - When a unit declares a collaborator, inject it instead of mocking the module
   (for example, the Octokit client in the profile service, or the repository
   source in the content loader). A unit does not build its own collaborator.
-- Name fixtures for the data they hold and reuse the same fixture for the same
-  object across tests.
+- Name fixtures for the data they hold, reuse the same fixture for the same
+  object across tests, and keep a shared fixture beside the type it builds with
+  the `.fixture.ts` suffix.
 
 ## Continuous integration
 

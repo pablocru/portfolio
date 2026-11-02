@@ -1,22 +1,11 @@
 import { describe, expect, test } from "vitest";
-import { CATEGORIES, categoryTopic } from "../config/categories";
-import { PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
+import { CATEGORIES } from "../config/categories";
 import { TIERS } from "../config/tiers";
+import { githubRepo } from "./repo.fixture";
 import { mapRepo } from "./repo.mapper";
 
 const [web, data] = CATEGORIES;
 const [, project, lab] = TIERS;
-
-const githubRepo = {
-  name: "portfolio",
-  description: "A window to my projects",
-  language: "TypeScript",
-  html_url: "https://github.com/pablocru/portfolio",
-  archived: false,
-  private: false,
-  pushed_at: "2026-10-20T09:00:00Z",
-  topics: [PORTFOLIO_OPT_IN_TOPIC, categoryTopic(web.id)],
-};
 
 describe("mapRepo", () => {
   test("maps the repository fields", () => {

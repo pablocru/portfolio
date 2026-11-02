@@ -1,28 +1,12 @@
 import { describe, expect, test } from "vitest";
 import { CATEGORIES } from "../../config/categories";
 import { TIERS } from "../../config/tiers";
+import { portfolioRepo } from "../../types/repo.fixture";
 import type { PortfolioRepo } from "../../types/repo.type";
 import { groupRepos } from "./repo-groups";
 
 const [web, data, cloudDevOps] = CATEGORIES;
 const [featured, project, lab] = TIERS;
-
-function portfolioRepo(
-  name: string,
-  overrides: Partial<PortfolioRepo> = {},
-): PortfolioRepo {
-  return {
-    name,
-    description: null,
-    language: null,
-    url: `https://github.com/pablocru/${name}`,
-    archived: false,
-    pushedAt: "2026-01-01T00:00:00Z",
-    category: web.id,
-    tier: project.id,
-    ...overrides,
-  };
-}
 
 function fullSet(): PortfolioRepo[] {
   return [

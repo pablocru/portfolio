@@ -1,25 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { CATEGORIES } from "../config/categories";
-import { TIERS } from "../config/tiers";
+import { portfolioRepo } from "../types/repo.fixture";
 import type { PortfolioRepo } from "../types/repo.type";
 import { comparePortfolioRepos } from "./repo-order.util";
-
-function portfolioRepo(
-  name: string,
-  overrides: Partial<PortfolioRepo> = {},
-): PortfolioRepo {
-  return {
-    name,
-    description: null,
-    language: null,
-    url: `https://github.com/pablocru/${name}`,
-    archived: false,
-    pushedAt: "2026-01-01T00:00:00Z",
-    category: CATEGORIES[0].id,
-    tier: TIERS[1].id,
-    ...overrides,
-  };
-}
 
 function sortNames(portfolioRepos: PortfolioRepo[]): string[] {
   return [...portfolioRepos]
