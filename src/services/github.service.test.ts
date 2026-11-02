@@ -1,7 +1,7 @@
 import { RequestError } from "@octokit/request-error";
 import { Octokit } from "@octokit/rest";
 import { describe, expect, test, vi } from "vitest";
-import { GITHUB_USERNAME } from "../constants";
+import { GITHUB_USERNAME } from "../config/portfolio";
 import { fetchGitHubRepos, fetchGitHubUser } from "./github.service";
 
 describe("fetchGitHubUser", () => {

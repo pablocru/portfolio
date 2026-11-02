@@ -1,5 +1,6 @@
 import type { RestEndpointMethodTypes } from "@octokit/rest";
-import type { RepoCategory, RepoTier } from "../constants";
+import type { CategoryId } from "../config/categories";
+import type { TierId } from "../config/tiers";
 import type { PortfolioRepo } from "../types/repo.type";
 
 export type GitHubRepo = Pick<
@@ -20,8 +21,8 @@ export type GitHubRepo = Pick<
  */
 export function mapRepo(
   githubRepo: GitHubRepo,
-  category: RepoCategory,
-  tier: RepoTier,
+  category: CategoryId,
+  tier: TierId,
 ): PortfolioRepo {
   return {
     name: githubRepo.name,

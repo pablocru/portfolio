@@ -1,24 +1,15 @@
 import type { LoaderContext } from "astro/loaders";
 import { describe, expect, test, vi } from "vitest";
-import {
-  GITHUB_USERNAME,
-  PORTFOLIO_OPT_IN_TOPIC,
-  RepoCategory,
-  RepoTier,
-} from "../constants";
+import { GITHUB_USERNAME, PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
+import { portfolioRepo as buildPortfolioRepo } from "../types/repo.fixture";
 import type { PortfolioRepo, PortfolioRepoSelection } from "../types/repo.type";
 import { githubReposLoader } from "./github-repos";
 
-const portfolioRepo: PortfolioRepo = {
-  name: "portfolio",
+const portfolioRepo: PortfolioRepo = buildPortfolioRepo("portfolio", {
   description: "A window to my projects",
   language: "TypeScript",
-  url: "https://github.com/pablocru/portfolio",
-  archived: false,
   pushedAt: "2026-10-20T09:00:00Z",
-  category: RepoCategory.Web,
-  tier: RepoTier.Project,
-};
+});
 
 function createLoadContext() {
   const entries = new Map<string, PortfolioRepo>();

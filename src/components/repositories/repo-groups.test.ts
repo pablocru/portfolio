@@ -1,32 +1,20 @@
 import { describe, expect, test } from "vitest";
-import { RepoCategory, RepoTier } from "../../constants";
+import { CATEGORIES } from "../../config/categories";
+import { TIERS } from "../../config/tiers";
+import { portfolioRepo } from "../../types/repo.fixture";
 import type { PortfolioRepo } from "../../types/repo.type";
 import { groupRepos } from "./repo-groups";
 
-function portfolioRepo(
-  name: string,
-  overrides: Partial<PortfolioRepo> = {},
-): PortfolioRepo {
-  return {
-    name,
-    description: null,
-    language: null,
-    url: `https://github.com/pablocru/${name}`,
-    archived: false,
-    pushedAt: "2026-01-01T00:00:00Z",
-    category: RepoCategory.Web,
-    tier: RepoTier.Project,
-    ...overrides,
-  };
-}
+const [web, data, cloudDevOps] = CATEGORIES;
+const [featured, project, lab] = TIERS;
 
 function fullSet(): PortfolioRepo[] {
   return [
     portfolioRepo("web-project"),
-    portfolioRepo("data-project", { category: RepoCategory.Data }),
-    portfolioRepo("cloud-project", { category: RepoCategory.CloudDevOps }),
-    portfolioRepo("featured-project", { tier: RepoTier.Featured }),
-    portfolioRepo("lab-project", { tier: RepoTier.Lab }),
+    portfolioRepo("data-project", { category: data.id }),
+    portfolioRepo("cloud-project", { category: cloudDevOps.id }),
+    portfolioRepo("featured-project", { tier: featured.id }),
+    portfolioRepo("lab-project", { tier: lab.id }),
   ];
 }
 
@@ -35,11 +23,11 @@ describe("groupRepos", () => {
     const grouping = groupRepos(fullSet());
 
     expect(grouping.groups.map((group) => group.label)).toEqual([
-      RepoTier.Featured,
-      RepoCategory.Web,
-      RepoCategory.Data,
-      RepoCategory.CloudDevOps,
-      RepoTier.Lab,
+      featured.label,
+      web.label,
+      data.label,
+      cloudDevOps.label,
+      lab.label,
     ]);
     expect(grouping.warnings).toEqual([]);
   });
@@ -57,15 +45,15 @@ describe("groupRepos", () => {
   test("lets the tier win over the category", () => {
     const grouping = groupRepos([
       portfolioRepo("featured-data", {
-        category: RepoCategory.Data,
-        tier: RepoTier.Featured,
+        category: data.id,
+        tier: featured.id,
       }),
-      portfolioRepo("lab-web", { tier: RepoTier.Lab }),
+      portfolioRepo("lab-web", { tier: lab.id }),
     ]);
 
     expect(grouping.groups.map((group) => group.id)).toEqual([
-      "featured",
-      "lab",
+      featured.id,
+      lab.id,
     ]);
     expect(grouping.groups[0]?.repos.map((value) => value.name)).toEqual([
       "featured-data",
@@ -111,29 +99,29 @@ describe("groupRepos", () => {
   test("warns about every group that stays empty", () => {
     const grouping = groupRepos([portfolioRepo("web-project")]);
 
-    expect(grouping.groups.map((group) => group.id)).toEqual(["web"]);
+    expect(grouping.groups.map((group) => group.id)).toEqual([web.id]);
     expect(grouping.warnings).toEqual([
-      'The "Featured" group has no repository; its section is omitted.',
-      'Category "Data" has no project-tier repository; its section is omitted.',
-      'Category "Cloud & DevOps" has no project-tier repository; its section is omitted.',
-      'The "Lab" group has no repository; its section is omitted.',
+      `The "${featured.label}" group has no repository; its section is omitted.`,
+      `Category "${data.label}" has no ${project.label.toLowerCase()}-tier repository; its section is omitted.`,
+      `Category "${cloudDevOps.label}" has no ${project.label.toLowerCase()}-tier repository; its section is omitted.`,
+      `The "${lab.label}" group has no repository; its section is omitted.`,
     ]);
   });
 
   test("warns when a category only holds featured or lab repositories", () => {
     const grouping = groupRepos([
       portfolioRepo("featured-data", {
-        category: RepoCategory.Data,
-        tier: RepoTier.Featured,
+        category: data.id,
+        tier: featured.id,
       }),
       portfolioRepo("lab-data", {
-        category: RepoCategory.Data,
-        tier: RepoTier.Lab,
+        category: data.id,
+        tier: lab.id,
       }),
     ]);
 
     expect(grouping.warnings).toContain(
-      'Category "Data" has no project-tier repository; its section is omitted.',
+      `Category "${data.label}" has no ${project.label.toLowerCase()}-tier repository; its section is omitted.`,
     );
   });
 
@@ -141,11 +129,12 @@ describe("groupRepos", () => {
     expect(groupRepos([])).toEqual({
       groups: [],
       warnings: [
-        'The "Featured" group has no repository; its section is omitted.',
-        'Category "Web" has no project-tier repository; its section is omitted.',
-        'Category "Data" has no project-tier repository; its section is omitted.',
-        'Category "Cloud & DevOps" has no project-tier repository; its section is omitted.',
-        'The "Lab" group has no repository; its section is omitted.',
+        `The "${featured.label}" group has no repository; its section is omitted.`,
+        ...CATEGORIES.map(
+          (category) =>
+            `Category "${category.label}" has no ${project.label.toLowerCase()}-tier repository; its section is omitted.`,
+        ),
+        `The "${lab.label}" group has no repository; its section is omitted.`,
       ],
     });
   });

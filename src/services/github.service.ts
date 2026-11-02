@@ -1,6 +1,12 @@
 import { RequestError } from "@octokit/request-error";
-import type { Octokit } from "@octokit/rest";
-import { GITHUB_USERNAME } from "../constants";
+import type { Octokit, RestEndpointMethodTypes } from "@octokit/rest";
+import { GITHUB_USERNAME } from "../config/portfolio";
+
+type GitHubUserPayload =
+  RestEndpointMethodTypes["users"]["getByUsername"]["response"]["data"];
+
+type GitHubRepoPayload =
+  RestEndpointMethodTypes["repos"]["listForUser"]["response"]["data"][number];
 
 function describeError(error: unknown): string {
   return error instanceof RequestError
@@ -8,7 +14,9 @@ function describeError(error: unknown): string {
     : "unexpected error occurred";
 }
 
-export async function fetchGitHubUser(client: Octokit) {
+export async function fetchGitHubUser(
+  client: Octokit,
+): Promise<GitHubUserPayload> {
   try {
     const { data } = await client.rest.users.getByUsername({
       username: GITHUB_USERNAME,
@@ -23,7 +31,9 @@ export async function fetchGitHubUser(client: Octokit) {
   }
 }
 
-export async function fetchGitHubRepos(client: Octokit) {
+export async function fetchGitHubRepos(
+  client: Octokit,
+): Promise<GitHubRepoPayload[]> {
   try {
     // listForUser returns public repositories only and the token only raises
     // the rate limit. The listing endpoint has no topic filter, and the search

@@ -1,24 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { RepoCategory, RepoTier } from "../constants";
+import { portfolioRepo } from "../types/repo.fixture";
 import type { PortfolioRepo } from "../types/repo.type";
 import { comparePortfolioRepos } from "./repo-order.util";
-
-function portfolioRepo(
-  name: string,
-  overrides: Partial<PortfolioRepo> = {},
-): PortfolioRepo {
-  return {
-    name,
-    description: null,
-    language: null,
-    url: `https://github.com/pablocru/${name}`,
-    archived: false,
-    pushedAt: "2026-01-01T00:00:00Z",
-    category: RepoCategory.Web,
-    tier: RepoTier.Project,
-    ...overrides,
-  };
-}
 
 function sortNames(portfolioRepos: PortfolioRepo[]): string[] {
   return [...portfolioRepos]

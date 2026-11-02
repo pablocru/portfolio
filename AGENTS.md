@@ -64,12 +64,22 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   asks for styling. Styles a framework generates for a feature are part of that
   feature. Never invent content (names, dates, links, images); ask the developer
   instead.
+- DRY: remove duplicated facts, not duplicated shapes. When a fact already has a
+  source of truth, reference it instead of repeating it (for example versions,
+  scripts or formatting rules in `package.json`, tool configs and workflows).
+  Keep incidental similarity local when sharing it would make the code harder to
+  read or couple unrelated concepts.
+- A public function's parameter and return types are fixed at its declaration. A
+  call-site type argument may not be the only thing keeping them narrow: a later
+  edit can drop it and silently widen the contract.
 - Keep raw GitHub payloads and portfolio domain objects distinguishable by name
   so each file can be read in isolation; fields may rely on their owner for
   context.
 - When creating domain code, use the project layers (`src/types`, `src/mappers`,
   `src/services`, `src/utils`, `src/loaders`, `src/clients`) with suffixes
-  `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`.
+  `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`. Static
+  portfolio configuration and closed vocabularies live in `src/config` as plain
+  modules that any layer may import.
 - Presentation logic that belongs to one component lives beside it under
   `src/components/<feature>/` and is tested in place; only the Astro layer may
   import it. Repository ordering is a core rule in `src/utils`; grouping, labels
@@ -91,9 +101,6 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   environment.
 - Closed domain vocabularies have one shared source of truth; component-local
   presentation identifiers may stay local.
-- Avoid duplicating facts that already have a source of truth; reference instead
-  of repeating versions, scripts, or formatting rules already defined in
-  `package.json`, tool configs, or workflows.
 - **When adding or changing a rule, audit the repository for related stale or
   duplicated references and update them in the same change.**
 
@@ -160,8 +167,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - When a unit declares a collaborator, inject it instead of mocking the module
   (for example, the Octokit client in the profile service, or the repository
   source in the content loader). A unit does not build its own collaborator.
-- Name fixtures for the data they hold and reuse the same fixture for the same
-  object across tests.
+- Name fixtures for the data they hold, reuse the same fixture for the same
+  object across tests, and keep a shared fixture beside the type it builds with
+  the `.fixture.ts` suffix.
 
 ## Continuous integration
 
@@ -177,12 +185,13 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Do not run commands that discard local work (`git reset --hard`, `git clean`,
   `git restore` without `--staged`, `git checkout -- <path>`, `git branch -D`)
   without asking.
-- New additions to the project require a new branch from an up-to-date `main`.
-  Names: `feat/…`, `fix/…`, `ci/…`, `docs/…`, `chore/…`.
+- Every change is made on a new branch from an up-to-date `main`. Name the
+  branch with a valid [Conventional Commits][conventional-commits] type, for
+  example `refactor/…`.
 - **Conventional Commits in English**: `type(scope): imperative summary`,
   lowercase after the colon, no trailing period, 72 characters max. Body only
   when the _why_ is not obvious. The types and the scope follow
-  [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+  [Conventional Commits][conventional-commits].
 - Atomic commits: one logical change per commit, and every commit must pass the
   checks declared in [lefthook.yml](lefthook.yml). Agents must use the
   configured hooks and warn the developer when they are not installed. Never
@@ -260,3 +269,5 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   state, not only that a side effect happened.
 - When you finish, report what you changed, which checks you ran, and what you
   could not verify.
+
+[conventional-commits]: https://www.conventionalcommits.org/en/v1.0.0/

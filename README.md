@@ -31,8 +31,9 @@ that describes the kind of work, and optionally the topic for its tier:
 
 A published repository needs exactly one category and at most one tier. The next
 build picks the change up, and a repository with a missing, duplicated or
-unknown topic fails the build with an error that names it. The vocabulary is
-declared in `src/constants.ts`.
+unknown topic fails the build with an error that names it. The category and tier
+vocabularies are declared in `src/config/categories.ts` and
+`src/config/tiers.ts`.
 
 ## Tech stack
 
