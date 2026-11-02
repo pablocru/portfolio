@@ -63,6 +63,25 @@ describe("groupRepos", () => {
     ]);
   });
 
+  test("groups a lab with and without a category in the same section", () => {
+    const grouping = groupRepos([
+      portfolioRepo("lab-without-category", {
+        category: null,
+        tier: lab.id,
+      }),
+      portfolioRepo("lab-with-category", {
+        category: data.id,
+        tier: lab.id,
+      }),
+    ]);
+
+    expect(grouping.groups.map((group) => group.id)).toEqual([lab.id]);
+    expect(grouping.groups[0]?.repos.map((value) => value.name)).toEqual([
+      "lab-with-category",
+      "lab-without-category",
+    ]);
+  });
+
   test("orders entries by archived, push date and name", () => {
     const grouping = groupRepos([
       portfolioRepo("archived", {

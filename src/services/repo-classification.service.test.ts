@@ -67,6 +67,35 @@ describe("classifyRepo", () => {
     );
   });
 
+  test("rejects a featured repository without a category", () => {
+    expect(() =>
+      classifyRepo({
+        ...githubRepo,
+        topics: [PORTFOLIO_OPT_IN_TOPIC, featuredTopic],
+      }),
+    ).toThrow(
+      'Repository "portfolio" is published but carries no category topic',
+    );
+  });
+
+  test("publishes a lab without a category", () => {
+    expect(
+      classifyRepo({
+        ...githubRepo,
+        topics: [PORTFOLIO_OPT_IN_TOPIC, labTopic],
+      }),
+    ).toEqual({ kind: "published", category: null, tier: lab.id });
+  });
+
+  test("keeps the category of a lab that has one", () => {
+    expect(
+      classifyRepo({
+        ...githubRepo,
+        topics: [PORTFOLIO_OPT_IN_TOPIC, labTopic, dataTopic],
+      }),
+    ).toEqual({ kind: "published", category: data.id, tier: lab.id });
+  });
+
   test("rejects two category topics", () => {
     expect(() =>
       classifyRepo({
@@ -77,6 +106,20 @@ describe("classifyRepo", () => {
       `Repository "portfolio" carries more than one category topic: "${webTopic}", "${dataTopic}"`,
     );
   });
+
+  test.each([labTopic, featuredTopic])(
+    "rejects two category topics with the %s tier",
+    (tierTopic) => {
+      expect(() =>
+        classifyRepo({
+          ...githubRepo,
+          topics: [PORTFOLIO_OPT_IN_TOPIC, tierTopic, webTopic, dataTopic],
+        }),
+      ).toThrow(
+        `Repository "portfolio" carries more than one category topic: "${webTopic}", "${dataTopic}"`,
+      );
+    },
+  );
 
   test("rejects an unknown control topic", () => {
     expect(() =>
