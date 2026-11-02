@@ -2,6 +2,11 @@ import type { CategoryId } from "../config/categories";
 import type { TierId } from "../config/tiers";
 
 /**
+ * Category identifier, or no category when the tier does not require one.
+ */
+export type NullableCategoryId = CategoryId | null;
+
+/**
  * Repository included in the portfolio. It is a type alias, not an interface,
  * because Astro's content loader API requires the entries to be assignable to
  * `Record<string, unknown>`.
@@ -18,7 +23,7 @@ export type PortfolioRepo = {
    * require a category (see `tierRequiresCategory`); those tiers may still
    * carry one.
    */
-  category: CategoryId | null;
+  category: NullableCategoryId;
   tier: TierId;
 };
 

@@ -15,6 +15,7 @@ import {
   tierTopic,
 } from "../config/tiers";
 import type { GitHubRepo } from "../mappers/repo.mapper";
+import type { NullableCategoryId } from "../types/repo.type";
 
 const KNOWN_TOPICS = new Set<string>([
   PORTFOLIO_OPT_IN_TOPIC,
@@ -29,7 +30,7 @@ type UnpublishedDecision =
 type PublicationDecision = { kind: "published" } | UnpublishedDecision;
 
 type RepoClassification =
-  | { kind: "published"; category: CategoryId | null; tier: TierId }
+  | { kind: "published"; category: NullableCategoryId; tier: TierId }
   | UnpublishedDecision;
 
 type GitHubRepoTopics = {
@@ -132,7 +133,7 @@ function decidePublication(
 function classifyPublishedRepo(
   githubRepo: GitHubRepo,
   repoTopics: GitHubRepoTopics,
-): { category: CategoryId | null; tier: TierId } {
+): { category: NullableCategoryId; tier: TierId } {
   const tier = resolveTier(repoTopics.tiers);
   const category = resolveCategory(
     repoTopics.categories,
@@ -164,7 +165,7 @@ function classifyPublishedRepo(
 function resolveCategory(
   categories: CategoryId[],
   requiresCategory: boolean,
-): ClassificationPart<CategoryId | null> {
+): ClassificationPart<NullableCategoryId> {
   const [resolvedCategory] = categories;
 
   if (resolvedCategory === undefined) {
