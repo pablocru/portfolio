@@ -1,5 +1,8 @@
 # Milestone 004: Categorization
 
+- Amended by milestone 005: C-004.3 and C-004.12 no longer require a category
+  for tier `Lab`
+
 ## Context
 
 Milestone 003 publishes every public repository tagged with `pf-show` as a
