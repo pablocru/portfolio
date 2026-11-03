@@ -9,6 +9,9 @@ const [web, data] = CATEGORIES;
 const nonCategorizedTiers = TIERS.filter(
   (tier) => tier.id !== CATEGORIZED_TIER_ID,
 );
+const optionalNonCategorizedTiers = nonCategorizedTiers.filter(
+  (tier) => !tier.requiresCategory,
+);
 const categorizedTier = TIERS.find((tier) => tier.id === CATEGORIZED_TIER_ID);
 
 const expectedSectionLabels = TIERS.flatMap((tier) =>
@@ -71,28 +74,31 @@ describe("groupRepos", () => {
     ]);
   });
 
-  test("groups a non-categorized tier with and without a category in the same section", () => {
-    const [nonCategorizedTier] = nonCategorizedTiers;
+  test.skipIf(optionalNonCategorizedTiers.length === 0)(
+    "groups a tier that does not require a category with and without one in the same section",
+    () => {
+      const [nonCategorizedTier] = optionalNonCategorizedTiers;
 
-    const grouping = groupRepos([
-      portfolioRepo("tier-without-category", {
-        category: null,
-        tier: nonCategorizedTier.id,
-      }),
-      portfolioRepo("tier-with-category", {
-        category: data.id,
-        tier: nonCategorizedTier.id,
-      }),
-    ]);
+      const grouping = groupRepos([
+        portfolioRepo("tier-without-category", {
+          category: null,
+          tier: nonCategorizedTier.id,
+        }),
+        portfolioRepo("tier-with-category", {
+          category: data.id,
+          tier: nonCategorizedTier.id,
+        }),
+      ]);
 
-    expect(grouping.groups.map((group) => group.id)).toEqual([
-      nonCategorizedTier.id,
-    ]);
-    expect(grouping.groups[0]?.repos.map((value) => value.name)).toEqual([
-      "tier-with-category",
-      "tier-without-category",
-    ]);
-  });
+      expect(grouping.groups.map((group) => group.id)).toEqual([
+        nonCategorizedTier.id,
+      ]);
+      expect(grouping.groups[0]?.repos.map((value) => value.name)).toEqual([
+        "tier-with-category",
+        "tier-without-category",
+      ]);
+    },
+  );
 
   test("orders entries by archived, push date and name", () => {
     const grouping = groupRepos([
