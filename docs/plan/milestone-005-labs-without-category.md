@@ -50,8 +50,8 @@ collection schema, and they iterate over `TIERS`:
 - C-005.4: build before and after the change with the same topics and compare
   the `dist/` checksum manifests; they must match. `groupRepos` places a tier's
   entries in the same section whether they carry a category or not.
-- C-005.5: inspect `src/config/tiers.ts`, the classifier, the schema and the
-  grouping; no code names `lab` and every decision reads the tier entry.
+- C-005.5: inspect the classifier, the schema and the grouping; no logic outside
+  the tier entry names `lab`, and every category decision reads the tier entry.
 - C-005.6: inspect `README.md` and the milestone 004 header.
 
 Build check for US-005.1 and US-005.2, applied and removed by the owner: pick a
