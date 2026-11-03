@@ -1,11 +1,23 @@
 import { describe, expect, test } from "vitest";
 import { CATEGORIES } from "../config/categories";
-import { TIERS } from "../config/tiers";
+import { TIERS, type TierId } from "../config/tiers";
 import { githubRepo } from "./repo.fixture";
 import { mapRepo } from "./repo.mapper";
 
 const [web, data] = CATEGORIES;
-const [, project, lab] = TIERS;
+
+function tierFixture(id: TierId) {
+  const tier = TIERS.find((entry) => entry.id === id);
+
+  if (tier === undefined) {
+    throw new Error(`Missing tier fixture: ${id}`);
+  }
+
+  return tier;
+}
+
+const project = tierFixture("project");
+const lab = tierFixture("lab");
 
 describe("mapRepo", () => {
   test("maps the repository fields", () => {

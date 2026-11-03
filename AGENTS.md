@@ -32,6 +32,10 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   implementation plans in the repository.
 - A spec contains context, user stories (`US-XXX.Y`), constraints with
   acceptance criteria (`C-XXX.Y`), and verification.
+- A spec states the rule, not the current vocabulary: when it depends on the
+  categories or tiers, it points to `src/config/categories.ts` or
+  `src/config/tiers.ts` instead of repeating ids that can change while the rule
+  stays the same.
 - Acceptance criteria state the observable outcome only; the procedure used to
   check it belongs to verification.
 - Report the result per requirement ID as `PASS`, `FAIL`, or `NOT VERIFIED` with
@@ -80,6 +84,8 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   `.type.ts`, `.mapper.ts`, `.service.ts`, `.util.ts`, `.client.ts`. Static
   portfolio configuration and closed vocabularies live in `src/config` as plain
   modules that any layer may import.
+- A content collection schema lives beside its loader as `.schema.ts`: it stays
+  testable because `content.config.ts` imports `astro:env/server`.
 - Presentation logic that belongs to one component lives beside it under
   `src/components/<feature>/` and is tested in place; only the Astro layer may
   import it. Repository ordering is a core rule in `src/utils`; grouping, labels
@@ -170,6 +176,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Name fixtures for the data they hold, reuse the same fixture for the same
   object across tests, and keep a shared fixture beside the type it builds with
   the `.fixture.ts` suffix.
+- A test never skips: do not use `skip`, `skipIf`, `todo` or a conditional early
+  return. When a case needs data the repository does not contain, build it from
+  a fixture so the test still runs.
 
 ## Continuous integration
 
@@ -224,6 +233,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   edit, comment, `workflow run`, `api` with POST/PUT/PATCH) require approval:
   show the exact command, use a native `--dry-run` if it exists, and wait for
   explicit confirmation.
+- Opening a pull request as a draft is allowed once the developer asks for the
+  pull request: the developer reviews the draft and decides when it is ready.
+  Every other remote change still needs the approval above.
 - **The developer decides what reaches `main`.** Ending a remote object, by
   merging or closing it, is performed by the developer: prepare the change and
   hand it over, whatever the command. The decision is never delegated to

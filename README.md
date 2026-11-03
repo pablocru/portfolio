@@ -4,36 +4,33 @@
 [![CI Pipeline](https://github.com/pablocru/portfolio/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/pablocru/portfolio/actions/workflows/ci-pipeline.yml)
 
 This repository contains the source of my portfolio: a window to my work on
-GitHub, grouped by category, with the featured work first and the experiments
-last. Here you will find:
+GitHub, grouped by the categories and tiers declared in the configuration. Here
+you will find:
 
-- Featured work, before the categories
-- The `Web`, `Data` and `Cloud & DevOps` categories
-- The `Lab` section, for the experiments
+- The tier sections, in declaration order
+- The category sections, in declaration order
 - A link to each repository on GitHub
 
 Not all projects are finished, and not all of them are deployed.
 
 ## Publishing a repository
 
-The portfolio lists the public repositories I tag with `pf-show`. Add the topic
-that describes the kind of work, and optionally the topic for its tier:
+The portfolio lists the public repositories I tag with `pf-show`. I classify
+each one with a category topic (`pf-cat-<id>`) and, optionally, a tier topic
+(`pf-tier-<id>`):
 
-| Topic                 | Effect                                             |
-| --------------------- | -------------------------------------------------- |
-| `pf-show`             | Publishes the repository                           |
-| `pf-cat-web`          | `Web` category                                     |
-| `pf-cat-data`         | `Data` category                                    |
-| `pf-cat-cloud-devops` | `Cloud & DevOps` category                          |
-| `pf-tier-featured`    | `Featured` section, before the categories          |
-| `pf-tier-project`     | `Project` tier, the same grouping as no tier topic |
-| `pf-tier-lab`         | `Lab` section, after the categories                |
+| Topic prefix        | Effect                                          |
+| ------------------- | ----------------------------------------------- |
+| `pf-show`           | Publishes the repository                        |
+| `pf-cat-<id>`       | Places it in the category with that id          |
+| `pf-tier-<id>`      | Places it in the tier with that id              |
 
-A published repository needs exactly one category and at most one tier. The next
-build picks the change up, and a repository with a missing, duplicated or
-unknown topic fails the build with an error that names it. The category and tier
-vocabularies are declared in `src/config/categories.ts` and
-`src/config/tiers.ts`.
+A published repository needs at most one category. A category is required only
+when the tier declares it; otherwise the repository may omit it or keep one. It
+also needs at most one tier. The next build picks the change up, and a
+repository with a missing, duplicated or unknown topic fails the build with an
+error that names it. The current categories, tiers and their requirements are
+declared in `src/config/categories.ts` and `src/config/tiers.ts`.
 
 ## Tech stack
 

@@ -11,9 +11,11 @@ import {
   DEFAULT_TIER_ID,
   TIERS,
   type TierId,
+  tierRequiresCategory,
   tierTopic,
 } from "../config/tiers";
 import type { GitHubRepo } from "../mappers/repo.mapper";
+import type { NullableCategoryId } from "../types/repo.type";
 
 const KNOWN_TOPICS = new Set<string>([
   PORTFOLIO_OPT_IN_TOPIC,
@@ -28,7 +30,7 @@ type UnpublishedDecision =
 type PublicationDecision = { kind: "published" } | UnpublishedDecision;
 
 type RepoClassification =
-  | { kind: "published"; category: CategoryId; tier: TierId }
+  | { kind: "published"; category: NullableCategoryId; tier: TierId }
   | UnpublishedDecision;
 
 type GitHubRepoTopics = {
@@ -123,16 +125,20 @@ function decidePublication(
 
 /**
  * Classifies a repository that already passed the publication gate: its
- * control topics must belong to the vocabulary and it needs exactly one
- * category and at most one tier. Every fault is collected before throwing, so
- * one build reveals all the topics the owner must fix.
+ * control topics must belong to the vocabulary and it needs at most one tier.
+ * A category is required only when the tier requires one. Every fault is
+ * collected before throwing, so one build reveals all the topics the owner
+ * must fix.
  */
 function classifyPublishedRepo(
   githubRepo: GitHubRepo,
   repoTopics: GitHubRepoTopics,
-): { category: CategoryId; tier: TierId } {
-  const category = resolveCategory(repoTopics.categories);
+): { category: NullableCategoryId; tier: TierId } {
   const tier = resolveTier(repoTopics.tiers);
+  const category = resolveCategory(
+    repoTopics.categories,
+    tier.kind === "resolved" && tierRequiresCategory(tier.value),
+  );
   const faults = [
     ...(repoTopics.unknownControlTopics.length > 0
       ? [
@@ -152,19 +158,20 @@ function classifyPublishedRepo(
 }
 
 /**
- * Returns the category or the fault that prevents it. It reports the fault
- * instead of throwing so the caller can collect every fault at once.
+ * Returns the category, or the fault that prevents it, for a tier that may or
+ * may not require one. It reports the fault instead of throwing so the caller
+ * can collect every fault at once.
  */
 function resolveCategory(
   categories: CategoryId[],
-): ClassificationPart<CategoryId> {
+  requiresCategory: boolean,
+): ClassificationPart<NullableCategoryId> {
   const [resolvedCategory] = categories;
 
   if (resolvedCategory === undefined) {
-    return {
-      kind: "fault",
-      message: "is published but carries no category topic",
-    };
+    return requiresCategory
+      ? { kind: "fault", message: "is published but carries no category topic" }
+      : { kind: "resolved", value: null };
   }
 
   if (categories.length > 1) {
