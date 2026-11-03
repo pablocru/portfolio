@@ -32,6 +32,10 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   implementation plans in the repository.
 - A spec contains context, user stories (`US-XXX.Y`), constraints with
   acceptance criteria (`C-XXX.Y`), and verification.
+- A spec states the rule, not the current vocabulary: when it depends on the
+  categories or tiers, it points to `src/config/categories.ts` or
+  `src/config/tiers.ts` instead of repeating ids that can change while the rule
+  stays the same.
 - Acceptance criteria state the observable outcome only; the procedure used to
   check it belongs to verification.
 - Report the result per requirement ID as `PASS`, `FAIL`, or `NOT VERIFIED` with
