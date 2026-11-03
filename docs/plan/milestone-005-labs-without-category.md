@@ -30,7 +30,7 @@ keeps following the same rules as in the other tiers.
 | C-005.4 | Same output                   | With the repository topics unchanged, the generated HTML is identical to the one before the change; a repository of a tier that does not require a category renders in the same section whether it carries a category or not |
 | C-005.5 | New tiers                     | Adding a tier that does not need a category requires no change to the classifier, the schema or the grouping rules                                                                                                           |
 | C-005.6 | Documentation                 | The README describes the rule without hardcoding the current categories or tiers, and milestone 004 points to this milestone from its header                                                                                 |
-| C-005.7 | Current configuration         | In the current configuration, only the `Lab` tier does not require a category                                                                                                                                                |
+| C-005.7 | Single source of truth        | Which tiers require a category is declared only in `src/config/tiers.ts`; no other code repeats or overrides a tier's requirement                                                                                            |
 
 ## Verification
 
@@ -54,16 +54,16 @@ collection schema, and they iterate over `TIERS`:
 - C-005.5: inspect the classifier, the schema and the grouping; no logic outside
   the tier entry names `lab`, and every category decision reads the tier entry.
 - C-005.6: inspect `README.md` and the milestone 004 header.
-- C-005.7: inspect `src/config/tiers.ts`; only the `Lab` entry sets
-  `requiresCategory` to `false`.
+- C-005.7: `grep -rn "requiresCategory" src`; every match is the declaration or
+  accessor in `src/config/tiers.ts` or a read of the tier entry.
 
 Build check for US-005.1 and US-005.2, applied and removed by the owner: pick a
-tier whose `requiresCategory` is false in `src/config/tiers.ts` (`Lab` today),
-tag one public repository with only `pf-show` and that tier's topic, run
-`pnpm build` and confirm it renders in that tier. Add a category topic and
-confirm it still renders only in that tier and its stored entry carries the
-category. Without the tier topic the repository falls back to the default tier;
-if that tier requires a category, the build fails naming the repository.
+tier whose `requiresCategory` is false in `src/config/tiers.ts`, tag one public
+repository with only `pf-show` and that tier's topic, run `pnpm build` and
+confirm it renders in that tier. Add a category topic and confirm it still
+renders only in that tier and its stored entry carries the category. Without the
+tier topic the repository falls back to the default tier; if that tier requires
+a category, the build fails naming the repository.
 
 Report the result per ID as PASS, FAIL or NOT VERIFIED with evidence, as
 described in `AGENTS.md`.

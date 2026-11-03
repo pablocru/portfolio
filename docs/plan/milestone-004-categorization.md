@@ -1,8 +1,8 @@
 # Milestone 004: Categorization
 
 - Amended by milestone 005: C-004.3 and C-004.12 no longer require a category
-  for every tier; each tier declares whether it requires one (`Lab` currently
-  does not)
+  for every tier; each tier declares whether it requires one (see
+  `src/config/tiers.ts`)
 
 ## Context
 
