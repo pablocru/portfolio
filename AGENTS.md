@@ -233,6 +233,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   edit, comment, `workflow run`, `api` with POST/PUT/PATCH) require approval:
   show the exact command, use a native `--dry-run` if it exists, and wait for
   explicit confirmation.
+- Opening a pull request as a draft is allowed once the developer asks for the
+  pull request: the developer reviews the draft and decides when it is ready.
+  Every other remote change still needs the approval above.
 - **The developer decides what reaches `main`.** Ending a remote object, by
   merging or closing it, is performed by the developer: prepare the change and
   hand it over, whatever the command. The decision is never delegated to
