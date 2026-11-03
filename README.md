@@ -7,8 +7,8 @@ This repository contains the source of my portfolio: a window to my work on
 GitHub, grouped by the categories and tiers declared in the configuration. Here
 you will find:
 
-- The tier sections, in the order declared in `src/config/tiers.ts`
-- The category sections, in the order declared in `src/config/categories.ts`
+- The tier sections, in declaration order
+- The category sections, in declaration order
 - A link to each repository on GitHub
 
 Not all projects are finished, and not all of them are deployed.
