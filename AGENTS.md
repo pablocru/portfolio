@@ -172,6 +172,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Name fixtures for the data they hold, reuse the same fixture for the same
   object across tests, and keep a shared fixture beside the type it builds with
   the `.fixture.ts` suffix.
+- A test never skips: do not use `skip`, `skipIf`, `todo` or a conditional early
+  return. When a case needs data the repository does not contain, build it from
+  a fixture so the test still runs.
 
 ## Continuous integration
 
