@@ -30,6 +30,7 @@ keeps following the same rules as in the other tiers.
 | C-005.4 | Same output                   | With the repository topics unchanged, the generated HTML is identical to the one before the change; a repository of a tier that does not require a category renders in the same section whether it carries a category or not |
 | C-005.5 | New tiers                     | Adding a tier that does not need a category requires no change to the classifier, the schema or the grouping rules                                                                                                           |
 | C-005.6 | Documentation                 | The README describes the rule without hardcoding the current categories or tiers, and milestone 004 points to this milestone from its header                                                                                 |
+| C-005.7 | Current configuration         | In the current configuration, only the `Lab` tier does not require a category                                                                                                                                                |
 
 ## Verification
 
@@ -53,6 +54,8 @@ collection schema, and they iterate over `TIERS`:
 - C-005.5: inspect the classifier, the schema and the grouping; no logic outside
   the tier entry names `lab`, and every category decision reads the tier entry.
 - C-005.6: inspect `README.md` and the milestone 004 header.
+- C-005.7: inspect `src/config/tiers.ts`; only the `Lab` entry sets
+  `requiresCategory` to `false`.
 
 Build check for US-005.1 and US-005.2, applied and removed by the owner: pick a
 tier whose `requiresCategory` is false in `src/config/tiers.ts` (`Lab` today),
