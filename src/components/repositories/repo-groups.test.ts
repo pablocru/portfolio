@@ -157,27 +157,20 @@ describe("groupRepos", () => {
     expect(grouping.warnings).toEqual(expectedWarnings);
   });
 
-  test.skipIf(nonCategorizedTiers.length < 2)(
-    "warns when a category only holds non-categorized-tier repositories",
-    () => {
-      const [firstTier, secondTier] = nonCategorizedTiers;
+  test("warns when a category only holds non-categorized-tier repositories", () => {
+    const [nonCategorizedTier] = nonCategorizedTiers;
 
-      const grouping = groupRepos([
-        portfolioRepo("first-tier-category", {
-          category: data.id,
-          tier: firstTier.id,
-        }),
-        portfolioRepo("second-tier-category", {
-          category: data.id,
-          tier: secondTier.id,
-        }),
-      ]);
+    const grouping = groupRepos([
+      portfolioRepo("non-categorized-tier-category", {
+        category: data.id,
+        tier: nonCategorizedTier.id,
+      }),
+    ]);
 
-      expect(grouping.warnings).toContain(
-        `Category "${data.label}" has no ${categorizedTier?.label.toLowerCase()}-tier repository; its section is omitted.`,
-      );
-    },
-  );
+    expect(grouping.warnings).toContain(
+      `Category "${data.label}" has no ${categorizedTier?.label.toLowerCase()}-tier repository; its section is omitted.`,
+    );
+  });
 
   test("warns about every group without repositories", () => {
     expect(groupRepos([])).toEqual({
