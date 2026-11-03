@@ -34,4 +34,8 @@ describe("TIERS", () => {
       expect(tierRequiresCategory(tier.id)).toBe(tier.requiresCategory);
     }
   });
+
+  test("requires a category on the categorized tier", () => {
+    expect(tierRequiresCategory(CATEGORIZED_TIER_ID)).toBe(true);
+  });
 });
