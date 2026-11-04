@@ -1,5 +1,4 @@
 import { CATEGORIES } from "../config/categories";
-import { DEFAULT_TIER_ID } from "../config/tiers";
 import type { PortfolioRepo } from "./repo.type";
 
 /**
@@ -18,7 +17,7 @@ export function portfolioRepo(
     archived: false,
     pushedAt: "2026-01-01T00:00:00Z",
     category: CATEGORIES[0].id,
-    tier: DEFAULT_TIER_ID,
+    tier: "project",
     ...overrides,
   };
 }

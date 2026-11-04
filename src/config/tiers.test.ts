@@ -1,7 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { PORTFOLIO_TOPIC_PREFIX } from "./portfolio";
 import {
-  DEFAULT_TIER_ID,
   TIERS,
   type TierEntry,
   tierIsGroupedByCategory,
@@ -21,12 +20,6 @@ describe("TIERS", () => {
         `${PORTFOLIO_TOPIC_PREFIX}tier-${tier.id}`,
       );
     }
-  });
-
-  test("declares the default tier id", () => {
-    const ids = TIERS.map((tier) => tier.id);
-
-    expect(ids).toContain(DEFAULT_TIER_ID);
   });
 
   test("reads the category requirement of every tier entry", () => {

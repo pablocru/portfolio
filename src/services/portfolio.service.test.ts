@@ -1,8 +1,7 @@
 import { Octokit } from "@octokit/rest";
 import { describe, expect, test, vi } from "vitest";
 import { CATEGORIES, categoryTopic } from "../config/categories";
-import { PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
-import { TIERS } from "../config/tiers";
+import { TIERS, tierTopic } from "../config/tiers";
 import { githubRepo } from "../mappers/repo.fixture";
 import { getPortfolioRepos, getProfile } from "./portfolio.service";
 
@@ -78,7 +77,7 @@ describe("getPortfolioRepos", () => {
   test("reports a published repository without a category", async () => {
     const client = new Octokit();
     vi.spyOn(client, "paginate").mockResolvedValue([
-      { ...githubRepo, topics: [PORTFOLIO_OPT_IN_TOPIC] },
+      { ...githubRepo, topics: [tierTopic(project.id)] },
     ]);
 
     await expect(getPortfolioRepos(client)).rejects.toThrow(

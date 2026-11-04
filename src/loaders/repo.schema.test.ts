@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 import { CATEGORIES } from "../config/categories";
-import { PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
 import { TIERS, type TierId, tierTopic } from "../config/tiers";
 import { githubRepo } from "../mappers/repo.fixture";
 import { classifyRepo } from "../services/repo-classification.service";
@@ -17,12 +16,12 @@ function parse(overrides: Partial<PortfolioRepo> = {}) {
   return repoSchema.safeParse(portfolioRepo("portfolio", overrides));
 }
 
-/** Classifies a repository tagged only with the opt-in topic and one tier. */
+/** Classifies a repository tagged only with one tier topic. */
 function classificationOutcome(tier: TierId): "published" | "rejected" {
   try {
     classifyRepo({
       ...githubRepo,
-      topics: [PORTFOLIO_OPT_IN_TOPIC, tierTopic(tier)],
+      topics: [tierTopic(tier)],
     });
 
     return "published";

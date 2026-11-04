@@ -5,7 +5,7 @@ import type {
 } from "../types/vocabulary.type";
 import { PORTFOLIO_TOPIC_PREFIX } from "./portfolio";
 
-const TIER_TOPIC_PREFIX = `${PORTFOLIO_TOPIC_PREFIX}tier-`;
+export const TIER_TOPIC_PREFIX = `${PORTFOLIO_TOPIC_PREFIX}tier-`;
 
 /** An entry of the tier vocabulary: whether the tier requires a category and
  * whether its section is divided by category. */
@@ -56,8 +56,6 @@ export type GroupedTierId = GroupedTierEntry["id"];
 export type TierId = VocabularyId<typeof TIERS>;
 
 export type TierLabel = VocabularyLabel<typeof TIERS>;
-
-export const DEFAULT_TIER_ID = "project";
 
 /** Whether a published repository of this tier must declare a category. */
 export function tierRequiresCategory(id: TierId): boolean {
