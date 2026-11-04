@@ -19,8 +19,7 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   only dictates a technique belongs in the change that needs it.
 - `docs/plan/`: what a milestone delivers and how it is checked. It defines the
   outcome, not the technique.
-- Code and tests: how the outcome is built and the proof that it holds. A rule
-  that dictates a technique belongs to the change that needs it.
+- Code and tests: how the outcome is built and the proof that it holds.
 
 ## Milestone specs
 
@@ -83,9 +82,15 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   scripts or formatting rules in `package.json`, tool configs and workflows).
   Keep incidental similarity local when sharing it would make the code harder to
   read or couple unrelated concepts.
-- A public function's parameter and return types are fixed at its declaration. A
-  call-site type argument may not be the only thing keeping them narrow: a later
-  edit can drop it and silently widen the contract.
+- A public function's parameter and return types are fixed at its declaration,
+  not inferred from the type arguments its callers pass: a later edit can drop
+  an argument and silently widen the contract.
+- Types are proven, not asserted: never use a type assertion (`as T`,
+  `as unknown as T`) to tell the compiler what the declarations cannot express,
+  because a later edit can make it lie silently. When a value needs a narrower
+  type, the declaration provides it — a type predicate, a discriminant, or a
+  collaborator typed to the minimum the unit uses. A const assertion
+  (`as const`) only narrows a literal and stays allowed.
 - Keep raw GitHub payloads and portfolio domain objects distinguishable by name
   so each file can be read in isolation; fields may rely on their owner for
   context.
