@@ -15,22 +15,25 @@ Not all projects are finished, and not all of them are deployed.
 
 ## Publishing a repository
 
-The portfolio lists the public repositories I tag with `pf-show`. I classify
-each one with a category topic (`pf-cat-<id>`) and, optionally, a tier topic
-(`pf-tier-<id>`):
+The portfolio lists the public repositories I tag with a tier topic. Each tier
+is declared in `src/config/tiers.ts`, and each tier topic uses the
+`pf-tier-<id>` prefix. A repository also carries a category topic
+(`pf-cat-<id>`) when its tier requires one:
 
-| Topic prefix        | Effect                                          |
-| ------------------- | ----------------------------------------------- |
-| `pf-show`           | Publishes the repository                        |
-| `pf-cat-<id>`       | Places it in the category with that id          |
-| `pf-tier-<id>`      | Places it in the tier with that id              |
+| Topic prefix   | Effect                                            |
+| -------------- | ------------------------------------------------- |
+| `pf-tier-<id>` | Publishes the repository in the tier with that id |
+| `pf-cat-<id>`  | Places it in the category with that id            |
 
-A published repository needs at most one category. A category is required only
-when the tier declares it; otherwise the repository may omit it or keep one. It
-also needs at most one tier. The next build picks the change up, and a
-repository with a missing, duplicated or unknown topic fails the build with an
-error that names it. The current categories, tiers and their requirements are
-declared in `src/config/categories.ts` and `src/config/tiers.ts`.
+A repository needs exactly one tier topic to be published; without one it stays
+out of the page, and the build warns if it still carries a control topic. Two
+tier topics, a tier topic with an unknown id, a missing required category, more
+than one category, or an unknown control topic fails the build with an error
+naming the repository and the topics. A category is required only when the tier
+declares it; otherwise the repository may omit it or keep one, and it needs at
+most one. The next build picks the change up. The current categories, tiers and
+their requirements are declared in `src/config/categories.ts` and
+`src/config/tiers.ts`.
 
 ## Tech stack
 
