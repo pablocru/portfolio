@@ -32,6 +32,16 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   implementation plans in the repository.
 - A spec contains context, user stories (`US-XXX.Y`), constraints with
   acceptance criteria (`C-XXX.Y`), and verification.
+- A milestone that changes a requirement of an earlier one names the earlier
+  milestone NNN and the superseded requirement ids in its header with the form
+  "Supersedes in part milestone NNN (C-NNN.Y)", and points to the old text
+  instead of repeating it.
+- The older spec keeps its rows: add one header note with the form "Superseded
+  in part by milestone MMM: C-NNN.Y". When a later milestone takes over the same
+  requirement, update the note to the newest one; the highest-numbered milestone
+  naming a requirement is its authority.
+- A milestone that replaces another one entirely says so on its first line
+  instead of naming individual requirements.
 - A spec states the rule, not the current vocabulary: when it depends on the
   categories or tiers, it points to `src/config/categories.ts` or
   `src/config/tiers.ts` instead of repeating ids that can change while the rule
