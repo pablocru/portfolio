@@ -4,6 +4,8 @@ import {
   CATEGORIZED_TIER_ID,
   DEFAULT_TIER_ID,
   TIERS,
+  type TierEntry,
+  tierIsGroupedByCategory,
   tierRequiresCategory,
   tierTopic,
 } from "./tiers";
@@ -37,5 +39,36 @@ describe("TIERS", () => {
 
   test("requires a category on the categorized tier", () => {
     expect(tierRequiresCategory(CATEGORIZED_TIER_ID)).toBe(true);
+  });
+
+  test("reads the grouped-by-category flag of every tier entry", () => {
+    for (const tier of TIERS) {
+      expect(tierIsGroupedByCategory(tier.id)).toBe(
+        tier.requiresCategory === true && tier.groupedByCategory === true,
+      );
+    }
+  });
+
+  test("a tier that does not require a category cannot be declared as grouped by category", () => {
+    // @ts-expect-error A tier without a category cannot be grouped by category.
+    const invalidTier: TierEntry = {
+      id: "invalid",
+      label: "Invalid",
+      requiresCategory: false,
+      groupedByCategory: true,
+    };
+
+    expect(invalidTier).toBeDefined();
+  });
+
+  test("a tier that requires a category declares whether it is grouped", () => {
+    // @ts-expect-error A category-requiring tier must declare the grouping flag.
+    const invalidTier: TierEntry = {
+      id: "invalid",
+      label: "Invalid",
+      requiresCategory: true,
+    };
+
+    expect(invalidTier).toBeDefined();
   });
 });
