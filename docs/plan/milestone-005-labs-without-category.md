@@ -1,8 +1,7 @@
 # Milestone 005: Labs without category
 
-- Supersedes in part milestone 004: C-004.3 and C-004.12 no longer require a
-  category for every tier; each tier declares whether it requires one (`Lab`
-  currently does not)
+- Supersedes in part milestone 004 (C-004.3 and C-004.12)
+- Superseded in part by milestone 006: the default-tier fallback in verification
 
 ## Context
 

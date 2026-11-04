@@ -1,5 +1,7 @@
 # Milestone 003: Repositories
 
+- Superseded in part by milestone 006: US-003.1, US-003.6, C-003.2 and C-003.6
+
 ## Context
 
 The site shows the owner's profile and nothing else. This milestone adds the
