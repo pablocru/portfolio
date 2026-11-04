@@ -1,7 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { PORTFOLIO_TOPIC_PREFIX } from "./portfolio";
 import {
-  CATEGORIZED_TIER_ID,
   DEFAULT_TIER_ID,
   TIERS,
   type TierEntry,
@@ -24,21 +23,16 @@ describe("TIERS", () => {
     }
   });
 
-  test("declares the default and categorized tier ids", () => {
+  test("declares the default tier id", () => {
     const ids = TIERS.map((tier) => tier.id);
 
     expect(ids).toContain(DEFAULT_TIER_ID);
-    expect(ids).toContain(CATEGORIZED_TIER_ID);
   });
 
   test("reads the category requirement of every tier entry", () => {
     for (const tier of TIERS) {
       expect(tierRequiresCategory(tier.id)).toBe(tier.requiresCategory);
     }
-  });
-
-  test("requires a category on the categorized tier", () => {
-    expect(tierRequiresCategory(CATEGORIZED_TIER_ID)).toBe(true);
   });
 
   test("reads the grouped-by-category flag of every tier entry", () => {

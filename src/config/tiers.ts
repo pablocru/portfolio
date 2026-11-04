@@ -59,8 +59,6 @@ export type TierLabel = VocabularyLabel<typeof TIERS>;
 
 export const DEFAULT_TIER_ID = "project";
 
-export const CATEGORIZED_TIER_ID = "project";
-
 /** Whether a published repository of this tier must declare a category. */
 export function tierRequiresCategory(id: TierId): boolean {
   const tier = TIERS.find((entry) => entry.id === id);
