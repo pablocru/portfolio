@@ -15,25 +15,22 @@ Not all projects are finished, and not all of them are deployed.
 
 ## Publishing a repository
 
-The portfolio lists the public repositories I tag with a tier topic. Each tier
-is declared in `src/config/tiers.ts`, and each tier topic uses the
-`pf-tier-<id>` prefix. A repository also carries a category topic
-(`pf-cat-<id>`) when its tier requires one:
+The portfolio lists the public repositories I tag with exactly one tier topic
+(`pf-tier-<id>`). A repository also carries a category topic (`pf-cat-<id>`)
+when its tier requires one:
 
 | Topic prefix   | Effect                                            |
 | -------------- | ------------------------------------------------- |
 | `pf-tier-<id>` | Publishes the repository in the tier with that id |
 | `pf-cat-<id>`  | Places it in the category with that id            |
 
-A repository needs exactly one tier topic to be published; without one it stays
-out of the page, and the build warns if it still carries a control topic. Two
-tier topics, a tier topic with an unknown id, a missing required category, more
-than one category, or an unknown control topic fails the build with an error
-naming the repository and the topics. A category is required only when the tier
-declares it; otherwise the repository may omit it or keep one, and it needs at
-most one. The next build picks the change up. The current categories, tiers and
-their requirements are declared in `src/config/categories.ts` and
-`src/config/tiers.ts`.
+A repository without a tier topic, or a private one, stays out of the page and
+warns when it carries a `pf-` topic; a repository with no `pf-` topics is
+ignored. A public repository that shows intent to publish but cannot be
+classified stops the build with one error naming the repository and every
+offending topic. The next build picks the change up. The tiers and categories,
+with their requirements, are declared in `src/config/tiers.ts` and
+`src/config/categories.ts`.
 
 ## Tech stack
 
