@@ -324,4 +324,97 @@ describe("classifyRepo", () => {
       kind: "ignored",
     });
   });
+
+  const noControlTopics = ["astro"];
+  const controlTopicsWithoutTier = [firstCategoryTopic];
+  const validTierTopics = [tierTopic("project"), firstCategoryTopic];
+  const invalidTierTopics = [tierTopic("project")];
+
+  const classificationCases = [
+    {
+      visibility: "public",
+      private: false,
+      state: "no control topics",
+      topics: noControlTopics,
+      expected: "ignored",
+    },
+    {
+      visibility: "public",
+      private: false,
+      state: "control topics without a tier topic",
+      topics: controlTopicsWithoutTier,
+      expected: "warned",
+    },
+    {
+      visibility: "public",
+      private: false,
+      state: "a tier topic with valid topics",
+      topics: validTierTopics,
+      expected: "published",
+    },
+    {
+      visibility: "public",
+      private: false,
+      state: "a tier topic with invalid topics",
+      topics: invalidTierTopics,
+      expected: "error",
+    },
+    {
+      visibility: "private",
+      private: true,
+      state: "no control topics",
+      topics: noControlTopics,
+      expected: "ignored",
+    },
+    {
+      visibility: "private",
+      private: true,
+      state: "control topics without a tier topic",
+      topics: controlTopicsWithoutTier,
+      expected: "warned",
+    },
+    {
+      visibility: "private",
+      private: true,
+      state: "a tier topic with valid topics",
+      topics: validTierTopics,
+      expected: "warned",
+    },
+    {
+      visibility: "private",
+      private: true,
+      state: "a tier topic with invalid topics",
+      topics: invalidTierTopics,
+      expected: "warned",
+    },
+  ] as const;
+
+  test.each(classificationCases)(
+    "handles a $visibility repository with $state",
+    ({ private: isPrivate, topics, expected }) => {
+      const repo = { ...githubRepo, private: isPrivate, topics: [...topics] };
+
+      switch (expected) {
+        case "ignored":
+          expect(classifyRepo(repo)).toEqual({ kind: "ignored" });
+          break;
+        case "warned": {
+          const result = classifyRepo(repo);
+
+          expect(result).toMatchObject({ kind: "warned" });
+          expect(result).toHaveProperty(
+            "warning",
+            expect.stringContaining('Repository "portfolio"'),
+          );
+          break;
+        }
+        case "published":
+          expect(classifyRepo(repo)).toMatchObject({ kind: "published" });
+          break;
+        case "error":
+          expect(() => classifyRepo(repo)).toThrow();
+          break;
+      }
+    },
+  );
 });
