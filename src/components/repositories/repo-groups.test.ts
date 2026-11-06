@@ -1,18 +1,21 @@
 import { describe, expect, test } from "vitest";
 import { CATEGORIES } from "../../config/categories";
-import { CATEGORIZED_TIER_ID, TIERS } from "../../config/tiers";
+import { isGroupedTier, TIERS } from "../../config/tiers";
+import {
+  firstGroupedTier,
+  firstNonGroupedTier,
+  nonGroupedTiers,
+} from "../../config/tiers.fixture";
 import { portfolioRepo } from "../../types/repo.fixture";
 import type { PortfolioRepo } from "../../types/repo.type";
 import { groupRepos } from "./repo-groups";
 
 const [web, data] = CATEGORIES;
-const nonCategorizedTiers = TIERS.filter(
-  (tier) => tier.id !== CATEGORIZED_TIER_ID,
-);
-const categorizedTier = TIERS.find((tier) => tier.id === CATEGORIZED_TIER_ID);
+const groupedTier = firstGroupedTier();
+const nonGroupedTier = firstNonGroupedTier();
 
 const expectedSectionLabels = TIERS.flatMap((tier) =>
-  tier.id === CATEGORIZED_TIER_ID
+  isGroupedTier(tier)
     ? CATEGORIES.map((category) => category.label)
     : [tier.label],
 );
@@ -22,10 +25,10 @@ function fullSet(): PortfolioRepo[] {
     ...CATEGORIES.map((category) =>
       portfolioRepo(`${category.id}-project`, {
         category: category.id,
-        tier: CATEGORIZED_TIER_ID,
+        tier: groupedTier.id,
       }),
     ),
-    ...nonCategorizedTiers.map((tier) =>
+    ...nonGroupedTiers.map((tier) =>
       portfolioRepo(`${tier.id}-repo`, { tier: tier.id }),
     ),
   ];
@@ -52,18 +55,16 @@ describe("groupRepos", () => {
   });
 
   test("lets the tier win over the category", () => {
-    const [nonCategorizedTier] = nonCategorizedTiers;
-
     const grouping = groupRepos([
       portfolioRepo("tier-with-category", {
         category: data.id,
-        tier: nonCategorizedTier.id,
+        tier: nonGroupedTier.id,
       }),
-      portfolioRepo("other-tier-repo", { tier: nonCategorizedTier.id }),
+      portfolioRepo("other-tier-repo", { tier: nonGroupedTier.id }),
     ]);
 
     expect(grouping.groups.map((group) => group.id)).toEqual([
-      nonCategorizedTier.id,
+      nonGroupedTier.id,
     ]);
     expect(grouping.groups[0]?.repos.map((value) => value.name)).toEqual([
       "other-tier-repo",
@@ -71,22 +72,20 @@ describe("groupRepos", () => {
     ]);
   });
 
-  test("groups a non-categorized tier with and without a category in the same section", () => {
-    const [nonCategorizedTier] = nonCategorizedTiers;
-
+  test("groups a non-grouped tier with and without a category in the same section", () => {
     const grouping = groupRepos([
       portfolioRepo("tier-without-category", {
         category: null,
-        tier: nonCategorizedTier.id,
+        tier: nonGroupedTier.id,
       }),
       portfolioRepo("tier-with-category", {
         category: data.id,
-        tier: nonCategorizedTier.id,
+        tier: nonGroupedTier.id,
       }),
     ]);
 
     expect(grouping.groups.map((group) => group.id)).toEqual([
-      nonCategorizedTier.id,
+      nonGroupedTier.id,
     ]);
     expect(grouping.groups[0]?.repos.map((value) => value.name)).toEqual([
       "tier-with-category",
@@ -131,7 +130,7 @@ describe("groupRepos", () => {
     const grouping = groupRepos([
       portfolioRepo(`${web.id}-project`, {
         category: web.id,
-        tier: CATEGORIZED_TIER_ID,
+        tier: groupedTier.id,
       }),
     ]);
 
@@ -139,11 +138,11 @@ describe("groupRepos", () => {
 
     const expectedWarnings: string[] = [];
     for (const tier of TIERS) {
-      if (tier.id === CATEGORIZED_TIER_ID) {
+      if (isGroupedTier(tier)) {
         for (const category of CATEGORIES) {
           if (category.id !== web.id) {
             expectedWarnings.push(
-              `Category "${category.label}" has no ${categorizedTier?.label.toLowerCase()}-tier repository; its section is omitted.`,
+              `Category "${category.label}" has no ${groupedTier.label.toLowerCase()}-tier repository; its section is omitted.`,
             );
           }
         }
@@ -157,18 +156,16 @@ describe("groupRepos", () => {
     expect(grouping.warnings).toEqual(expectedWarnings);
   });
 
-  test("warns when a category only holds non-categorized-tier repositories", () => {
-    const [nonCategorizedTier] = nonCategorizedTiers;
-
+  test("warns when a category only holds non-grouped-tier repositories", () => {
     const grouping = groupRepos([
-      portfolioRepo("non-categorized-tier-category", {
+      portfolioRepo("non-grouped-tier-category", {
         category: data.id,
-        tier: nonCategorizedTier.id,
+        tier: nonGroupedTier.id,
       }),
     ]);
 
     expect(grouping.warnings).toContain(
-      `Category "${data.label}" has no ${categorizedTier?.label.toLowerCase()}-tier repository; its section is omitted.`,
+      `Category "${data.label}" has no ${groupedTier.label.toLowerCase()}-tier repository; its section is omitted.`,
     );
   });
 
@@ -176,7 +173,7 @@ describe("groupRepos", () => {
     expect(groupRepos([])).toEqual({
       groups: [],
       warnings: TIERS.flatMap((tier) =>
-        tier.id === CATEGORIZED_TIER_ID
+        isGroupedTier(tier)
           ? CATEGORIES.map(
               (category) =>
                 `Category "${category.label}" has no ${tier.label.toLowerCase()}-tier repository; its section is omitted.`,

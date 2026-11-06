@@ -1,10 +1,12 @@
 import { describe, expect, test } from "vitest";
 import { CATEGORIES, categoryTopic } from "../config/categories";
+import { PORTFOLIO_TOPIC_PREFIX } from "../config/portfolio";
+import { TIERS, tierTopic } from "../config/tiers";
 import {
-  PORTFOLIO_OPT_IN_TOPIC,
-  PORTFOLIO_TOPIC_PREFIX,
-} from "../config/portfolio";
-import { DEFAULT_TIER_ID, TIERS, tierTopic } from "../config/tiers";
+  firstRequiredTier,
+  optionalTiers,
+  requiredTiers,
+} from "../config/tiers.fixture";
 import { githubRepo } from "../mappers/repo.fixture";
 import { classifyRepo } from "./repo-classification.service";
 
@@ -12,67 +14,43 @@ const [firstCategory, secondCategory] = CATEGORIES;
 const firstCategoryTopic = categoryTopic(firstCategory.id);
 const secondCategoryTopic = categoryTopic(secondCategory.id);
 const UNKNOWN_CATEGORY_TOPIC = `${PORTFOLIO_TOPIC_PREFIX}cat-desgin`;
-
-const requiredTiers = TIERS.filter((tier) => tier.requiresCategory);
-const optionalTiers = TIERS.filter((tier) => !tier.requiresCategory);
+const UNKNOWN_TIER_TOPIC = `${PORTFOLIO_TOPIC_PREFIX}tier-desgin`;
+const RETIRED_OPT_IN_TOPIC = `${PORTFOLIO_TOPIC_PREFIX}show`;
 
 describe("classifyRepo", () => {
   test("publishes a repository with its classification", () => {
     expect(classifyRepo(githubRepo)).toEqual({
       kind: "published",
       category: firstCategory.id,
-      tier: DEFAULT_TIER_ID,
+      tier: "project",
     });
   });
 
-  test.each(TIERS.filter((tier) => tier.id !== DEFAULT_TIER_ID))(
-    "reads the %s tier topic",
+  test.each(TIERS)(
+    "publishes a public repository with the %s tier topic",
     (tier) => {
       expect(
         classifyRepo({
           ...githubRepo,
-          topics: [...githubRepo.topics, tierTopic(tier.id)],
+          topics: [tierTopic(tier.id), firstCategoryTopic],
         }),
-      ).toMatchObject({ tier: tier.id });
+      ).toEqual({
+        kind: "published",
+        category: firstCategory.id,
+        tier: tier.id,
+      });
     },
   );
-
-  test("treats an explicit default tier as the default", () => {
-    const implicit = classifyRepo(githubRepo);
-    const explicit = classifyRepo({
-      ...githubRepo,
-      topics: [...githubRepo.topics, tierTopic(DEFAULT_TIER_ID)],
-    });
-
-    expect(explicit).toEqual(implicit);
-  });
-
-  test.each(
-    TIERS.flatMap((first, index) =>
-      TIERS.slice(index + 1).map((second) => [first.id, second.id]),
-    ),
-  )("rejects the tier topics pf-tier-%s and pf-tier-%s", (first, second) => {
-    const topics = [tierTopic(first), tierTopic(second)];
-
-    expect(() =>
-      classifyRepo({
-        ...githubRepo,
-        topics: [...githubRepo.topics, ...topics],
-      }),
-    ).toThrow(
-      `Repository "portfolio" carries more than one tier topic: "${topics[0]}", "${topics[1]}"`,
-    );
-  });
 
   test.each(requiredTiers)(
     "rejects a %s-tier repository without a category",
     (tier) => {
-      const topics =
-        tier.id === DEFAULT_TIER_ID
-          ? [PORTFOLIO_OPT_IN_TOPIC]
-          : [PORTFOLIO_OPT_IN_TOPIC, tierTopic(tier.id)];
-
-      expect(() => classifyRepo({ ...githubRepo, topics })).toThrow(
+      expect(() =>
+        classifyRepo({
+          ...githubRepo,
+          topics: [tierTopic(tier.id)],
+        }),
+      ).toThrow(
         'Repository "portfolio" is published but carries no category topic',
       );
     },
@@ -84,7 +62,7 @@ describe("classifyRepo", () => {
       expect(
         classifyRepo({
           ...githubRepo,
-          topics: [PORTFOLIO_OPT_IN_TOPIC, tierTopic(tier.id)],
+          topics: [tierTopic(tier.id)],
         }),
       ).toEqual({ kind: "published", category: null, tier: tier.id });
     },
@@ -96,11 +74,7 @@ describe("classifyRepo", () => {
       expect(
         classifyRepo({
           ...githubRepo,
-          topics: [
-            PORTFOLIO_OPT_IN_TOPIC,
-            tierTopic(tier.id),
-            firstCategoryTopic,
-          ],
+          topics: [tierTopic(tier.id), firstCategoryTopic],
         }),
       ).toEqual({
         kind: "published",
@@ -114,11 +88,7 @@ describe("classifyRepo", () => {
     expect(() =>
       classifyRepo({
         ...githubRepo,
-        topics: [
-          PORTFOLIO_OPT_IN_TOPIC,
-          firstCategoryTopic,
-          secondCategoryTopic,
-        ],
+        topics: [tierTopic("project"), firstCategoryTopic, secondCategoryTopic],
       }),
     ).toThrow(
       `Repository "portfolio" carries more than one category topic: "${firstCategoryTopic}", "${secondCategoryTopic}"`,
@@ -131,12 +101,7 @@ describe("classifyRepo", () => {
       expect(() =>
         classifyRepo({
           ...githubRepo,
-          topics: [
-            PORTFOLIO_OPT_IN_TOPIC,
-            tierTopic(tier.id),
-            firstCategoryTopic,
-            secondCategoryTopic,
-          ],
+          topics: [tierTopic(tier.id), firstCategoryTopic, secondCategoryTopic],
         }),
       ).toThrow(
         `Repository "portfolio" carries more than one category topic: "${firstCategoryTopic}", "${secondCategoryTopic}"`,
@@ -148,10 +113,39 @@ describe("classifyRepo", () => {
     expect(() =>
       classifyRepo({
         ...githubRepo,
-        topics: [...githubRepo.topics, UNKNOWN_CATEGORY_TOPIC],
+        topics: [
+          tierTopic("project"),
+          firstCategoryTopic,
+          UNKNOWN_CATEGORY_TOPIC,
+        ],
       }),
     ).toThrow(
       `Repository "portfolio" carries unknown control topics: "${UNKNOWN_CATEGORY_TOPIC}"`,
+    );
+  });
+
+  test("rejects an unknown tier topic naming the repository and the topic", () => {
+    expect(() =>
+      classifyRepo({
+        ...githubRepo,
+        topics: [UNKNOWN_TIER_TOPIC],
+      }),
+    ).toThrow(
+      `Repository "portfolio" carries unknown tier topic: "${UNKNOWN_TIER_TOPIC}"`,
+    );
+  });
+
+  test("rejects two tier topics naming the repository and the topics", () => {
+    const [firstTier, secondTier] = TIERS;
+    const topics = [tierTopic(firstTier.id), tierTopic(secondTier.id)];
+
+    expect(() =>
+      classifyRepo({
+        ...githubRepo,
+        topics: [...topics, firstCategoryTopic],
+      }),
+    ).toThrow(
+      `Repository "portfolio" carries more than one tier topic: "${topics[0]}", "${topics[1]}"`,
     );
   });
 
@@ -162,11 +156,10 @@ describe("classifyRepo", () => {
       classifyRepo({
         ...githubRepo,
         topics: [
-          PORTFOLIO_OPT_IN_TOPIC,
-          firstCategoryTopic,
-          secondCategoryTopic,
           tierTopic(firstTier.id),
           tierTopic(secondTier.id),
+          firstCategoryTopic,
+          secondCategoryTopic,
           UNKNOWN_CATEGORY_TOPIC,
         ],
       }),
@@ -181,17 +174,18 @@ describe("classifyRepo", () => {
     expect(() =>
       classifyRepo({
         ...githubRepo,
-        topics: [
-          PORTFOLIO_OPT_IN_TOPIC,
-          tierTopic(firstTier.id),
-          tierTopic(secondTier.id),
-        ],
+        topics: [tierTopic(firstTier.id), tierTopic(secondTier.id)],
       }),
     ).toThrow(/Repository "portfolio" carries more than one tier topic:/);
   });
 
   test("warns about a private repository tagged for publication", () => {
-    const result = classifyRepo({ ...githubRepo, private: true });
+    const [firstTier] = TIERS;
+    const result = classifyRepo({
+      ...githubRepo,
+      private: true,
+      topics: [tierTopic(firstTier.id), firstCategoryTopic],
+    });
 
     expect(result).toMatchObject({ kind: "warned" });
     expect(result).toHaveProperty(
@@ -200,36 +194,124 @@ describe("classifyRepo", () => {
     );
     expect(result).toHaveProperty(
       "warning",
-      expect.stringContaining('carries "pf-show" but is private'),
+      expect.stringContaining(
+        `carries "${tierTopic(firstTier.id)}" but is private`,
+      ),
     );
   });
 
-  test("warns about a classified repository without the opt-in topic", () => {
-    const [firstTier] = TIERS;
+  test.each(requiredTiers)(
+    "warns about a private %s-tier repository without a category",
+    (tier) => {
+      const result = classifyRepo({
+        ...githubRepo,
+        private: true,
+        topics: [tierTopic(tier.id)],
+      });
+
+      expect(result).toMatchObject({ kind: "warned" });
+      expect(result).toHaveProperty(
+        "warning",
+        expect.stringContaining(
+          `carries "${tierTopic(tier.id)}" but is private`,
+        ),
+      );
+    },
+  );
+
+  test("warns about a private repository with an unknown tier topic", () => {
     const result = classifyRepo({
       ...githubRepo,
-      topics: [firstCategoryTopic, tierTopic(firstTier.id)],
+      private: true,
+      topics: [UNKNOWN_TIER_TOPIC],
+    });
+
+    expect(result).toMatchObject({ kind: "warned" });
+    expect(result).toHaveProperty(
+      "warning",
+      expect.stringContaining(`carries "${UNKNOWN_TIER_TOPIC}" but is private`),
+    );
+  });
+
+  test("warns about a private repository with two tier topics naming both", () => {
+    const [firstTier, secondTier] = TIERS;
+    const topics = [tierTopic(firstTier.id), tierTopic(secondTier.id)];
+    const result = classifyRepo({
+      ...githubRepo,
+      private: true,
+      topics,
     });
 
     expect(result).toMatchObject({ kind: "warned" });
     expect(result).toHaveProperty(
       "warning",
       expect.stringContaining(
-        `"${firstCategoryTopic}", "${tierTopic(firstTier.id)}" but not "pf-show"`,
+        `carries "${topics[0]}", "${topics[1]}" but is private`,
       ),
     );
   });
 
-  test("warns about an unknown control topic without the opt-in topic", () => {
+  test("warns about a private repository with an unknown control topic", () => {
+    const [firstTier] = TIERS;
     const result = classifyRepo({
       ...githubRepo,
-      topics: [UNKNOWN_CATEGORY_TOPIC],
+      private: true,
+      topics: [
+        tierTopic(firstTier.id),
+        firstCategoryTopic,
+        RETIRED_OPT_IN_TOPIC,
+      ],
     });
 
     expect(result).toMatchObject({ kind: "warned" });
     expect(result).toHaveProperty(
       "warning",
-      expect.stringContaining(`"${UNKNOWN_CATEGORY_TOPIC}" but not "pf-show"`),
+      expect.stringContaining(
+        `carries "${tierTopic(firstTier.id)}" but is private`,
+      ),
+    );
+  });
+
+  test("warns about a classified repository without a tier topic", () => {
+    const result = classifyRepo({
+      ...githubRepo,
+      topics: [firstCategoryTopic],
+    });
+
+    expect(result).toMatchObject({ kind: "warned" });
+    expect(result).toHaveProperty(
+      "warning",
+      expect.stringContaining(`"${firstCategoryTopic}" but no tier topic`),
+    );
+  });
+
+  test("treats pf-show as an unknown control topic without a tier topic", () => {
+    const result = classifyRepo({
+      ...githubRepo,
+      topics: [RETIRED_OPT_IN_TOPIC],
+    });
+
+    expect(result).toMatchObject({ kind: "warned" });
+    expect(result).toHaveProperty(
+      "warning",
+      expect.stringContaining(`"${RETIRED_OPT_IN_TOPIC}" but no tier topic`),
+    );
+  });
+
+  test("treats pf-show as an unknown control topic with a tier topic", () => {
+    const [firstTier] = TIERS;
+
+    expect(() =>
+      classifyRepo({
+        ...githubRepo,
+        topics: [
+          tierTopic(firstTier.id),
+          firstCategoryTopic,
+          RETIRED_OPT_IN_TOPIC,
+        ],
+      }),
+    ).toThrow(
+      `Repository "portfolio" carries unknown control topics: "${RETIRED_OPT_IN_TOPIC}"`,
     );
   });
 
@@ -244,4 +326,98 @@ describe("classifyRepo", () => {
       kind: "ignored",
     });
   });
+
+  const requiredTier = firstRequiredTier();
+  const noControlTopics = ["astro"];
+  const controlTopicsWithoutTier = [firstCategoryTopic];
+  const validTierTopics = [tierTopic(requiredTier.id), firstCategoryTopic];
+  const invalidTierTopics = [tierTopic(requiredTier.id)];
+
+  const classificationCases = [
+    {
+      visibility: "public",
+      private: false,
+      state: "no control topics",
+      topics: noControlTopics,
+      expected: "ignored",
+    },
+    {
+      visibility: "public",
+      private: false,
+      state: "control topics without a tier topic",
+      topics: controlTopicsWithoutTier,
+      expected: "warned",
+    },
+    {
+      visibility: "public",
+      private: false,
+      state: "a tier topic with valid topics",
+      topics: validTierTopics,
+      expected: "published",
+    },
+    {
+      visibility: "public",
+      private: false,
+      state: "a tier topic with invalid topics",
+      topics: invalidTierTopics,
+      expected: "error",
+    },
+    {
+      visibility: "private",
+      private: true,
+      state: "no control topics",
+      topics: noControlTopics,
+      expected: "ignored",
+    },
+    {
+      visibility: "private",
+      private: true,
+      state: "control topics without a tier topic",
+      topics: controlTopicsWithoutTier,
+      expected: "warned",
+    },
+    {
+      visibility: "private",
+      private: true,
+      state: "a tier topic with valid topics",
+      topics: validTierTopics,
+      expected: "warned",
+    },
+    {
+      visibility: "private",
+      private: true,
+      state: "a tier topic with invalid topics",
+      topics: invalidTierTopics,
+      expected: "warned",
+    },
+  ] as const;
+
+  test.each(classificationCases)(
+    "handles a $visibility repository with $state",
+    ({ private: isPrivate, topics, expected }) => {
+      const repo = { ...githubRepo, private: isPrivate, topics: [...topics] };
+
+      switch (expected) {
+        case "ignored":
+          expect(classifyRepo(repo)).toEqual({ kind: "ignored" });
+          break;
+        case "warned": {
+          const result = classifyRepo(repo);
+
+          expect(result).toMatchObject({ kind: "warned" });
+          expect(result).toHaveProperty(
+            "warning",
+            expect.stringContaining('Repository "portfolio"'),
+          );
+          break;
+        }
+        case "published":
+          expect(classifyRepo(repo)).toMatchObject({ kind: "published" });
+          break;
+        case "error":
+          expect(() => classifyRepo(repo)).toThrow();
+          break;
+      }
+    },
+  );
 });

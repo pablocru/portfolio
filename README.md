@@ -15,22 +15,22 @@ Not all projects are finished, and not all of them are deployed.
 
 ## Publishing a repository
 
-The portfolio lists the public repositories I tag with `pf-show`. I classify
-each one with a category topic (`pf-cat-<id>`) and, optionally, a tier topic
-(`pf-tier-<id>`):
+The portfolio lists the public repositories I tag with exactly one tier topic
+(`pf-tier-<id>`). A repository also carries a category topic (`pf-cat-<id>`)
+when its tier requires one:
 
-| Topic prefix        | Effect                                          |
-| ------------------- | ----------------------------------------------- |
-| `pf-show`           | Publishes the repository                        |
-| `pf-cat-<id>`       | Places it in the category with that id          |
-| `pf-tier-<id>`      | Places it in the tier with that id              |
+| Topic prefix   | Effect                                            |
+| -------------- | ------------------------------------------------- |
+| `pf-tier-<id>` | Publishes the repository in the tier with that id |
+| `pf-cat-<id>`  | Places it in the category with that id            |
 
-A published repository needs at most one category. A category is required only
-when the tier declares it; otherwise the repository may omit it or keep one. It
-also needs at most one tier. The next build picks the change up, and a
-repository with a missing, duplicated or unknown topic fails the build with an
-error that names it. The current categories, tiers and their requirements are
-declared in `src/config/categories.ts` and `src/config/tiers.ts`.
+A repository without a tier topic, or a private one, stays out of the page and
+warns when it carries a `pf-` topic; a repository with no `pf-` topics is
+ignored. A public repository that shows intent to publish but cannot be
+classified stops the build with one error naming the repository and every
+offending topic. The next build picks the change up. The tiers and categories,
+with their requirements, are declared in `src/config/tiers.ts` and
+`src/config/categories.ts`.
 
 ## Tech stack
 

@@ -1,13 +1,12 @@
 import { Octokit } from "@octokit/rest";
 import { describe, expect, test, vi } from "vitest";
 import { CATEGORIES, categoryTopic } from "../config/categories";
-import { PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
-import { TIERS } from "../config/tiers";
-import { githubRepo } from "../mappers/repo.fixture";
+import { tierTopic } from "../config/tiers";
+import { firstRequiredTier } from "../config/tiers.fixture";
+import { githubRepo, githubRepoTierId } from "../mappers/repo.fixture";
 import { getPortfolioRepos, getProfile } from "./portfolio.service";
 
 const [web, data] = CATEGORIES;
-const [, project] = TIERS;
 
 describe("getProfile", () => {
   test("maps the fetched GitHub user", async () => {
@@ -48,7 +47,7 @@ describe("getPortfolioRepos", () => {
         archived: false,
         pushedAt: "2026-10-20T09:00:00Z",
         category: web.id,
-        tier: project.id,
+        tier: githubRepoTierId,
       },
     ]);
     expect(selection.warnings).toEqual([]);
@@ -78,7 +77,7 @@ describe("getPortfolioRepos", () => {
   test("reports a published repository without a category", async () => {
     const client = new Octokit();
     vi.spyOn(client, "paginate").mockResolvedValue([
-      { ...githubRepo, topics: [PORTFOLIO_OPT_IN_TOPIC] },
+      { ...githubRepo, topics: [tierTopic(firstRequiredTier().id)] },
     ]);
 
     await expect(getPortfolioRepos(client)).rejects.toThrow(
