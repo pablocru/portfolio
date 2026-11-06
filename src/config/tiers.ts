@@ -68,20 +68,9 @@ export function tierRequiresCategory(id: TierId): boolean {
   return tier.requiresCategory;
 }
 
-/** Whether the section of this tier is divided by category. */
-export function tierIsGroupedByCategory(id: TierId): id is GroupedTierId {
-  const tier = TIERS.find((entry) => entry.id === id);
-
-  if (tier === undefined) {
-    throw new Error(`Tier "${id}" is not declared.`);
-  }
-
-  return tier.requiresCategory === true && tier.groupedByCategory === true;
-}
-
 /** Whether this declared tier entry's section is divided by category. */
 export function isGroupedTier(tier: Tier): tier is GroupedTierEntry {
-  return tierIsGroupedByCategory(tier.id);
+  return tier.requiresCategory === true && tier.groupedByCategory === true;
 }
 
 export function tierTopic(id: TierId): string {

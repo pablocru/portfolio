@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 import { PORTFOLIO_TOPIC_PREFIX } from "./portfolio";
 import {
+  isGroupedTier,
   TIERS,
   type TierEntry,
-  tierIsGroupedByCategory,
   tierRequiresCategory,
   tierTopic,
 } from "./tiers";
@@ -30,7 +30,7 @@ describe("TIERS", () => {
 
   test("reads the grouped-by-category flag of every tier entry", () => {
     for (const tier of TIERS) {
-      expect(tierIsGroupedByCategory(tier.id)).toBe(
+      expect(isGroupedTier(tier)).toBe(
         tier.requiresCategory === true && tier.groupedByCategory === true,
       );
     }
