@@ -39,7 +39,7 @@ export const TIERS = [
 ] as const satisfies readonly TierEntry[];
 
 /** The declared tier entries, with their literal ids. */
-type Tier = (typeof TIERS)[number];
+export type Tier = (typeof TIERS)[number];
 
 /** Tier entries whose section is divided by category. */
 export type GroupedTierEntry = Extract<

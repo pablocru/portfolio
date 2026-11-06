@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { CATEGORIES } from "../config/categories";
 import { TIERS, type TierId, tierTopic } from "../config/tiers";
+import { optionalTiers, requiredTiers } from "../config/tiers.fixture";
 import { githubRepo } from "../mappers/repo.fixture";
 import { classifyRepo } from "../services/repo-classification.service";
 import { portfolioRepo } from "../types/repo.fixture";
@@ -8,9 +9,6 @@ import type { PortfolioRepo } from "../types/repo.type";
 import { repoSchema } from "./repo.schema";
 
 const [firstCategory] = CATEGORIES;
-
-const requiredTiers = TIERS.filter((tier) => tier.requiresCategory);
-const optionalTiers = TIERS.filter((tier) => !tier.requiresCategory);
 
 function parse(overrides: Partial<PortfolioRepo> = {}) {
   return repoSchema.safeParse(portfolioRepo("portfolio", overrides));
@@ -31,6 +29,11 @@ function classificationOutcome(tier: TierId): "published" | "rejected" {
 }
 
 describe("repoSchema", () => {
+  test("covers at least one tier of each category requirement", () => {
+    expect(requiredTiers.length).toBeGreaterThan(0);
+    expect(optionalTiers.length).toBeGreaterThan(0);
+  });
+
   test.each(optionalTiers)(
     "accepts a %s-tier repository without a category",
     (tier) => {

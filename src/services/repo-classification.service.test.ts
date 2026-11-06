@@ -2,6 +2,11 @@ import { describe, expect, test } from "vitest";
 import { CATEGORIES, categoryTopic } from "../config/categories";
 import { PORTFOLIO_TOPIC_PREFIX } from "../config/portfolio";
 import { TIERS, tierTopic } from "../config/tiers";
+import {
+  firstRequiredTier,
+  optionalTiers,
+  requiredTiers,
+} from "../config/tiers.fixture";
 import { githubRepo } from "../mappers/repo.fixture";
 import { classifyRepo } from "./repo-classification.service";
 
@@ -11,9 +16,6 @@ const secondCategoryTopic = categoryTopic(secondCategory.id);
 const UNKNOWN_CATEGORY_TOPIC = `${PORTFOLIO_TOPIC_PREFIX}cat-desgin`;
 const UNKNOWN_TIER_TOPIC = `${PORTFOLIO_TOPIC_PREFIX}tier-desgin`;
 const RETIRED_OPT_IN_TOPIC = `${PORTFOLIO_TOPIC_PREFIX}show`;
-
-const requiredTiers = TIERS.filter((tier) => tier.requiresCategory);
-const optionalTiers = TIERS.filter((tier) => !tier.requiresCategory);
 
 describe("classifyRepo", () => {
   test("publishes a repository with its classification", () => {
@@ -325,10 +327,11 @@ describe("classifyRepo", () => {
     });
   });
 
+  const requiredTier = firstRequiredTier();
   const noControlTopics = ["astro"];
   const controlTopicsWithoutTier = [firstCategoryTopic];
-  const validTierTopics = [tierTopic("project"), firstCategoryTopic];
-  const invalidTierTopics = [tierTopic("project")];
+  const validTierTopics = [tierTopic(requiredTier.id), firstCategoryTopic];
+  const invalidTierTopics = [tierTopic(requiredTier.id)];
 
   const classificationCases = [
     {
