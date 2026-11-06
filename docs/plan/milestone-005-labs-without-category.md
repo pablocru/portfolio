@@ -1,7 +1,8 @@
 # Milestone 005: Labs without category
 
 - Supersedes in part milestone 004 (C-004.3 and C-004.12)
-- Superseded in part by milestone 006: the default-tier fallback in verification
+- Superseded in part by milestone 006: US-005.1, US-005.2 and the default-tier
+  fallback in verification
 
 ## Context
 

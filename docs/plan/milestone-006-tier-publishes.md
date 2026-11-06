@@ -1,8 +1,9 @@
 # Milestone 006: The tier publishes
 
 - Supersedes in part milestone 004 (US-004.5, C-004.2, C-004.4 and C-004.5),
-  milestone 003 (US-003.1, US-003.6, C-003.2 and C-003.6), and the default-tier
-  fallback described in the verification of milestone 005
+  milestone 003 (US-003.1, US-003.6, C-003.2 and C-003.6), milestone 005
+  (US-005.1 and US-005.2), and the default-tier fallback described in the
+  verification of milestone 005
 
 ## Context
 
