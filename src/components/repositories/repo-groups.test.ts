@@ -22,11 +22,13 @@ const expectedSectionLabels = TIERS.flatMap((tier) =>
 
 function fullSet(): PortfolioRepo[] {
   return [
-    ...CATEGORIES.map((category) =>
-      portfolioRepo(`${category.id}-project`, {
-        category: category.id,
-        tier: groupedTier.id,
-      }),
+    ...TIERS.filter(isGroupedTier).flatMap((tier) =>
+      CATEGORIES.map((category) =>
+        portfolioRepo(`${category.id}-${tier.id}`, {
+          category: category.id,
+          tier: tier.id,
+        }),
+      ),
     ),
     ...nonGroupedTiers.map((tier) =>
       portfolioRepo(`${tier.id}-repo`, { tier: tier.id }),
@@ -127,16 +129,18 @@ describe("groupRepos", () => {
   });
 
   test("warns about every group that stays empty", () => {
-    const grouping = groupRepos([
-      portfolioRepo(`${firstCategory().id}-project`, {
-        category: firstCategory().id,
-        tier: groupedTier.id,
-      }),
-    ]);
+    const grouping = groupRepos(
+      TIERS.filter(isGroupedTier).map((tier) =>
+        portfolioRepo(`${firstCategory().id}-${tier.id}`, {
+          category: firstCategory().id,
+          tier: tier.id,
+        }),
+      ),
+    );
 
-    expect(grouping.groups.map((group) => group.id)).toEqual([
-      firstCategory().id,
-    ]);
+    expect(grouping.groups.map((group) => group.id)).toEqual(
+      TIERS.filter(isGroupedTier).map(() => firstCategory().id),
+    );
 
     const expectedWarnings: string[] = [];
     for (const tier of TIERS) {
@@ -144,7 +148,7 @@ describe("groupRepos", () => {
         for (const category of CATEGORIES) {
           if (category.id !== firstCategory().id) {
             expectedWarnings.push(
-              `Category "${category.label}" has no ${groupedTier.label.toLowerCase()}-tier repository; its section is omitted.`,
+              `Category "${category.label}" has no ${tier.label.toLowerCase()}-tier repository; its section is omitted.`,
             );
           }
         }
