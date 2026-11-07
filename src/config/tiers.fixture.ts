@@ -1,3 +1,4 @@
+import { PORTFOLIO_TOPIC_PREFIX } from "./portfolio";
 import {
   type GroupedTierEntry,
   isGroupedTier,
@@ -52,4 +53,19 @@ export function firstNonGroupedTier(): NonGroupedTierEntry {
   const [tier] = nonGroupedTiers;
 
   return mustFindTier(tier, "tier whose section is not divided by category");
+}
+
+/** A declared tier that does not require a category. */
+export function firstOptionalTier(): Tier {
+  const [tier] = optionalTiers;
+
+  return mustFindTier(tier, "tier that does not require a category");
+}
+
+/**
+ * A tier topic that is not declared. Useful as a second distinct tier topic
+ * when the test only needs two tier topics, not two declared tiers.
+ */
+export function unknownTierTopic(): string {
+  return `${PORTFOLIO_TOPIC_PREFIX}tier-unknown`;
 }
