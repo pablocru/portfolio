@@ -1,8 +1,9 @@
 import { describe, expect, test } from "vitest";
+import { neutralGitHubLogin } from "../config/portfolio.fixture";
 import { mapProfile } from "./profile.mapper";
 
 const githubUser = {
-  login: "pablocru",
+  login: neutralGitHubLogin,
   name: "Pablo",
   avatar_url: "https://avatars.githubusercontent.com/u/1?v=4",
   bio: "A bio",

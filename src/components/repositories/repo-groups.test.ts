@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { CATEGORIES } from "../../config/categories";
+import { firstCategory, secondCategory } from "../../config/categories.fixture";
 import { isGroupedTier, TIERS } from "../../config/tiers";
 import {
   firstGroupedTier,
@@ -10,7 +11,6 @@ import { portfolioRepo } from "../../types/repo.fixture";
 import type { PortfolioRepo } from "../../types/repo.type";
 import { groupRepos } from "./repo-groups";
 
-const [web, data] = CATEGORIES;
 const groupedTier = firstGroupedTier();
 const nonGroupedTier = firstNonGroupedTier();
 
@@ -57,7 +57,7 @@ describe("groupRepos", () => {
   test("lets the tier win over the category", () => {
     const grouping = groupRepos([
       portfolioRepo("tier-with-category", {
-        category: data.id,
+        category: secondCategory().id,
         tier: nonGroupedTier.id,
       }),
       portfolioRepo("other-tier-repo", { tier: nonGroupedTier.id }),
@@ -79,7 +79,7 @@ describe("groupRepos", () => {
         tier: nonGroupedTier.id,
       }),
       portfolioRepo("tier-with-category", {
-        category: data.id,
+        category: secondCategory().id,
         tier: nonGroupedTier.id,
       }),
     ]);
@@ -128,19 +128,21 @@ describe("groupRepos", () => {
 
   test("warns about every group that stays empty", () => {
     const grouping = groupRepos([
-      portfolioRepo(`${web.id}-project`, {
-        category: web.id,
+      portfolioRepo(`${firstCategory().id}-project`, {
+        category: firstCategory().id,
         tier: groupedTier.id,
       }),
     ]);
 
-    expect(grouping.groups.map((group) => group.id)).toEqual([web.id]);
+    expect(grouping.groups.map((group) => group.id)).toEqual([
+      firstCategory().id,
+    ]);
 
     const expectedWarnings: string[] = [];
     for (const tier of TIERS) {
       if (isGroupedTier(tier)) {
         for (const category of CATEGORIES) {
-          if (category.id !== web.id) {
+          if (category.id !== firstCategory().id) {
             expectedWarnings.push(
               `Category "${category.label}" has no ${groupedTier.label.toLowerCase()}-tier repository; its section is omitted.`,
             );
@@ -159,13 +161,13 @@ describe("groupRepos", () => {
   test("warns when a category only holds non-grouped-tier repositories", () => {
     const grouping = groupRepos([
       portfolioRepo("non-grouped-tier-category", {
-        category: data.id,
+        category: secondCategory().id,
         tier: nonGroupedTier.id,
       }),
     ]);
 
     expect(grouping.warnings).toContain(
-      `Category "${data.label}" has no ${groupedTier.label.toLowerCase()}-tier repository; its section is omitted.`,
+      `Category "${secondCategory().label}" has no ${groupedTier.label.toLowerCase()}-tier repository; its section is omitted.`,
     );
   });
 

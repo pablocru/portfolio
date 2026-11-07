@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { CATEGORIES } from "../config/categories";
+import { firstCategory } from "../config/categories.fixture";
 import { TIERS, type TierId, tierTopic } from "../config/tiers";
 import { optionalTiers, requiredTiers } from "../config/tiers.fixture";
 import { githubRepo } from "../mappers/repo.fixture";
@@ -7,8 +7,6 @@ import { classifyRepo } from "../services/repo-classification.service";
 import { portfolioRepo } from "../types/repo.fixture";
 import type { PortfolioRepo } from "../types/repo.type";
 import { repoSchema } from "./repo.schema";
-
-const [firstCategory] = CATEGORIES;
 
 function parse(overrides: Partial<PortfolioRepo> = {}) {
   return repoSchema.safeParse(portfolioRepo("portfolio", overrides));
@@ -44,10 +42,10 @@ describe("repoSchema", () => {
   test.each(optionalTiers)(
     "stores the category of a %s-tier repository that has one",
     (tier) => {
-      const result = parse({ category: firstCategory.id, tier: tier.id });
+      const result = parse({ category: firstCategory().id, tier: tier.id });
 
       expect(result.success).toBe(true);
-      expect(result.data?.category).toBe(firstCategory.id);
+      expect(result.data?.category).toBe(firstCategory().id);
     },
   );
 
