@@ -297,7 +297,7 @@ describe("classifyRepo", () => {
     );
   });
 
-  test("treats pf-show as an unknown control topic without a tier topic", () => {
+  test("treats the retired opt-in topic as an unknown control topic without a tier topic", () => {
     const result = classifyRepo({
       ...githubRepo,
       topics: [RETIRED_OPT_IN_TOPIC],
@@ -310,7 +310,7 @@ describe("classifyRepo", () => {
     );
   });
 
-  test("treats pf-show as an unknown control topic with a tier topic", () => {
+  test("treats the retired opt-in topic as an unknown control topic with a tier topic", () => {
     const requiredTier = firstRequiredTier();
 
     expect(() =>
