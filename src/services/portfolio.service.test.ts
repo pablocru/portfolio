@@ -1,17 +1,17 @@
 import { Octokit } from "@octokit/rest";
 import { describe, expect, test, vi } from "vitest";
-import { CATEGORIES, categoryTopic } from "../config/categories";
+import { categoryTopic } from "../config/categories";
+import { firstCategory, secondCategory } from "../config/categories.fixture";
+import { neutralGitHubLogin } from "../config/portfolio.fixture";
 import { tierTopic } from "../config/tiers";
 import { firstRequiredTier } from "../config/tiers.fixture";
 import { githubRepo, githubRepoTierId } from "../mappers/repo.fixture";
 import { getPortfolioRepos, getProfile } from "./portfolio.service";
 
-const [web, data] = CATEGORIES;
-
 describe("getProfile", () => {
   test("maps the fetched GitHub user", async () => {
     const githubUser = {
-      login: "pablocru",
+      login: neutralGitHubLogin,
       name: "Pablo",
       avatar_url: "https://avatars.githubusercontent.com/u/1",
       bio: "A bio",
@@ -43,10 +43,10 @@ describe("getPortfolioRepos", () => {
         name: "portfolio",
         description: "A window to my projects",
         language: "TypeScript",
-        url: "https://github.com/pablocru/portfolio",
+        url: githubRepo.html_url,
         archived: false,
         pushedAt: "2026-10-20T09:00:00Z",
-        category: web.id,
+        category: firstCategory().id,
         tier: githubRepoTierId,
       },
     ]);
@@ -60,7 +60,11 @@ describe("getPortfolioRepos", () => {
       // The public source never returns a private repository; this fixture
       // keeps the defensive classifier path covered.
       { ...githubRepo, name: "secret", private: true },
-      { ...githubRepo, name: "classified", topics: [categoryTopic(data.id)] },
+      {
+        ...githubRepo,
+        name: "classified",
+        topics: [categoryTopic(secondCategory().id)],
+      },
     ]);
 
     const selection = await getPortfolioRepos(client);

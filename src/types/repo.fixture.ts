@@ -1,4 +1,6 @@
-import { CATEGORIES } from "../config/categories";
+import { firstCategory } from "../config/categories.fixture";
+import { neutralGitHubUrl } from "../config/portfolio.fixture";
+import { firstRequiredTier } from "../config/tiers.fixture";
 import type { PortfolioRepo } from "./repo.type";
 
 /**
@@ -13,11 +15,11 @@ export function portfolioRepo(
     name,
     description: null,
     language: null,
-    url: `https://github.com/pablocru/${name}`,
+    url: neutralGitHubUrl(name),
     archived: false,
     pushedAt: "2026-01-01T00:00:00Z",
-    category: CATEGORIES[0].id,
-    tier: "project",
+    category: firstCategory().id,
+    tier: firstRequiredTier().id,
     ...overrides,
   };
 }
