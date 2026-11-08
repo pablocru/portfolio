@@ -181,6 +181,11 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   `src/`.
 - The suite is deterministic and offline: no test performs a network request or
   reads credentials.
+- Tests assert behavior, not the portfolio's current configuration: changing a
+  value exported by a non-test module of `src/config/` must not require editing
+  a test outside `src/config/`. Only configuration contract tests under
+  `src/config/` are pins; every other test imports the configured value it needs
+  and derives its expectation from it.
 - Run the suite with `pnpm test`.
 
 ### Unit testing
@@ -191,6 +196,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Name fixtures for the data they hold, reuse the same fixture for the same
   object across tests, and keep a shared fixture beside the type it builds with
   the `.fixture.ts` suffix.
+- A fixture returns configuration entries by the property the test depends on,
+  never by name, and fails clearly when the configuration cannot supply them; a
+  test neither names an entry nor passes vacuously.
 - A test never skips: do not use `skip`, `skipIf`, `todo` or a conditional early
   return. When a case needs data the repository does not contain, build it from
   a fixture so the test still runs.
