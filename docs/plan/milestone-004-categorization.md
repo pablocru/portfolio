@@ -1,8 +1,10 @@
 # Milestone 004: Categorization
 
-- Amended by milestone 005: C-004.3 and C-004.12 no longer require a category
-  for every tier; each tier declares whether it requires one (see
-  `src/config/tiers.ts`)
+- Superseded in part by milestone 005: C-004.3 and C-004.12
+- Superseded in part by milestone 006: US-004.5, C-004.2, C-004.4 and C-004.5
+- Note on C-004.6: milestone 006 retires `pf-show`, so the example is outdated;
+  the rule is unchanged, and a private repository carrying a tier topic is still
+  never published and still warns.
 
 ## Context
 

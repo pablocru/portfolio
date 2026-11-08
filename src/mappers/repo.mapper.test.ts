@@ -1,35 +1,23 @@
 import { describe, expect, test } from "vitest";
-import { CATEGORIES } from "../config/categories";
-import { TIERS, type TierId } from "../config/tiers";
+import { firstCategory, secondCategory } from "../config/categories.fixture";
+import { firstOptionalTier, firstRequiredTier } from "../config/tiers.fixture";
 import { githubRepo } from "./repo.fixture";
 import { mapRepo } from "./repo.mapper";
 
-const [web, data] = CATEGORIES;
-
-function tierFixture(id: TierId) {
-  const tier = TIERS.find((entry) => entry.id === id);
-
-  if (tier === undefined) {
-    throw new Error(`Missing tier fixture: ${id}`);
-  }
-
-  return tier;
-}
-
-const project = tierFixture("project");
-const lab = tierFixture("lab");
+const requiredTier = firstRequiredTier();
+const optionalTier = firstOptionalTier();
 
 describe("mapRepo", () => {
   test("maps the repository fields", () => {
-    expect(mapRepo(githubRepo, web.id, project.id)).toEqual({
+    expect(mapRepo(githubRepo, firstCategory().id, requiredTier.id)).toEqual({
       name: "portfolio",
       description: "A window to my projects",
       language: "TypeScript",
-      url: "https://github.com/pablocru/portfolio",
+      url: githubRepo.html_url,
       archived: false,
       pushedAt: "2026-10-20T09:00:00Z",
-      category: web.id,
-      tier: project.id,
+      category: firstCategory().id,
+      tier: requiredTier.id,
     });
   });
 
@@ -37,8 +25,8 @@ describe("mapRepo", () => {
     expect(
       mapRepo(
         { ...githubRepo, description: "  A window  " },
-        web.id,
-        project.id,
+        firstCategory().id,
+        requiredTier.id,
       ).description,
     ).toBe("A window");
   });
@@ -47,33 +35,51 @@ describe("mapRepo", () => {
     "drops the description when it is %j",
     (description) => {
       expect(
-        mapRepo({ ...githubRepo, description }, web.id, project.id).description,
+        mapRepo(
+          { ...githubRepo, description },
+          firstCategory().id,
+          requiredTier.id,
+        ).description,
       ).toBeNull();
     },
   );
 
   test("maps a repository without a language", () => {
     expect(
-      mapRepo({ ...githubRepo, language: null }, web.id, project.id).language,
+      mapRepo(
+        { ...githubRepo, language: null },
+        firstCategory().id,
+        requiredTier.id,
+      ).language,
     ).toBeNull();
   });
 
   test("maps an archived repository", () => {
     expect(
-      mapRepo({ ...githubRepo, archived: true }, web.id, project.id).archived,
+      mapRepo(
+        { ...githubRepo, archived: true },
+        firstCategory().id,
+        requiredTier.id,
+      ).archived,
     ).toBe(true);
   });
 
   test("maps a repository without a push date", () => {
     expect(
-      mapRepo({ ...githubRepo, pushed_at: null }, web.id, project.id).pushedAt,
+      mapRepo(
+        { ...githubRepo, pushed_at: null },
+        firstCategory().id,
+        requiredTier.id,
+      ).pushedAt,
     ).toBeNull();
   });
 
   test("keeps the category and tier it receives", () => {
-    expect(mapRepo(githubRepo, data.id, lab.id)).toMatchObject({
-      category: data.id,
-      tier: lab.id,
+    expect(
+      mapRepo(githubRepo, secondCategory().id, optionalTier.id),
+    ).toMatchObject({
+      category: secondCategory().id,
+      tier: optionalTier.id,
     });
   });
 });

@@ -1,28 +1,23 @@
 import { describe, expect, test } from "vitest";
-import { CATEGORIES } from "../config/categories";
-import { PORTFOLIO_OPT_IN_TOPIC } from "../config/portfolio";
+import { firstCategory } from "../config/categories.fixture";
 import { TIERS, type TierId, tierTopic } from "../config/tiers";
+import { optionalTiers, requiredTiers } from "../config/tiers.fixture";
 import { githubRepo } from "../mappers/repo.fixture";
 import { classifyRepo } from "../services/repo-classification.service";
 import { portfolioRepo } from "../types/repo.fixture";
 import type { PortfolioRepo } from "../types/repo.type";
 import { repoSchema } from "./repo.schema";
 
-const [firstCategory] = CATEGORIES;
-
-const requiredTiers = TIERS.filter((tier) => tier.requiresCategory);
-const optionalTiers = TIERS.filter((tier) => !tier.requiresCategory);
-
 function parse(overrides: Partial<PortfolioRepo> = {}) {
   return repoSchema.safeParse(portfolioRepo("portfolio", overrides));
 }
 
-/** Classifies a repository tagged only with the opt-in topic and one tier. */
+/** Classifies a repository tagged only with one tier topic. */
 function classificationOutcome(tier: TierId): "published" | "rejected" {
   try {
     classifyRepo({
       ...githubRepo,
-      topics: [PORTFOLIO_OPT_IN_TOPIC, tierTopic(tier)],
+      topics: [tierTopic(tier)],
     });
 
     return "published";
@@ -32,6 +27,11 @@ function classificationOutcome(tier: TierId): "published" | "rejected" {
 }
 
 describe("repoSchema", () => {
+  test("covers at least one tier of each category requirement", () => {
+    expect(requiredTiers.length).toBeGreaterThan(0);
+    expect(optionalTiers.length).toBeGreaterThan(0);
+  });
+
   test.each(optionalTiers)(
     "accepts a %s-tier repository without a category",
     (tier) => {
@@ -42,10 +42,10 @@ describe("repoSchema", () => {
   test.each(optionalTiers)(
     "stores the category of a %s-tier repository that has one",
     (tier) => {
-      const result = parse({ category: firstCategory.id, tier: tier.id });
+      const result = parse({ category: firstCategory().id, tier: tier.id });
 
       expect(result.success).toBe(true);
-      expect(result.data?.category).toBe(firstCategory.id);
+      expect(result.data?.category).toBe(firstCategory().id);
     },
   );
 

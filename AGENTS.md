@@ -19,8 +19,7 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   only dictates a technique belongs in the change that needs it.
 - `docs/plan/`: what a milestone delivers and how it is checked. It defines the
   outcome, not the technique.
-- Code and tests: how the outcome is built and the proof that it holds. A rule
-  that dictates a technique belongs to the change that needs it.
+- Code and tests: how the outcome is built and the proof that it holds.
 
 ## Milestone specs
 
@@ -32,6 +31,16 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   implementation plans in the repository.
 - A spec contains context, user stories (`US-XXX.Y`), constraints with
   acceptance criteria (`C-XXX.Y`), and verification.
+- A milestone that changes a requirement of an earlier one names the earlier
+  milestone NNN and the superseded requirement ids in its header with the form
+  "Supersedes in part milestone NNN (C-NNN.Y)", and points to the old text
+  instead of repeating it.
+- The older spec keeps its rows: add one header note with the form "Superseded
+  in part by milestone MMM: C-NNN.Y". When a later milestone takes over the same
+  requirement, update the note to the newest one; the highest-numbered milestone
+  naming a requirement is its authority.
+- A milestone that replaces another one entirely says so on its first line
+  instead of naming individual requirements.
 - A spec states the rule, not the current vocabulary: when it depends on the
   categories or tiers, it points to `src/config/categories.ts` or
   `src/config/tiers.ts` instead of repeating ids that can change while the rule
@@ -73,9 +82,15 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   scripts or formatting rules in `package.json`, tool configs and workflows).
   Keep incidental similarity local when sharing it would make the code harder to
   read or couple unrelated concepts.
-- A public function's parameter and return types are fixed at its declaration. A
-  call-site type argument may not be the only thing keeping them narrow: a later
-  edit can drop it and silently widen the contract.
+- A public function's parameter and return types are fixed at its declaration,
+  not inferred from the type arguments its callers pass: a later edit can drop
+  an argument and silently widen the contract.
+- Types are proven, not asserted: never use a type assertion (`as T`,
+  `as unknown as T`) to tell the compiler what the declarations cannot express,
+  because a later edit can make it lie silently. When a value needs a narrower
+  type, the declaration provides it — a type predicate, a discriminant, or a
+  collaborator typed to the minimum the unit uses. A const assertion
+  (`as const`) only narrows a literal and stays allowed.
 - Keep raw GitHub payloads and portfolio domain objects distinguishable by name
   so each file can be read in isolation; fields may rely on their owner for
   context.
@@ -166,6 +181,11 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
   `src/`.
 - The suite is deterministic and offline: no test performs a network request or
   reads credentials.
+- Tests assert behavior, not the portfolio's current configuration: changing a
+  value exported by a non-test module of `src/config/` must not require editing
+  a test outside `src/config/`. Only configuration contract tests under
+  `src/config/` are pins; every other test imports the configured value it needs
+  and derives its expectation from it.
 - Run the suite with `pnpm test`.
 
 ### Unit testing
@@ -176,6 +196,9 @@ GitHub Pages by `pablocru`. Code, content and commits are in **English**.
 - Name fixtures for the data they hold, reuse the same fixture for the same
   object across tests, and keep a shared fixture beside the type it builds with
   the `.fixture.ts` suffix.
+- A fixture returns configuration entries by the property the test depends on,
+  never by name, and fails clearly when the configuration cannot supply them; a
+  test neither names an entry nor passes vacuously.
 - A test never skips: do not use `skip`, `skipIf`, `todo` or a conditional early
   return. When a case needs data the repository does not contain, build it from
   a fixture so the test still runs.

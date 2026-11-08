@@ -4,7 +4,8 @@ import {
   type CategoryLabel,
 } from "../../config/categories";
 import {
-  CATEGORIZED_TIER_ID,
+  type GroupedTierId,
+  isGroupedTier,
   TIERS,
   type TierId,
   type TierLabel,
@@ -12,9 +13,7 @@ import {
 import type { PortfolioRepo } from "../../types/repo.type";
 import { comparePortfolioRepos } from "../../utils/repo-order.util";
 
-export type RepoGroupId =
-  | Exclude<TierId, typeof CATEGORIZED_TIER_ID>
-  | CategoryId;
+export type RepoGroupId = Exclude<TierId, GroupedTierId> | CategoryId;
 
 export type RepoGroupLabel = TierLabel | CategoryLabel;
 
@@ -41,7 +40,7 @@ type GroupDefinition = {
 
 const GROUP_DEFINITIONS: GroupDefinition[] = TIERS.flatMap(
   (tier): GroupDefinition[] =>
-    tier.id === CATEGORIZED_TIER_ID
+    isGroupedTier(tier)
       ? CATEGORIES.map(
           (category): GroupDefinition => ({
             id: category.id,
