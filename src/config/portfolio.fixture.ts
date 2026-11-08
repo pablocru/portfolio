@@ -1,8 +1,4 @@
-/**
- * Neutral owner login for fixtures that do not assert the configured owner.
- * It must not match `GITHUB_USERNAME`, so a test accidentally coupled to the
- * real owner fails instead of passing by coincidence.
- */
+/** Neutral owner login for fixtures that do not assert the configured owner. */
 export const neutralGitHubLogin = "test-owner";
 
 /** Builds a neutral GitHub URL for a repository fixture. */
