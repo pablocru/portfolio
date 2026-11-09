@@ -1,4 +1,3 @@
-<!-- rumdl-disable-file MD041 -->
 <!--
 Write pull requests in English.
 Describe the final diff against main, not the intermediate steps that were later changed.

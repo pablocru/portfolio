@@ -13,3 +13,6 @@ style = "one"
 [MD060]
 enabled = true
 style = "aligned"
+
+[per-file-ignores]
+".github/pull_request_template.md" = ["MD041"]
